@@ -305,7 +305,7 @@ if __name__ == "__main__":
         nn_config = nn_configs[args.num]
         nn_config['stage1'] = args.stage1
         nn_config['mod'] = 1000
-        nn_config['epoch'] = 7001
+        nn_config['epoch'] = 1001
 
         # if args.dn == "bbn_unk":
         #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
