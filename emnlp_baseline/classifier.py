@@ -162,7 +162,7 @@ class Classifier:
         :return: (batch size, words num, labes num)
         """
         # add mask to mask tag of #PAD# to 0 vec, otherwise #PAD# will update parameter
-        Y_one_hot = tf.multiply(tf.one_hot(Y_, depth=self.nn_config['target_NETypes_num'], axis=2, dtype='float32'))
+        Y_one_hot = tf.one_hot(Y_, depth=self.nn_config['target_NETypes_num'], axis=2, dtype='float32')
         return Y_one_hot
 
     def multiclass_score(self,X,graph):
