@@ -1,6 +1,6 @@
 import sys
-sys.path.append('/home/liu121/dlnlp')
-from nerd.data.util.readers.BBNDataReader import BBNDataReader
+sys.path.append('/home/liu121/emnlp_baseline')
+from util.readers.BBNDataReader import BBNDataReader
 
 class Stat:
     def __init__(self,data_config):
@@ -26,7 +26,7 @@ def report(stat_dic,report_path):
     with open(report_path,'a+') as f:
         sum = 0
         for key in stat_dic:
-            f.write(key + ': ' + str(stat_dic[key]))
+            f.write(str(key) + ': ' + str(stat_dic[key]))
             sum += stat_dic[key]
         f.write('sum: ' + str(sum))
 
