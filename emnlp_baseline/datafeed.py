@@ -54,9 +54,9 @@ class DataFeed:
             batch = data_temp
         X = []
         Y_ = []
-        # for instance in batch:
-        #     X.append(np.array(instance[0], dtype='int32'))
-        #     Y_.append(np.array(instance[1], dtype='int32'))
+        for instance in batch:
+            X.append(np.array(instance[0], dtype='int32'))
+            Y_.append(np.array(instance[1], dtype='int32'))
 
         # during validation and test, to avoid errors are counted repeatedly,
         # we need to avoid the same data sended back repeately
