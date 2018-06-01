@@ -26,7 +26,7 @@ class Stat:
 def report(stat_dic,report_path):
 
     with open(report_path,'a+') as f:
-        stat = sorted(stat_dic,key=operator.itemgetter(0))
+        stat = sorted(stat_dic.items(),key=operator.itemgetter(0))
         sum = 0
         for element in stat:
             f.write(str(element)+'\n')
