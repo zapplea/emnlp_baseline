@@ -62,6 +62,11 @@ class DataFeed:
         # we need to avoid the same data sended back repeately
         print('X len: ',str(len(X)))
         print('Y_ len: ',str(len(Y_)))
+        print('X: ')
+        np.array(X)
+        print('Y_: ')
+        np.array(Y_)
+        print('====================')
         # for x in X:
         #     print('type: ',type(x),' len: ',str(len(x)),'\n')
         # for y in Y_:
