@@ -196,7 +196,6 @@ if __name__ == "__main__":
                     'instances_num': [1, 2, 4, 8, 16]},
 
 
-
                     {'max_len':822,#113
                      'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll.pkl',
                      'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
