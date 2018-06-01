@@ -363,5 +363,5 @@ if __name__ == "__main__":
         nn_config['model'] = model
         report = report + str(args.num)
         nn_config['report'] = report
-
+        print(str(nn_config))
         main(nn_config, data_config)
