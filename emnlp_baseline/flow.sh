@@ -36,8 +36,8 @@ then
     then
         echo "true"
 
-#        sbatch run_learn.sh 0 $stage1 "bbn_kn"
-#        sbatch run_learn.sh 0 $stage1 "bbn_kn200"
+        sbatch run_learn.sh 0 $stage1 "bbn_kn"
+        sbatch run_learn.sh 0 $stage1 "bbn_kn200"
 #        sbatch run_learn.sh 1 $stage1 "bbn_kn"
 #        sbatch run_learn.sh 2 $stage1 "bbn_kn"
 #        sbatch run_learn.sh 3 $stage1 "bbn_kn"
@@ -45,7 +45,7 @@ then
 #        sbatch run_learn.sh 5 $stage1 "bbn_kn"
 
         sbatch run_learn.sh 0 $stage1 "conll"
-#        sbatch run_learn.sh 0 $stage1 "conll200"
+        sbatch run_learn.sh 0 $stage1 "conll200"
 #        sbatch run_learn.sh 1 $stage1 "conll"
 #        sbatch run_learn.sh 2 $stage1 "conll"
 #        sbatch run_learn.sh 3 $stage1 "conll"
