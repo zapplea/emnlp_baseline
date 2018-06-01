@@ -304,7 +304,7 @@ if __name__ == "__main__":
         ]
         nn_config = nn_configs[args.num]
         nn_config['stage1'] = args.stage1
-        nn_config['mod'] = 1000
+        nn_config['mod'] = 500
 
 
         # if args.dn == "bbn_unk":
@@ -344,7 +344,7 @@ if __name__ == "__main__":
                            'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll.pkl',
                            'k_instances': '16.0'}
             nn_config['words_num'] = 100 # 113
-            nn_config['epoch'] = 901
+            nn_config['epoch'] = 1001
             report = '/datastore/liu121/nosqldb2/emnlp_baseline/report_conll/report_'
             model = '/datastore/liu121/nosqldb2/emnlp_baseline/model_conll/'
         elif args.dn == "conll200":
@@ -352,7 +352,7 @@ if __name__ == "__main__":
                            'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll200.pkl',
                            'k_instances': '16.0'}
             nn_config['words_num'] = 200  # 113
-            nn_config['epoch'] = 901
+            nn_config['epoch'] = 1001
             report = '/datastore/liu121/nosqldb2/emnlp_baseline/report_conll/report200_'
             model = '/datastore/liu121/nosqldb2/emnlp_baseline/model_conll200/'
 
