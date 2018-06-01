@@ -10,20 +10,10 @@ import random
 import json
 
 class DataGenerator:
-    def __init__(self,data_config):
+    def __init__(self,data_config,table,dictionary):
         self.data_config = data_config
-        self.table,self.dictionary= self.table_vec_and_dic()
-
-    def table_vec_and_dic(self):
-        vecfpath = '/datastore/liu121/nosqldb2/skipgram_v200_w5'
-        word_embed = gensim.models.KeyedVectors.load_word2vec_format(vecfpath, binary=False, datatype=np.float32)
-        embed_mat = word_embed.syn0
-        vocabulary = word_embed.index2word
-        embed_mat = check_array(embed_mat, dtype='float32', order='C')
-        dictionary = {}
-        for i in range(len(vocabulary)):
-            dictionary[vocabulary[i]] = i
-        return embed_mat,dictionary
+        self.table= table
+        self.dictionary = dictionary
 
     def conll_data_reader(self,filePath):
         data = BBNDataReader.readFile(filePath=filePath)
@@ -161,6 +151,17 @@ class DataGenerator:
         # exit()
         self.write(data)
 
+def table_vec_and_dic():
+    vecfpath = '/datastore/liu121/nosqldb2/skipgram_v200_w5'
+    word_embed = gensim.models.KeyedVectors.load_word2vec_format(vecfpath, binary=False, datatype=np.float32)
+    embed_mat = word_embed.syn0
+    vocabulary = word_embed.index2word
+    embed_mat = check_array(embed_mat, dtype='float32', order='C')
+    dictionary = {}
+    for i in range(len(vocabulary)):
+        dictionary[vocabulary[i]] = i
+    return embed_mat,dictionary
+
 if __name__ == "__main__":
     data_configs =[
                    # {'max_len':822,#275
@@ -231,7 +232,7 @@ if __name__ == "__main__":
                      'groups_num': 5,
                      'instances_num': [1, 2, 4, 8, 16]}
                    ]
-
+    table,dictionary = table_vec_and_dic()
     for data_config in data_configs:
-        dg = DataGenerator(data_config)
+        dg = DataGenerator(data_config,table,dictionary)
         dg.main()
