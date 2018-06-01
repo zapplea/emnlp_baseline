@@ -26,9 +26,10 @@ def report(stat_dic,report_path):
     with open(report_path,'a+') as f:
         sum = 0
         for key in stat_dic:
-            f.write(str(key) + ': ' + str(stat_dic[key]))
+            f.write(str(key) + ': ' + str(stat_dic[key])+'\n')
             sum += stat_dic[key]
-        f.write('sum: ' + str(sum))
+        f.write('sum: \n' + str(sum))
+        f.write('\n\n')
 
 
 if __name__ == "__main__":
