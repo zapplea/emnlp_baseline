@@ -63,8 +63,12 @@ class DataFeed:
         print('X len: ',str(len(X)))
         print('Y_ len: ',str(len(Y_)))
         print('X: ')
+        for x in X:
+            print('type: ',type(x),' len: ',str(len(x)),'\n')
         np.array(X)
         print('Y_: ')
+        for y in Y_:
+            print('type: ', type(y), ' len: ', str(len(y)), '\n')
         np.array(Y_)
         print('====================')
         # for x in X:
