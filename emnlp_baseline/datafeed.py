@@ -54,27 +54,23 @@ class DataFeed:
             batch = data_temp
         X = []
         Y_ = []
-        for instance in batch:
-            X.append(np.array(instance[0], dtype='int32'))
-            Y_.append(np.array(instance[1], dtype='int32'))
+        # for instance in batch:
+        #     X.append(np.array(instance[0], dtype='int32'))
+        #     Y_.append(np.array(instance[1], dtype='int32'))
 
         # during validation and test, to avoid errors are counted repeatedly,
         # we need to avoid the same data sended back repeately
-        print('X len: ',str(len(X)))
-        print('Y_ len: ',str(len(Y_)))
-        print('X: ')
-        for x in X:
-            print('type: ',type(x),' len: ',str(len(x)),'\n')
-        np.array(X)
-        print('Y_: ')
-        for y in Y_:
-            print('type: ', type(y), ' len: ', str(len(y)), '\n')
-        np.array(Y_)
-        print('====================')
+        # print('X len: ',str(len(X)))
+        # print('Y_ len: ',str(len(Y_)))
+        # print('X: ')
         # for x in X:
         #     print('type: ',type(x),' len: ',str(len(x)),'\n')
+        # np.array(X)
+        # print('Y_: ')
         # for y in Y_:
         #     print('type: ', type(y), ' len: ', str(len(y)), '\n')
+        # np.array(Y_)
+        # print('====================')
         return (np.array(X,dtype='int32'), np.array(Y_,dtype='int32'))
 
     def target_data_generator(self,mode,**kwargs):
