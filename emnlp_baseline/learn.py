@@ -355,7 +355,7 @@ if __name__ == "__main__":
 
 
 
-        model = model +'/model'+str(args.num)
+        model = model +'model'+str(args.num)
         path = Path(model)
         if not path.exists():
             path.mkdir()
