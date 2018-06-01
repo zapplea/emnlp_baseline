@@ -29,6 +29,8 @@ class DataGenerator:
             labels = data.labels[i]
             if len(text)>self.data_config['max_len']:
                 continue
+            if len(text)>self.data_config['max_len']:
+                exit()
             x = []
             for word in text:
                 if word not in self.dictionary:
