@@ -7,16 +7,16 @@ global cur_user_name
 cur_user_name = pwd.getpwuid(os.getuid()).pw_name
 
 if cur_user_name == "liu121":
-    sys.path.append('/home/liu121/dlnlp')
+    sys.path.append('/home/liu121/emnlp_baseline')
 elif cur_user_name == "che313":
-    sys.path.append('/home/che313/dlnlp')
+    sys.path.append('/home/che313/emnlp_baseline')
 
 import argparse
 from pathlib import Path
 
-from nerd.emnlp_baseline.datafeed import DataFeed
-from nerd.emnlp_baseline.classifier import Classifier
-from nerd.emnlp_baseline.metrics import Metrics
+from emnlp_baseline.datafeed import DataFeed
+from emnlp_baseline.classifier import Classifier
+from emnlp_baseline.metrics import Metrics
 
 # def word_id2txt(X_data,true_labels,pred_labels,id2word,id2label):
 #     I = []
