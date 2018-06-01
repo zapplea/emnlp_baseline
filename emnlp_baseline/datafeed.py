@@ -60,10 +60,12 @@ class DataFeed:
 
         # during validation and test, to avoid errors are counted repeatedly,
         # we need to avoid the same data sended back repeately
-        for x in X:
-            print('type: ',type(x),' len: ',str(len(x)),'\n')
-        for y in Y_:
-            print('type: ', type(y), ' len: ', str(len(y)), '\n')
+        print('X len: ',str(len(X)))
+        print('Y_ len: ',str(len(Y_)))
+        # for x in X:
+        #     print('type: ',type(x),' len: ',str(len(x)),'\n')
+        # for y in Y_:
+        #     print('type: ', type(y), ' len: ', str(len(y)), '\n')
         return (np.array(X,dtype='int32'), np.array(Y_,dtype='int32'))
 
     def target_data_generator(self,mode,**kwargs):
