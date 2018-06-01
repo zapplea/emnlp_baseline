@@ -92,6 +92,7 @@ class DataGenerator:
                         id = instance[0]
                         if id>=len(data):
                             print(affix,' ',str(id))
+                            continue
                         instance = data[id]
                         sample[affix].append(instance)
         # type2instances={}
@@ -130,6 +131,7 @@ class DataGenerator:
     def write(self,data):
         with open(self.data_config['pkl_filePath'],'wb') as f:
             pickle.dump(data,f)
+            f.flush()
 
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
