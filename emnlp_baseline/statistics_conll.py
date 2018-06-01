@@ -2,6 +2,8 @@ import sys
 sys.path.append('/home/liu121/dlnlp')
 from nerd.data.util.readers.BBNDataReader import BBNDataReader
 
+import operator
+
 class Stat:
     def __init__(self,data_config):
         self.data_config = data_config
@@ -24,11 +26,12 @@ class Stat:
 def report(stat_dic,report_path):
 
     with open(report_path,'a+') as f:
+        stat = sorted(stat_dic,key=operator.itemgetter(0))
         sum = 0
-        for key in stat_dic:
-            f.write(str(key) + ': ' + str(stat_dic[key])+'\n')
-            sum += stat_dic[key]
-        f.write('sum: \n' + str(sum))
+        for element in stat:
+            f.write(str(element)+'\n')
+            sum += element[1]
+        f.write('sum: ' + str(sum)+'\n')
         f.write('\n\n')
 
 
