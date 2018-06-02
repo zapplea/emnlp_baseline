@@ -102,10 +102,13 @@ class DataGenerator:
     def check(self,data, label_dic):
         print('check: \n')
         print('label_dic: ',str(label_dic))
+        ids=set()
+        for label in label_dic:
+            ids.add(label_dic[label])
         for instance in data:
             y=instance[1]
             for label in y:
-                if label not in label_dic:
+                if label not in ids:
                     print(str(label))
 
     def target_data_gnerator(self):
