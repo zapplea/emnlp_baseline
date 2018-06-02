@@ -101,7 +101,6 @@ class DataGenerator:
 
     def check(self,data, label_dic):
         print('check: \n')
-        print('label_dic: ',str(label_dic))
         ids=set()
         for label in label_dic:
             ids.add(label_dic[label])
@@ -145,7 +144,7 @@ class DataGenerator:
                     for instance in t2indexes[key]:
                         id = instance[0]
                         if id>=len(data):
-                            print(affix,' ',str(id))
+                            # print(affix,' ',str(id))
                             continue
                         instance = data[id]
                         sample[affix].append(instance)
