@@ -26,6 +26,9 @@ class Metrics:
             tlabel_txt = []
             cur_length = 0
             for id in tlabel:
+                if id not in id2label:
+                    print('true_id: ',str(id))
+                    print('label: ',id2label)
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
                 tlabel_txt.append(type_txt)
@@ -37,6 +40,9 @@ class Metrics:
             plabel_txt = []
             cur_length = 0
             for id in plabel:
+                if id not in id2label:
+                    print('pred_id: ',str(id))
+                    print('label: ',id2label)
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
                 plabel_txt.append(type_txt)

@@ -187,13 +187,14 @@ class DataGenerator:
             f.flush()
 
     def check2(self,id2labels,data):
-        print('check: \n')
+        print('\ncheck id2labels:')
         print('id2label_dic: ', str(id2labels))
         for instance in data:
             y = instance[1]
             for label in y:
                 if label not in id2labels:
-                    print(str(label))
+                    print('label: ',str(label))
+                    print('instance: ', y)
 
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
