@@ -27,7 +27,7 @@ class Metrics:
             cur_length = 0
             for id in tlabel:
                 if id not in id2label:
-                    print('true_id: ',str(id))
+                    print('true_id: ',str(tlabel))
                     print('label: ',id2label)
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
