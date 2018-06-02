@@ -450,6 +450,8 @@ class Classifier:
                 report.write('multiclass\n')
                 report.flush()
                 start = datetime.now()
+                self.nn_config['epoch'] = 101
+                self.nn_config['mod'] = 10
                 for i in range(self.nn_config['epoch']):
                     X_data,Y_data = self.df.target_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
                     sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
