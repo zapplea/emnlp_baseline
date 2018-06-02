@@ -182,6 +182,7 @@ class Classifier:
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, target NETypes num)
         score = tf.reshape(tf.matmul(tf.matmul(X,W_s),W_t),shape=(-1,self.nn_config['words_num'],self.nn_config['target_NETypes_num']))
+        #score = tf.matmul(tf.matmul(X, W_s), W_t)
         graph.add_to_collection('multiclass_score',score)
         return score
 
@@ -195,10 +196,8 @@ class Classifier:
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        loss = tf.add(tf.reduce_mean(tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_,logits=score),mask),
-                                                   axis=1)),
-                      tf.truediv(tf.reduce_sum(regularizer),
-                                 tf.constant(self.nn_config['batch_size'],dtype='float32')),
+        loss = tf.reduce_mean(tf.add(tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_,logits=score,dim=-1),mask),
+                                                   axis=1),tf.reduce_sum(regularizer)),
                       name = 'loss_multiclass')
         return loss
 
