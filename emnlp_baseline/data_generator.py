@@ -187,6 +187,15 @@ class DataGenerator:
             pickle.dump(data,f)
             f.flush()
 
+    def check2(self,id2labels,data):
+        print('check: \n')
+        print('id2label_dic: ', str(id2labels))
+        for instance in data:
+            y = instance[1]
+            for label in y:
+                if label not in id2labels:
+                    print(str(label))
+
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
         print('test_draw_length:{}\n'.format(str(len(data.text))))
@@ -201,7 +210,9 @@ class DataGenerator:
         data['id2label_dic'] = id2label_dic
         data['target_NETypes_num'] = target_labels_num
         target_train_sample = self.target_data_split(target_train_data)
+        self.check2(id2label_dic,target_train_sample)
         target_test_sample = target_test_data
+        self.check2(id2label_dic,target_test_sample)
         data['target_train_data'] = target_train_sample
         data['target_test_data'] = target_test_sample
         # for line in target_train_sample:
