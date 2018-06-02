@@ -188,6 +188,9 @@ class DataGenerator:
 
     def check2(self,id2labels,data):
         print('\ncheck id2labels:')
+        for instance in data:
+            print(str(instance)+'\n')
+
         print('id2label_dic: ', str(id2labels))
         for instance in data:
             y = instance[1]
@@ -244,6 +247,14 @@ if __name__ == "__main__":
                    #  'groups_num':5,
                    #  'instances_num':[1,2,4,8,16]},
 
+                    {'max_len': 200,  # 315 cadec
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_cadec.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
                    {'max_len': 100, # bbn_kn
                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn.pkl',
                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
@@ -260,14 +271,7 @@ if __name__ == "__main__":
                      'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
                      'groups_num': 5,
                      'instances_num': [1, 2, 4, 8, 16]},
-                   {'max_len': 200, #315 cadec
-                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_cadec.pkl',
-                    'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
-                    'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
-                    'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
-                    'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
-                    'groups_num': 5,
-                    'instances_num': [1, 2, 4, 8, 16]},
+
                    {'max_len': 100, # nvd
                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_nvd.pkl',
                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
