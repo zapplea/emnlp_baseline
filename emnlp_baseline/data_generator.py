@@ -187,11 +187,10 @@ class DataGenerator:
             f.flush()
 
     def check2(self,id2labels,data):
-        print('\ncheck id2labels:')
+        print('\ncheck target train:')
         # for instance in data:
         #     print(str(instance)+'\n')
-        print(str(data))
-        print('id2label_dic: ', str(id2labels))
+        print('id2label_dic: \n', str(id2labels))
         for group in data:
             instances = data[group]
             for instance in instances:
@@ -199,8 +198,19 @@ class DataGenerator:
                 for label in y:
                     if label not in id2labels:
                         print('label: ',str(label),' type:',type(label))
-                        print('instance_text: ', instance)
-                        print('instance_label: ',y)
+                        print('instance_text:\n ', instance[0])
+                        print('instance_label:\n ',y)
+
+    def check3(self,id2labels,data):
+        print('\ncheck target test')
+        print('id2label_dic: \n', str(id2labels))
+        for instance in data:
+            y = instance[1]
+            for label in y:
+                if label not in id2labels:
+                    print('label: ', str(label), ' type:', type(label))
+                    print('instance_text:\n ', instance[0])
+                    print('instance_label:\n ', y)
 
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
@@ -218,7 +228,7 @@ class DataGenerator:
         target_train_sample = self.target_data_split(target_train_data)
         self.check2(id2label_dic,target_train_sample)
         target_test_sample = target_test_data
-        self.check2(id2label_dic,target_test_sample)
+        self.check3(id2label_dic,target_test_sample)
         data['target_train_data'] = target_train_sample
         data['target_test_data'] = target_test_sample
         # for line in target_train_sample:
