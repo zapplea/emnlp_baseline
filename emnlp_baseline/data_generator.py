@@ -95,7 +95,8 @@ class DataGenerator:
     def source_data_generator(self):
         data = self.conll_data_reader(self.data_config['source_Conll_filePath'])
         labels_dic = {'O':0}
-        source_data, source_labels_num, _ = self.nn_data_generator(data,labels_dic)
+        source_data, source_labels_num, labels_dic = self.nn_data_generator(data,labels_dic)
+        print('source_labels_dic: ', str(labels_dic))
         random.shuffle(source_data)
         return source_data,source_labels_num
 
@@ -119,7 +120,7 @@ class DataGenerator:
         target_train_data, labels_num, labels_dic = self.target_nn_data_generator(target_draw_data,labels_dic,labels_num)
         #self.check(target_train_data,labels_dic)
         print('target train labels_dic: \n',str(labels_dic))
-        print('target_train_data length:{}\n'.format(str(len(target_train_data))))
+        #print('target_train_data length:{}\n'.format(str(len(target_train_data))))
         target_test_data, labels_num, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
         #self.check(target_test_data, labels_dic)
         print('target test labels_dic: \n', str(labels_dic))
@@ -214,7 +215,7 @@ class DataGenerator:
 
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
-        print('test_draw_length:{}\n'.format(str(len(data.text))))
+        # print('test_draw_length:{}\n'.format(str(len(data.text))))
         data={}
         source_data, source_labels_num = self.source_data_generator()
         data['source_data'] = source_data
@@ -226,9 +227,9 @@ class DataGenerator:
         data['id2label_dic'] = id2label_dic
         data['target_NETypes_num'] = target_labels_num
         target_train_sample = self.target_data_split(target_train_data)
-        self.check2(id2label_dic,target_train_sample)
+        # self.check2(id2label_dic,target_train_sample)
         target_test_sample = target_test_data
-        self.check3(id2label_dic,target_test_sample)
+        # self.check3(id2label_dic,target_test_sample)
         data['target_train_data'] = target_train_sample
         data['target_test_data'] = target_test_sample
         # for line in target_train_sample:
@@ -258,6 +259,14 @@ if __name__ == "__main__":
                    #  'groups_num':5,
                    #  'instances_num':[1,2,4,8,16]},
 
+                    {'max_len': 100,  # bbn_kn
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval.txt',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
                     {'max_len': 200,  # 315 cadec
                      'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_cadec.pkl',
                      'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
@@ -266,14 +275,6 @@ if __name__ == "__main__":
                      'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
                      'groups_num': 5,
                      'instances_num': [1, 2, 4, 8, 16]},
-                   {'max_len': 100, # bbn_kn
-                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn.pkl',
-                    'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
-                    'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
-                    'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval.txt',
-                    'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
-                    'groups_num': 5,
-                    'instances_num': [1, 2, 4, 8, 16]},
                     {'max_len': 200,  # 275 bbn_kn train for cadec
                      'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn200.pkl',
                      'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
@@ -321,6 +322,6 @@ if __name__ == "__main__":
     table,dictionary = table_vec_and_dic()
     for data_config in data_configs:
         print('================================')
-        print(data_config['pkl_filePath'])
+        print(data_config)
         dg = DataGenerator(data_config,table,dictionary)
         dg.main()

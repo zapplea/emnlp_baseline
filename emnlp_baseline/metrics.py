@@ -41,7 +41,7 @@ class Metrics:
             cur_length = 0
             for id in plabel:
                 if id not in id2label:
-                    print('pred_id: ',str(id))
+                    print('pred_id: ',str(plabel))
                     print('label: ',id2label)
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
