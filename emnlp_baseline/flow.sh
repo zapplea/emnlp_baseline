@@ -53,10 +53,11 @@ then
 #        sbatch run_learn.sh 5 $stage1 "conll"
     elif [ $stage1 = "False0" ]
     then
-        sbatch run_learn.sh 0 $stage1 "bbn_bbn_kn"
+        echo pass
+#        sbatch run_learn.sh 0 $stage1 "bbn_bbn_kn"
 #        sbatch run_learn.sh 1 $stage1 "bbn_bbn_kn"
-        sbatch run_learn.sh 2 $stage1 "bbn_bbn_kn"
-        sbatch run_learn.sh 3 $stage1 "bbn_bbn_kn"
+#        sbatch run_learn.sh 2 $stage1 "bbn_bbn_kn"
+#        sbatch run_learn.sh 3 $stage1 "bbn_bbn_kn"
 #        sbatch run_learn.sh 4 $stage1 "bbn_bbn_kn"
     elif [ $stage1 = "False1" ]
     then
