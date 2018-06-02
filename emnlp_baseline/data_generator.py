@@ -46,9 +46,10 @@ class DataGenerator:
                 if label not in labels_dic:
                     labels_dic[label] = labels_num
                     labels_num += 1
-                y_.append(labels_dic[label])
+                #y_.append(labels_dic[label])
+                y_.append(label)
             while len(y_) < self.data_config['max_len']:
-                y_.append(0)
+                y_.append('O')
             # print('labels: \n',labels_dic)
             # print('x:\n',x)
             # print('y_:\n',y_)
@@ -82,9 +83,10 @@ class DataGenerator:
                 if label not in labels_dic:
                     labels_dic[label] = labels_num
                     labels_num += 1
-                y_.append(labels_dic[label])
+                # y_.append(labels_dic[label])
+                y_.append(label)
             while len(y_) < self.data_config['max_len']:
-                y_.append(0)
+                y_.append('O')
             # print('labels: \n',labels_dic)
             # print('x:\n',x)
             # print('y_:\n',y_)
@@ -96,9 +98,8 @@ class DataGenerator:
         data = self.conll_data_reader(self.data_config['source_Conll_filePath'])
         labels_dic = {'O':0}
         source_data, source_labels_num, labels_dic = self.nn_data_generator(data,labels_dic)
-        print('source_labels_dic: ', str(labels_dic))
         random.shuffle(source_data)
-        return source_data,source_labels_num
+        return source_data,source_labels_num,labels_dic
 
     def check(self,data, label_dic):
         print('check: \n')
@@ -119,11 +120,9 @@ class DataGenerator:
         labels_num=1
         target_train_data, labels_num, labels_dic = self.target_nn_data_generator(target_draw_data,labels_dic,labels_num)
         #self.check(target_train_data,labels_dic)
-        print('target train labels_dic: \n',str(labels_dic))
         #print('target_train_data length:{}\n'.format(str(len(target_train_data))))
         target_test_data, labels_num, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
         #self.check(target_test_data, labels_dic)
-        print('target test labels_dic: \n', str(labels_dic))
 
         return target_train_data,target_test_data,labels_num, labels_dic
 
@@ -213,17 +212,62 @@ class DataGenerator:
                     print('instance_text:\n ', instance[0])
                     print('instance_label:\n ', y)
 
+
+    def labels_share_dic(self,source_labels_dic,target_labels_dic):
+        new_target_labels_dic={}
+        new_source_labels_dic={}
+        labels_num=0
+        for key in source_labels_dic:
+            if key in target_labels_dic:
+                new_target_labels_dic[key]=labels_num
+                new_source_labels_dic[key]=labels_num
+                labels_num+=1
+
+        labels_num=len(new_source_labels_dic)
+        for key in source_labels_dic:
+            if key not in new_source_labels_dic:
+                new_source_labels_dic[key]=labels_num
+                labels_num+=1
+
+        labels_num=len(new_target_labels_dic)
+        for key in target_labels_dic:
+            if key not in new_target_labels_dic:
+                new_target_labels_dic[key]=labels_num
+                labels_num+=1
+        return new_source_labels_dic,new_target_labels_dic
+
+    def labels_map(self,data,labels_dic):
+        id_data=[]
+        for instance in data:
+            labels = instance[1]
+            text = instance[0]
+            labels_id=[]
+            for label in labels:
+                labels_id.append(labels_dic[label])
+            id_data.append((text,labels_id))
+        return id_data
+
     def main(self):
-        data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
+        # data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
         # print('test_draw_length:{}\n'.format(str(len(data.text))))
         data={}
-        source_data, source_labels_num = self.source_data_generator()
+        source_data, source_labels_num,source_labels_dic = self.source_data_generator()
+
+
+        target_train_data, target_test_data, target_labels_num, target_labels_dic = self.target_data_gnerator()
+
+        source_labels_dic,target_labels_dic=self.labels_share_dic(source_labels_dic,target_labels_dic)
+        print('source:\n ',str(source_labels_dic))
+        print('target:\n ',str(target_labels_dic))
+        # labels to id
+        source_data = self.labels_map(source_data,source_labels_dic)
         data['source_data'] = source_data
         data['source_NETypes_num'] = source_labels_num
 
-        target_train_data, target_test_data, target_labels_num, labels_dic = self.target_data_gnerator()
+        target_train_data = self.labels_map(target_train_data,target_labels_dic)
+        target_test_data = self.labels_map(target_test_data, target_labels_dic)
         # print(labels_dic)
-        id2label_dic = self.id2label(labels_dic)
+        id2label_dic = self.id2label(target_labels_dic)
         data['id2label_dic'] = id2label_dic
         data['target_NETypes_num'] = target_labels_num
         target_train_sample = self.target_data_split(target_train_data)
@@ -335,6 +379,6 @@ if __name__ == "__main__":
     table,dictionary = table_vec_and_dic()
     for data_config in data_configs:
         print('================================')
-        print(data_config)
+        print(data_config['pkl_filePath'])
         dg = DataGenerator(data_config,table,dictionary)
         dg.main()
