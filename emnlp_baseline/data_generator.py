@@ -104,8 +104,9 @@ class DataGenerator:
         print('label_dic: ',str(label_dic))
         for instance in data:
             y=instance[1]
-            if y not in label_dic:
-                print(str(y))
+            for label in y:
+                if label not in label_dic:
+                    print(str(label))
 
     def target_data_gnerator(self):
         target_draw_data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
