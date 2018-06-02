@@ -18,61 +18,12 @@ from emnlp_baseline.datafeed import DataFeed
 from emnlp_baseline.classifier import Classifier
 from emnlp_baseline.metrics import Metrics
 
-# def word_id2txt(X_data,true_labels,pred_labels,id2word,id2label):
-#     I = []
-#     for i in range(len(X_data)):
-#         instance= X_data[i]
-#         txt = []
-#         true_length = 0
-#         for id in instance:
-#             if id !=1:
-#                 word = id2word[id]
-#                 txt.append(word)
-#                 true_length+=1
-#
-#         tlabel=true_labels[i]
-#         tlabel_txt = []
-#         cur_length = 0
-#         for id in tlabel:
-#             type_txt = id2label[id]
-#             type_txt = type_txt.replace('I-','')
-#             tlabel_txt.append(type_txt)
-#             cur_length+=1
-#             if cur_length>=true_length:
-#                 break
-#
-#         plabel = pred_labels[i]
-#         plabel_txt = []
-#         cur_length = 0
-#         for id in plabel:
-#             type_txt = id2label[id]
-#             type_txt = type_txt.replace('I-', '')
-#             plabel_txt.append(type_txt)
-#             cur_length+=1
-#             if cur_length>=true_length:
-#                 break
-#
-#         I.append((plabel_txt,tlabel_txt,txt))
-#     return I
-#
-# def conll_eval_file(I,data_config):
-#     with open(data_config['conlleval_filePath'],'w+') as f:
-#         for t in I:
-#             pred_labels_txt = t[0]
-#             true_labels_txt = t[1]
-#             txt = t[2]
-#             for i in range(len(txt)):
-#                 f.write(txt[i]+'\t')
-#                 f.write(true_labels_txt[i]+'\t')
-#                 f.write(pred_labels_txt[i]+'\n')
-#                 f.flush()
-#             f.write('\n')
-#             f.flush()
-
 def main(nn_config,data_config):
     df = DataFeed(data_config)
     nn_config['source_NETypes_num']=df.source_NETypes_num
     nn_config['target_NETypes_num']=df.target_NETypes_num
+    print('source_NETypes_num: ',str(nn_config['source_NETypes_num']))
+    print('target_NETypes_num: ',str(nn_config['target_NETypes_num']))
     cl = Classifier(nn_config,df)
     if nn_config['stage1'] == "True":
         cl.train()
@@ -205,6 +156,7 @@ if __name__ == "__main__":
                 nn_config['words_num'] = 100
             print('in the main')
             print('epoch:',nn_config['epoch'])
+            print('config: ', str(nn_config))
             main(nn_config,data_config)
 
     # train crf source model and store it

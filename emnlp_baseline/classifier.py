@@ -438,7 +438,10 @@ class Classifier:
                             start = end
                     saver.save(sess,self.nn_config['model'])
                 else:
+                    W_t = graph.get_tensor_by_name('W_t:0')
                     sess.run(init, feed_dict={table: table_data})
+                    W_t_result = sess.run(W_t)
+                    print('W_t.shape: ',str(W_t_result.shape))
                     #saver.restore(sess,self.nn_config['model_sess'])
                     print('================= new Train ===============\n')
                     print('epoch:\n')

@@ -120,7 +120,7 @@ class DataGenerator:
         #self.check(target_train_data,labels_dic)
         print('target train labels_dic: \n',str(labels_dic))
         print('target_train_data length:{}\n'.format(str(len(target_train_data))))
-        target_test_data, _, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
+        target_test_data, labels_num, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
         #self.check(target_test_data, labels_dic)
         print('target test labels_dic: \n', str(labels_dic))
 
