@@ -193,8 +193,10 @@ class DataGenerator:
             y = instance[1]
             for label in y:
                 if label not in id2labels:
-                    print('label: ',str(label))
-                    print('instance: ', y)
+                    print('label: ',str(label),' type:',type(label))
+                    print('instance_text: ', instance)
+                    print('instance_label: ',y)
+                    exit()
 
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
@@ -307,3 +309,4 @@ if __name__ == "__main__":
         print(data_config['pkl_filePath'])
         dg = DataGenerator(data_config,table,dictionary)
         dg.main()
+        exit()
