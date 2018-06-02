@@ -13,6 +13,7 @@ echo "loaded"
 
 if test $1 = "dg";
 then
+    rm /datastore/liu121/nosqldb2/emnlp_baseline/data/data*
     python data_generator.py
 elif test $1 = "stat";
 then
