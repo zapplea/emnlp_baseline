@@ -188,18 +188,19 @@ class DataGenerator:
 
     def check2(self,id2labels,data):
         print('\ncheck id2labels:')
-        for instance in data:
-            print(str(instance)+'\n')
+        # for instance in data:
+        #     print(str(instance)+'\n')
 
         print('id2label_dic: ', str(id2labels))
-        for instance in data:
-            y = instance[1]
-            for label in y:
-                if label not in id2labels:
-                    print('label: ',str(label),' type:',type(label))
-                    print('instance_text: ', instance)
-                    print('instance_label: ',y)
-                    exit()
+        for group in data:
+            instances = data[group]
+            for instance in instances:
+                y = instance[1]
+                for label in y:
+                    if label not in id2labels:
+                        print('label: ',str(label),' type:',type(label))
+                        print('instance_text: ', instance)
+                        print('instance_label: ',y)
 
     def main(self):
         data = BBNDataReader.readFile(filePath=self.data_config['target_train_Conll_filePath'])
@@ -313,4 +314,3 @@ if __name__ == "__main__":
         print(data_config['pkl_filePath'])
         dg = DataGenerator(data_config,table,dictionary)
         dg.main()
-        exit()
