@@ -421,8 +421,8 @@ class Classifier:
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
                 report.write('session\n')
-                sess.run(init, feed_dict={table: table_data})
                 if self.nn_config['stage1'] == 'True':
+                    sess.run(init, feed_dict={table: table_data})
                     report.write('crf_source\n')
                     start = datetime.now()
                     for i in range(self.nn_config['epoch']):

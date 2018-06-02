@@ -56,6 +56,42 @@ class DataGenerator:
             nn_data.append((x, y_))
         return nn_data,labels_num,labels_dic
 
+    def target_nn_data_generator(self,data,labels_dic,labels_num):
+        data_len=len(data.text)
+        # train_data = [[text,labels], ...]
+        nn_data = []
+        for i in range(data_len):
+            text = data.text[i]
+            labels = data.labels[i]
+            if len(text)>self.data_config['max_len']:
+                continue
+            if len(text)>self.data_config['max_len']:
+                exit()
+            x = []
+            for word in text:
+                if word not in self.dictionary:
+                    x.append(self.dictionary['#UNK#'])
+                else:
+                    x.append(self.dictionary[word])
+            while len(x) < self.data_config['max_len']:
+                x.append(self.dictionary['#PAD#'])
+            y_ = []
+            for label in labels:
+                if label == 'OTHER':
+                    label='O'
+                if label not in labels_dic:
+                    labels_dic[label] = labels_num
+                    labels_num += 1
+                y_.append(labels_dic[label])
+            while len(y_) < self.data_config['max_len']:
+                y_.append(0)
+            # print('labels: \n',labels_dic)
+            # print('x:\n',x)
+            # print('y_:\n',y_)
+            # exit()
+            nn_data.append((x, y_))
+        return nn_data,labels_num,labels_dic
+
     def source_data_generator(self):
         data = self.conll_data_reader(self.data_config['source_Conll_filePath'])
         labels_dic = {'O':0}
@@ -63,15 +99,29 @@ class DataGenerator:
         random.shuffle(source_data)
         return source_data,source_labels_num
 
+    def check(self,data, label_dic):
+        print('check: \n')
+        print('label_dic: ',str(label_dic))
+        for instance in data:
+            y=instance[1]
+            if y not in label_dic:
+                print(str(y))
+
     def target_data_gnerator(self):
         target_draw_data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
         target_eval_data = self.conll_data_reader(self.data_config['target_test_Conll_filePath'])
 
         labels_dic = {'O':0}
-        target_train_data, target_labels_num, labels_dic = self.nn_data_generator(target_draw_data,labels_dic)
+        labels_num=1
+        target_train_data, labels_num, labels_dic = self.target_nn_data_generator(target_draw_data,labels_dic,labels_num)
+        self.check(target_train_data,labels_dic)
+        print('target train labels_dic: ',str(labels_dic))
         print('target_train_data length:{}\n'.format(str(len(target_train_data))))
-        target_test_data, _, _ = self.nn_data_generator(target_eval_data,labels_dic)
-        return target_train_data,target_test_data,target_labels_num, labels_dic
+        target_test_data, _, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
+        self.check(target_test_data, labels_dic)
+        print('target test labels_dic: ', str(labels_dic))
+
+        return target_train_data,target_test_data,labels_num, labels_dic
 
     # TODO: there are two kindes of target data: draw and eval. draw is used to train, and eval to predict.
     def target_data_split(self,data):
@@ -238,5 +288,7 @@ if __name__ == "__main__":
                    ]
     table,dictionary = table_vec_and_dic()
     for data_config in data_configs:
+        print('================================')
+        print(data_config['pkl_filePath'])
         dg = DataGenerator(data_config,table,dictionary)
         dg.main()

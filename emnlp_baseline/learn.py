@@ -124,17 +124,6 @@ if __name__ == "__main__":
         k_groups = k_shot[args.num]
         for k in k_groups:
             print(k)
-            # if args.dn == "bbn_bbn_unk":
-            #
-            #
-            #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-            #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_unk.pkl',
-            #                    'k_instances': k,
-            #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_bbn_unk/conlleval' + str(k)}
-            #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/report_bbn_unk/report_bbn'+k
-            #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/model_bbn_unk/model4/model4.ckpt.meta'
-            #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/model_bbn_unk/model4/model4.ckpt'
-            #     nn_config['words_num'] = 822 #275
             if args.dn == "bbn_bbn_kn":
                 data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
                                'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn.pkl',
