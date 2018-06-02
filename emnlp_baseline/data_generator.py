@@ -190,7 +190,7 @@ class DataGenerator:
         print('\ncheck id2labels:')
         # for instance in data:
         #     print(str(instance)+'\n')
-
+        print(str(data))
         print('id2label_dic: ', str(id2labels))
         for group in data:
             instances = data[group]
