@@ -172,7 +172,9 @@ class Classifier:
         :param graph: 
         :return: (batch size, max words num, target NETypes num)
         """
-        W_s = graph.get_tensor_by_name('W_s:0')
+        # W_s = graph.get_tensor_by_name('W_s:0')
+        W_s = tf.get_variable(name='W_s_random', initializer=tf.random_normal(
+            shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['source_NETypes_num']), dtype='float32'))
         graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
         W_t = tf.get_variable(name='W_t',
                               initializer=tf.random_normal(shape=(self.nn_config['source_NETypes_num'],self.nn_config['target_NETypes_num']),
