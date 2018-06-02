@@ -265,10 +265,10 @@ if __name__ == "__main__":
         #     # report = '/datastore/liu121/nosqldb2/emnlp_baseline/report_cadec/report'
         #     # model = '/datastore/liu121/nosqldb2/emnlp_baseline/model_cadec/'
         #     pass
-        if args.dn == "bbn_kn":
+        if args.dn == "bbn_bbn_kn":
             data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                           'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn.pkl',
-                           'k_instances': '16.0'}
+                           'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_bbn_kn.pkl',
+                           'k_instances': '8.0'}
             nn_config['words_num'] =100
             nn_config['epoch'] = 2601
             report = '/datastore/liu121/nosqldb2/emnlp_baseline/report_bbn_kn/report_'

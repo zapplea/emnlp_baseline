@@ -420,140 +420,140 @@ class Classifier:
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
                 report.write('session\n')
-                if self.nn_config['stage1'] == 'True':
-                    sess.run(init, feed_dict={table: table_data})
-                    report.write('crf_source\n')
-                    start = datetime.now()
-                    for i in range(self.nn_config['epoch']):
-                        X_data,Y_data = self.df.source_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
-                        sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
-                        if i%self.nn_config['mod'] == 0 and i!=0:
-                            X_data,Y_data = self.df.source_data_generator('test')
-                            pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
-                            f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
-                            end = datetime.now()
-                            time_cost = end-start
-                            report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i),str(time_cost),str(loss),str(f1_macro),str(f1_micro)))
-                            report.flush()
-                            start = end
-                    saver.save(sess,self.nn_config['model'])
-                else:
-                    W_t = graph.get_tensor_by_name('W_t:0')
-                    sess.run(init, feed_dict={table: table_data})
-                    W_t_result = sess.run(W_t)
-                    print('W_t.shape: ',str(W_t_result.shape))
-                    #saver.restore(sess,self.nn_config['model_sess'])
-                    print('================= new Train ===============\n')
-                    print('epoch:\n')
-                    print(str(self.nn_config['epoch'])+'\n')
+                #if self.nn_config['stage1'] == 'True':
+                sess.run(init, feed_dict={table: table_data})
+                report.write('crf_source\n')
+                start = datetime.now()
+                for i in range(self.nn_config['epoch']):
+                    X_data,Y_data = self.df.source_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
+                    sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
+                    if i%self.nn_config['mod'] == 0 and i!=0:
+                        X_data,Y_data = self.df.source_data_generator('test')
+                        pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
+                        f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
+                        end = datetime.now()
+                        time_cost = end-start
+                        report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i),str(time_cost),str(loss),str(f1_macro),str(f1_micro)))
+                        report.flush()
+                        start = end
+                saver.save(sess,self.nn_config['model'])
+                #else:
+                W_t = graph.get_tensor_by_name('W_t:0')
+                sess.run(init, feed_dict={table: table_data})
+                W_t_result = sess.run(W_t)
+                print('W_t.shape: ',str(W_t_result.shape))
+                #saver.restore(sess,self.nn_config['model_sess'])
+                print('================= new Train ===============\n')
+                print('epoch:\n')
+                print(str(self.nn_config['epoch'])+'\n')
 
-                    report.write('multiclass\n')
-                    report.flush()
-                    start = datetime.now()
-                    for i in range(self.nn_config['epoch']):
-                        X_data,Y_data = self.df.target_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
-                        sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
-                        #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
-                        if i%self.nn_config['mod'] == 0 and i!=0:
-                            X_data,Y_data = self.df.target_data_generator('test')
-                            pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
-                            f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
-                            end = datetime.now()
-                            time_cost = end - start
-                            report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
-                            report.flush()
-                            start = end
-                        # if i%self.nn_config['mod'] == 0 and i!=0:
-                        #     X_data,Y_data = self.df.target_data_generator('test')
-                        #     length = X_data.shape[0]
-                        #     slides = []
-                        #     avg = 300
-                        #     for j in range(1, avg + 1):
-                        #         slides.append(j / avg)
-                        #     slice_pre = 0
-                        #     pred_labels = []
-                        #     losses = []
-                        #     for slide in slides:
-                        #         slice_cur = int(math.floor(slide * length))
-                        #         pred,loss=sess.run([pred_multiclass,test_loss_multiclass],
-                        #                             feed_dict={X: X_data[slice_pre:slice_cur],
-                        #                                 Y_: Y_data[slice_pre:slice_cur]})
-                        #         pred_labels.append(pred)
-                        #         losses.append(loss)
-                        #         slice_pre = slice_cur
-                        #     pred_labels = np.concatenate(pred_labels, axis=0)
-                        #     f1_macro, f1_micro = self.f1(Y_data,pred_labels,self.nn_config['target_NETypes_num'])
-                        #     end = datetime.now()
-                        #     time_cost = end - start
-                        #     report.write('stage2:\nepoch:{}, time_cost:{}, test_loss:{}, train_loss:{} macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(np.mean(losses)),str(train_loss),str(f1_macro),str(f1_micro)))
-                        #     report.write('norm:'+str(np.sum(sess.run(tf.get_collection('reg_crf_source')))+np.sum(sess.run(tf.get_collection('reg_multiclass')))+np.sum(sess.run(tf.get_collection('reg_crf_target')))) + '\n')
-                        #     report.flush()
-                        #     start = end
-                    report.write('\n')
-                    report.write('crf_target\n')
-                    start = datetime.now()
-                    for i in range(self.nn_config['epoch']):
-                        X_data, Y_data = self.df.target_data_generator('train',batch_num=i, batch_size=self.nn_config['batch_size'])
-                        sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                        #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                        if i%self.nn_config['mod'] == 0 and i!=0:
-                            X_data,Y_data = self.df.target_data_generator('test')
-                            pred,loss = sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
-                            f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
-                            end = datetime.now()
-                            time_cost = end - start
-                            report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
-                            report.flush()
-                            start = end
-                        # if i%self.nn_config['mod'] == 0 and i!=0:
-                        #     X_data,Y_data = self.df.target_data_generator('test')
-                        #     length = X_data.shape[0]
-                        #     slides = []
-                        #     avg = 300
-                        #     for j in range(1, avg + 1):
-                        #         slides.append(j / avg)
-                        #     slice_pre = 0
-                        #     pred_labels = []
-                        #     losses = []
-                        #     for slide in slides:
-                        #         slice_cur = int(math.floor(slide * length))
-                        #         pred,loss=sess.run([pred_crf_target, test_loss_crf_target],
-                        #                             feed_dict={X: X_data[slice_pre:slice_cur],
-                        #                                 Y_: Y_data[
-                        #                                     slice_pre:slice_cur]})
-                        #         pred_labels.append(pred)
-                        #         losses.append(loss)
-                        #         slice_pre = slice_cur
-                        #     pred_labels = np.concatenate(pred_labels, axis=0)
-                        #     f1_macro, f1_micro = self.f1(Y_data,pred_labels,self.nn_config['target_NETypes_num'])
-                        #     end = datetime.now()
-                        #     time_cost = end - start
-                        #     print(
-                        #         'stage3:\nepoch:{}, time_cost:{}, test_loss:{}, train_loss:{} macro_f1:{}, micro_f1:{}\n'.format(
-                        #             str(i), str(time_cost), str(np.mean(losses)), str(train_loss), str(f1_macro),
-                        #             str(f1_micro)))
-                        #     print('norm:' + str(np.sum(sess.run(tf.get_collection('reg_crf_source'))) + np.sum(
-                        #         sess.run(tf.get_collection('reg_multiclass'))) + np.sum(
-                        #         sess.run(tf.get_collection('reg_crf_target')))) + '\n')
-                        #     report.flush()
-                        #     start = end
+                report.write('multiclass\n')
+                report.flush()
+                start = datetime.now()
+                for i in range(self.nn_config['epoch']):
+                    X_data,Y_data = self.df.target_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
+                    sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
+                    #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
+                    if i%self.nn_config['mod'] == 0 and i!=0:
+                        X_data,Y_data = self.df.target_data_generator('test')
+                        pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
+                        f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
+                        end = datetime.now()
+                        time_cost = end - start
+                        report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
+                        report.flush()
+                        start = end
+                    # if i%self.nn_config['mod'] == 0 and i!=0:
+                    #     X_data,Y_data = self.df.target_data_generator('test')
+                    #     length = X_data.shape[0]
+                    #     slides = []
+                    #     avg = 300
+                    #     for j in range(1, avg + 1):
+                    #         slides.append(j / avg)
+                    #     slice_pre = 0
+                    #     pred_labels = []
+                    #     losses = []
+                    #     for slide in slides:
+                    #         slice_cur = int(math.floor(slide * length))
+                    #         pred,loss=sess.run([pred_multiclass,test_loss_multiclass],
+                    #                             feed_dict={X: X_data[slice_pre:slice_cur],
+                    #                                 Y_: Y_data[slice_pre:slice_cur]})
+                    #         pred_labels.append(pred)
+                    #         losses.append(loss)
+                    #         slice_pre = slice_cur
+                    #     pred_labels = np.concatenate(pred_labels, axis=0)
+                    #     f1_macro, f1_micro = self.f1(Y_data,pred_labels,self.nn_config['target_NETypes_num'])
+                    #     end = datetime.now()
+                    #     time_cost = end - start
+                    #     report.write('stage2:\nepoch:{}, time_cost:{}, test_loss:{}, train_loss:{} macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(np.mean(losses)),str(train_loss),str(f1_macro),str(f1_micro)))
+                    #     report.write('norm:'+str(np.sum(sess.run(tf.get_collection('reg_crf_source')))+np.sum(sess.run(tf.get_collection('reg_multiclass')))+np.sum(sess.run(tf.get_collection('reg_crf_target')))) + '\n')
+                    #     report.flush()
+                    #     start = end
+                report.write('\n')
+                report.write('crf_target\n')
+                start = datetime.now()
+                for i in range(self.nn_config['epoch']):
+                    X_data, Y_data = self.df.target_data_generator('train',batch_num=i, batch_size=self.nn_config['batch_size'])
+                    sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
+                    #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
+                    if i%self.nn_config['mod'] == 0 and i!=0:
+                        X_data,Y_data = self.df.target_data_generator('test')
+                        pred,loss = sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
+                        f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
+                        end = datetime.now()
+                        time_cost = end - start
+                        report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
+                        report.flush()
+                        start = end
+                    # if i%self.nn_config['mod'] == 0 and i!=0:
+                    #     X_data,Y_data = self.df.target_data_generator('test')
+                    #     length = X_data.shape[0]
+                    #     slides = []
+                    #     avg = 300
+                    #     for j in range(1, avg + 1):
+                    #         slides.append(j / avg)
+                    #     slice_pre = 0
+                    #     pred_labels = []
+                    #     losses = []
+                    #     for slide in slides:
+                    #         slice_cur = int(math.floor(slide * length))
+                    #         pred,loss=sess.run([pred_crf_target, test_loss_crf_target],
+                    #                             feed_dict={X: X_data[slice_pre:slice_cur],
+                    #                                 Y_: Y_data[
+                    #                                     slice_pre:slice_cur]})
+                    #         pred_labels.append(pred)
+                    #         losses.append(loss)
+                    #         slice_pre = slice_cur
+                    #     pred_labels = np.concatenate(pred_labels, axis=0)
+                    #     f1_macro, f1_micro = self.f1(Y_data,pred_labels,self.nn_config['target_NETypes_num'])
+                    #     end = datetime.now()
+                    #     time_cost = end - start
+                    #     print(
+                    #         'stage3:\nepoch:{}, time_cost:{}, test_loss:{}, train_loss:{} macro_f1:{}, micro_f1:{}\n'.format(
+                    #             str(i), str(time_cost), str(np.mean(losses)), str(train_loss), str(f1_macro),
+                    #             str(f1_micro)))
+                    #     print('norm:' + str(np.sum(sess.run(tf.get_collection('reg_crf_source'))) + np.sum(
+                    #         sess.run(tf.get_collection('reg_multiclass'))) + np.sum(
+                    #         sess.run(tf.get_collection('reg_crf_target')))) + '\n')
+                    #     report.flush()
+                    #     start = end
 
-                    # final test
-                    X_data, Y_data = self.df.target_data_generator('test')
-                    length = X_data.shape[0]
-                    slides =[]
-                    avg=300
-                    for j in range(1,avg+1):
-                        slides.append(j/avg)
-                    slice_pre=0
-                    pred_labels=[]
-                    for slide in slides:
-                        slice_cur = int(math.floor(slide*length))
-                        pred_labels.append(sess.run(pred_crf_target,feed_dict={X:X_data[slice_pre:slice_cur],Y_:Y_data[slice_pre:slice_cur]}))
-                        slice_pre=slice_cur
-                    pred_labels = np.concatenate(pred_labels,axis=0)
+                # final test
+                X_data, Y_data = self.df.target_data_generator('test')
+                length = X_data.shape[0]
+                slides =[]
+                avg=300
+                for j in range(1,avg+1):
+                    slides.append(j/avg)
+                slice_pre=0
+                pred_labels=[]
+                for slide in slides:
+                    slice_cur = int(math.floor(slide*length))
+                    pred_labels.append(sess.run(pred_crf_target,feed_dict={X:X_data[slice_pre:slice_cur],Y_:Y_data[slice_pre:slice_cur]}))
+                    slice_pre=slice_cur
+                pred_labels = np.concatenate(pred_labels,axis=0)
 
-                    true_labels = Y_data
-                    report.close()
-                    print('finsh')
-                    return true_labels,pred_labels,X_data
+                true_labels = Y_data
+                report.close()
+                print('finsh')
+                return true_labels,pred_labels,X_data
