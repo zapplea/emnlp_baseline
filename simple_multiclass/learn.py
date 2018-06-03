@@ -47,7 +47,7 @@ if __name__=="__main__":
                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_bbn_kn.pkl',
                    'k_instances': '16.0'}
     nn_config['words_num'] = 100
-    nn_config['epoch'] = 501
+    nn_config['epoch'] = 2001
     report = '/datastore/liu121/nosqldb2/simple_multiclass/report_bbn_kn/report_'
 
     report = report + str(args.num)
