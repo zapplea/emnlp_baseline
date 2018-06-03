@@ -108,7 +108,7 @@ class Classifier:
                               initializer=tf.random_uniform(
                                   shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
-        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
+        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_linear_rate'])(W_t))
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, target NETypes num)
