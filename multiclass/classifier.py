@@ -103,16 +103,16 @@ class Classifier:
         """
         W_s = tf.get_variable(name='W_s', initializer=tf.random_uniform(
             shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['source_NETypes_num']), dtype='float32'))
-        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
+        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_linear_rate'])(W_s))
         W_t = tf.get_variable(name='W_t',
                               initializer=tf.random_uniform(
                                   shape=(self.nn_config['source_NETypes_num'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
-        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
+        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_linear_rate'])(W_t))
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, target NETypes num)
-        score = tf.reshape(tf.matmul(tf.tanh(tf.matmul(X, W_s)), W_t),
+        score = tf.reshape(tf.matmul(tf.matmul(X, W_s), W_t),
                            shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
         # score = tf.matmul(tf.matmul(X, W_s), W_t)
         graph.add_to_collection('multiclass_score', score)
