@@ -8,14 +8,12 @@ cur_user_name = pwd.getpwuid(os.getuid()).pw_name
 
 if cur_user_name == "liu121":
     sys.path.append('/home/liu121/emnlp_baseline')
-elif cur_user_name == "che313":
-    sys.path.append('/home/che313/emnlp_baseline')
 
 import argparse
 from pathlib import Path
 
-from multiclass.datafeed import DataFeed
-from multiclass.classifier import Classifier
+from simple_multiclass.datafeed import DataFeed
+from simple_multiclass.classifier import Classifier
 
 def main(nn_config,data_config):
     df = DataFeed(data_config)
