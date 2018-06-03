@@ -112,7 +112,7 @@ class Classifier:
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, target NETypes num)
-        score = tf.reshape(tf.matmul(X, W_t),
+        score = tf.reshape(tf.matmul(tf.matmul(X, W_s),W_t),
                            shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
         # score = tf.matmul(tf.matmul(X, W_s), W_t)
         graph.add_to_collection('multiclass_score', score)
