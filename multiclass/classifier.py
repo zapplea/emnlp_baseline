@@ -190,7 +190,7 @@ class Classifier:
         return f1_macro, f1_micro
 
     def optimize(self, loss, graph):
-        train_op = tf.train.AdamOptimizer(self.nn_config['lr']).minimize(loss)
+        train_op = tf.train.GradientDescentOptimizer(self.nn_config['lr']).minimize(loss)
         return train_op
 
     def classifier(self):
