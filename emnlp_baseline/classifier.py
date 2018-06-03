@@ -405,7 +405,7 @@ class Classifier:
                 #loss_multiclass = graph.get_tensor_by_name('loss_multiclass:0')
                 test_loss_multiclass = graph.get_tensor_by_name('test_loss_multiclass:0')
                 pred_multiclass = graph.get_collection('pred_multiclass')[0]
-
+                train_loss_multiclass=graph.get_tensor_by_name('loss_multiclass:0')
 
                 # crf target
                 train_op_crf_target = graph.get_collection('train_op_crf_target')[0]
@@ -413,6 +413,7 @@ class Classifier:
                 #loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
                 test_loss_crf_target = graph.get_tensor_by_name('test_loss_crf_target:0')
                 pred_crf_target = graph.get_collection('pred_crf_target')[0]
+                train_loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
 
                 init = tf.global_variables_initializer()
             report = open(self.nn_config['report'], 'a+')
