@@ -48,7 +48,7 @@ if __name__=="__main__":
                    'k_instances': '16.0'}
     nn_config['words_num'] = 100
     nn_config['epoch'] = 501
-    report = '/datastore/liu121/nosqldb2/multiclass/report_bbn_kn/report_'
+    report = '/datastore/liu121/nosqldb2/simple_multiclass/report_bbn_kn/report_'
 
     report = report + str(args.num)
     nn_config['report'] = report
