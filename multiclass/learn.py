@@ -40,15 +40,21 @@ if __name__=="__main__":
          'source_NETypes_num': None,
          'target_NETypes_num': None,
          'pad_index': 1,
-         'reg_linear_rate':0.03}
+         'reg_linear_rate':0.0003}
     ]
+
+    # which configuration will be chosen
     nn_config = nn_configs[args.num]
+
+    # decide after how many epochs, the program will print out the test results.
     nn_config['mod'] = 50
 
     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_bbn_kn.pkl',
                    'k_instances': '16.0'}
+    # maximal length of a sentence.
     nn_config['words_num'] = 100
+    # epoch stands for number of batch. there are at most 16*42 sentences in the training dataset.
     nn_config['epoch'] = 501
     report = '/datastore/liu121/nosqldb2/multiclass/report_bbn_kn/report_'
 
