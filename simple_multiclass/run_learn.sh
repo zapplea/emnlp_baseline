@@ -15,5 +15,5 @@ module load cudnn/v6
 module load cuda/8.0.61
 module load tensorflow/1.5.0-py36-gpu
 echo "loaded"
-rm /datastore/liu121/nosqldb2/multiclass/report_bbn_kn/*
+#rm /datastore/liu121/nosqldb2/multiclass/report_bbn_kn/*
 python learn.py --num $1

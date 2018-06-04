@@ -38,7 +38,7 @@ if __name__=="__main__":
          'source_NETypes_num': None,
          'target_NETypes_num': None,
          'pad_index': 1,
-         'reg_linear_rate': 0.03}
+         'reg_linear_rate': 0.00003}
     ]
     nn_config = nn_configs[args.num]
     nn_config['mod'] = 50
