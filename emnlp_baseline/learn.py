@@ -77,7 +77,7 @@ if __name__ == "__main__":
             print(k)
             if args.dn == "bbn_bbn_kn":
                 data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                               'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_kn.pkl',
+                               'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_bbn_kn.pkl',
                                'k_instances': k,
                                'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_bbn_kn/conlleval' + str(k)}
                 nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/report_bbn_kn/report_bbn'+k
