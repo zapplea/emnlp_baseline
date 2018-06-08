@@ -130,7 +130,6 @@ class Classifier:
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        Y_ = tf.reshape(Y_,shape=(-1, self.nn_config['target_NETypes_num']))
         loss = tf.reduce_mean(tf.add(tf.reduce_sum(
             tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1), mask),
             axis=1), tf.reduce_sum(regularizer)),
@@ -138,7 +137,7 @@ class Classifier:
         return loss
 
     def test_loss_multiclass(self, score, Y_, mask, graph):
-        Y_ = tf.reshape(Y_, shape=(-1, self.nn_config['target_NETypes_num']))
+
         loss = tf.reduce_mean(
             tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_, logits=score), mask),
                           axis=1), name='test_loss_multiclass')
@@ -219,19 +218,21 @@ class Classifier:
                                             graph.get_tensor_by_name(
                                                 'bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
 
-            soft_log_mask = self.softmax_log_mask(X_id, graph)
+            soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph),shape=(-1,self.nn_config['target_NETypes_num']))
             Y_one_hot = self.Y_2one_hot(Y_, graph)
             score = self.multiclass_score(X, graph)
             pred = self.pred_multiclass(tf.reshape(score,shape=(-1,self.nn_config['words_num'],self.nn_config['target_NETypes_num'])), tag_seq_mask, graph)
-            loss = self.loss_multiclass(score, Y_one_hot, soft_log_mask, graph)
-            test_loss = self.test_loss_multiclass(score, Y_one_hot, soft_log_mask, graph)
+            loss = self.loss_multiclass(score, tf.reshape(Y_one_hot, shape=(-1, self.nn_config['target_NETypes_num'])), soft_log_mask, graph)
+            test_loss = self.test_loss_multiclass(score, tf.reshape(Y_one_hot, shape=(-1, self.nn_config['target_NETypes_num'])), soft_log_mask, graph)
             train_op = self.optimize(loss, graph)
             graph.add_to_collection('train_op_multiclass', train_op)
             saver = tf.train.Saver()
         return graph, saver
 
     def train(self):
+        print('create graph')
         graph, saver = self.classifier()
+        print('complete graph')
         with graph.device('/:gpu0'):
             with graph.as_default():
                 X = graph.get_tensor_by_name('X:0')
