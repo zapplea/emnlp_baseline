@@ -130,17 +130,12 @@ class Classifier:
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        print('Y_.shape: ',Y_.get_shape())
         term2 = tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1)
-        print('term2.shape: ',term2.get_shape())
 
         term1= tf.multiply(term2, mask)
-        print('term1.shape: ',term1.get_shape())
-        print('reg')
         reg = tf.reduce_sum(regularizer,keepdims=True)
         loss = tf.reduce_mean(tf.add(term1, reg),
                               name='loss_multiclass')
-        print('after loss')
         return loss
 
     def test_loss_multiclass(self, score, Y_, mask, graph):
@@ -269,8 +264,6 @@ class Classifier:
                 for i in range(self.nn_config['epoch']):
                     X_data, Y_data = self.df.target_data_generator('train', batch_num=i,
                                                                    batch_size=self.nn_config['batch_size'])
-                    print("Y_shape: ",str(Y_data.shape))
-                    print("X_shape: ",str(X_data.shape))
 
                     sess.run(train_op_multiclass, feed_dict={X: X_data, Y_: Y_data})
                     # train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
