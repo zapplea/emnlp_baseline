@@ -112,8 +112,10 @@ class Classifier:
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, target NETypes num)
-        score = tf.reshape(tf.matmul(tf.matmul(X, W_s), W_t),
-                           shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
+        # score = tf.reshape(tf.matmul(tf.matmul(X, W_s), W_t),
+        #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
+        # score.shape = (batch size*words num, target NETypes num)
+        score = tf.matmul(tf.matmul(X, W_s), W_t)
         # score = tf.matmul(tf.matmul(X, W_s), W_t)
         graph.add_to_collection('multiclass_score', score)
         return score
@@ -121,13 +123,14 @@ class Classifier:
     def loss_multiclass(self, score, Y_, mask, graph):
         """
 
-        :param score: (batch size, max words num, target NETypes num)
+        :param score: (batch size* max words num, target NETypes num)
         :param Y_: (batch size, max words num, target NETypes num)
         :param graph: 
         :return: 
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
+        Y_ = tf.reshape(Y_,shape=(-1, self.nn_config['target_NETypes_num']))
         loss = tf.reduce_mean(tf.add(tf.reduce_sum(
             tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1), mask),
             axis=1), tf.reduce_sum(regularizer)),
@@ -135,6 +138,7 @@ class Classifier:
         return loss
 
     def test_loss_multiclass(self, score, Y_, mask, graph):
+        Y_ = tf.reshape(Y_, shape=(-1, self.nn_config['target_NETypes_num']))
         loss = tf.reduce_mean(
             tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_, logits=score), mask),
                           axis=1), name='test_loss_multiclass')
@@ -218,7 +222,7 @@ class Classifier:
             soft_log_mask = self.softmax_log_mask(X_id, graph)
             Y_one_hot = self.Y_2one_hot(Y_, graph)
             score = self.multiclass_score(X, graph)
-            pred = self.pred_multiclass(score, tag_seq_mask, graph)
+            pred = self.pred_multiclass(tf.reshape(score,shape=(-1,self.nn_config['words_num'],self.nn_config['target_NETypes_num'])), tag_seq_mask, graph)
             loss = self.loss_multiclass(score, Y_one_hot, soft_log_mask, graph)
             test_loss = self.test_loss_multiclass(score, Y_one_hot, soft_log_mask, graph)
             train_op = self.optimize(loss, graph)
