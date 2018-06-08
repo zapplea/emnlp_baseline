@@ -218,7 +218,7 @@ class Classifier:
                                             graph.get_tensor_by_name(
                                                 'bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
 
-            soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph),shape=(-1,self.nn_config['target_NETypes_num']))
+            soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph),shape=(-1,))
             print('soft_log_mask.shape: ', str(tf.shape(soft_log_mask)))
             Y_one_hot = self.Y_2one_hot(Y_, graph)
             score = self.multiclass_score(X, graph)
