@@ -219,8 +219,10 @@ class Classifier:
                                                 'bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
 
             soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph),shape=(-1,self.nn_config['target_NETypes_num']))
+            print('soft_log_mask.shape: ', str(tf.shape(soft_log_mask)))
             Y_one_hot = self.Y_2one_hot(Y_, graph)
             score = self.multiclass_score(X, graph)
+            print('score.shape: ',str(tf.shape(score)))
             pred = self.pred_multiclass(tf.reshape(score,shape=(-1,self.nn_config['words_num'],self.nn_config['target_NETypes_num'])), tag_seq_mask, graph)
             loss = self.loss_multiclass(score, tf.reshape(Y_one_hot, shape=(-1, self.nn_config['target_NETypes_num'])), soft_log_mask, graph)
             test_loss = self.test_loss_multiclass(score, tf.reshape(Y_one_hot, shape=(-1, self.nn_config['target_NETypes_num'])), soft_log_mask, graph)
@@ -252,7 +254,7 @@ class Classifier:
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
                 sess.run(init, feed_dict={table: table_data})
-                print('epoch:\n')
+                print('epoch:')
                 print(str(self.nn_config['epoch']) + '\n')
                 report.write('multiclass\n')
                 report.flush()
@@ -260,6 +262,9 @@ class Classifier:
                 for i in range(self.nn_config['epoch']):
                     X_data, Y_data = self.df.target_data_generator('train', batch_num=i,
                                                                    batch_size=self.nn_config['batch_size'])
+                    print("Y_shape: ",str(Y_data.shape))
+                    print("X_shape: ",str(X_data.shape))
+
                     sess.run(train_op_multiclass, feed_dict={X: X_data, Y_: Y_data})
                     # train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
                     if i % self.nn_config['mod'] == 0 and i != 0:
