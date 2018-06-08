@@ -130,8 +130,13 @@ class Classifier:
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
+        print('term2')
+        term2 = tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1)
+        print('term1')
+        term1= tf.multiply(term2, mask)
+        print('loss')
         loss = tf.reduce_mean(tf.add(tf.reduce_sum(
-            tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1), mask),
+            term1,
             axis=1), tf.reduce_sum(regularizer)),
                               name='loss_multiclass')
         return loss
@@ -206,9 +211,11 @@ class Classifier:
             mask = self.lookup_mask(X_id, graph)
             # X.shape = (batch size, words num, feature dim)
             X = self.lookup_table(X_id, mask, graph)
+            print('X.shape: ',tf.shape(X))
             with tf.variable_scope('bilstm') as vs:
                 # X.shape = (batch size, max time step, 2*lstm cell size)
                 X = self.bilstm(X, seq_len, graph)
+                print('H.shape: ',tf.shape(X))
                 graph.add_to_collection('bilstm_reg',
                                         tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
                                             graph.get_tensor_by_name(
