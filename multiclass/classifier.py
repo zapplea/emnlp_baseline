@@ -130,15 +130,15 @@ class Classifier:
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-
+        print('Y_.shape: ',Y_.get_shape())
         term2 = tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1)
         print('term2.shape: ',term2.get_shape())
 
         term1= tf.multiply(term2, mask)
         print('term1.shape: ',term1.get_shape())
-        print('loss')
-        loss = tf.reduce_mean(tf.add(
-            term1, tf.reduce_sum(regularizer)),
+        print('reg')
+        reg = tf.reduce_sum(regularizer,keep_dims=True)
+        loss = tf.reduce_mean(tf.add(term1, reg),
                               name='loss_multiclass')
         return loss
 
