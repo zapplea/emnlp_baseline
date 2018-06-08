@@ -137,16 +137,15 @@ class Classifier:
         term1= tf.multiply(term2, mask)
         print('term1.shape: ',term1.get_shape())
         print('reg')
-        reg = tf.reduce_sum(regularizer,keep_dims=True)
+        reg = tf.reduce_sum(regularizer,keepdims=True)
         loss = tf.reduce_mean(tf.add(term1, reg),
                               name='loss_multiclass')
+        print('after loss')
         return loss
 
     def test_loss_multiclass(self, score, Y_, mask, graph):
 
-        loss = tf.reduce_mean(
-            tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_, logits=score), mask),
-                          axis=1), name='test_loss_multiclass')
+        loss = tf.reduce_mean(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_, logits=score), mask), name='test_loss_multiclass')
         return loss
 
     def opt_multiclass(self, loss, graph):
