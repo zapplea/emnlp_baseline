@@ -55,7 +55,7 @@ if __name__=="__main__":
     # maximal length of a sentence.
     nn_config['words_num'] = 100
     # epoch stands for number of batch. there are at most 16*42 sentences in the training dataset.
-    nn_config['epoch'] = 10001
+    nn_config['epoch'] = 50001
     report = '/datastore/liu121/nosqldb2/multiclass/report_bbn_kn/report_'
 
     report = report + str(args.num)

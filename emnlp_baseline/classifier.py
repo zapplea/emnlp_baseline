@@ -93,18 +93,22 @@ class Classifier:
         X = tf.reshape(X,shape=(-1,2*self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, 2*lstm cell size)
         score = tf.reshape(tf.matmul(X,W_s),shape=(-1,self.nn_config['words_num'],self.nn_config['source_NETypes_num']))
+        # log_likelihood.shape=(batch_size,)
         log_likelihood, transition_params= tf.contrib.crf.crf_log_likelihood(score,Y_,seq_len,W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score,transition_params,seq_len)
         graph.add_to_collection('pred_crf_source',viterbi_seq)
         return log_likelihood, viterbi_seq
 
     def loss_crf_source(self,log_likelihood,graph):
+        """
+        
+        :param log_likelihood: shape=(batch size,) 
+        :param graph: 
+        :return: 
+        """
         regularizer = graph.get_collection('reg_crf_source')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        loss = tf.add(tf.reduce_mean(-log_likelihood),
-                      tf.truediv(tf.reduce_sum(regularizer),
-                                 tf.constant(self.nn_config['batch_size'],dtype='float32')),
-                      name='loss_crf_source')
+        loss = tf.reduce_mean(tf.add(-log_likelihood,tf.reduce_sum(regularizer)),name='loss_crf_source')
         return loss
 
     def test_loss_crf_source(self,log_likelihood,graph):
@@ -173,17 +177,23 @@ class Classifier:
         :return: (batch size, max words num, target NETypes num)
         """
         W_s = graph.get_tensor_by_name('W_s:0')
-        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
+        graph.add_to_collection('reg_multiclass',
+                                tf.contrib.layers.l2_regularizer(self.nn_config['reg_linear_rate'])(W_s))
         W_t = tf.get_variable(name='W_t',
-                              initializer=tf.random_normal(shape=(self.nn_config['source_NETypes_num'],self.nn_config['target_NETypes_num']),
-                                                           dtype='float32'))
-        graph.add_to_collection('reg_multiclass', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
+                              initializer=tf.random_uniform(
+                                  shape=(self.nn_config['source_NETypes_num'], self.nn_config['target_NETypes_num']),
+                                  dtype='float32'))
+        graph.add_to_collection('reg_multiclass',
+                                tf.contrib.layers.l2_regularizer(self.nn_config['reg_linear_rate'])(W_t))
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, target NETypes num)
-        score = tf.reshape(tf.matmul(tf.matmul(X,W_s),W_t),shape=(-1,self.nn_config['words_num'],self.nn_config['target_NETypes_num']))
-        #score = tf.matmul(tf.matmul(X, W_s), W_t)
-        graph.add_to_collection('multiclass_score',score)
+        # score = tf.reshape(tf.matmul(tf.matmul(X, W_s), W_t),
+        #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
+        # score.shape = (batch size*words num, target NETypes num)
+        score = tf.matmul(tf.matmul(X, W_s), W_t)
+        # score = tf.matmul(tf.matmul(X, W_s), W_t)
+        graph.add_to_collection('multiclass_score', score)
         return score
 
     def loss_multiclass(self,score,Y_,mask,graph):
@@ -196,9 +206,12 @@ class Classifier:
         """
         regularizer = graph.get_collection('reg_multiclass')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        loss = tf.reduce_mean(tf.add(tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_,logits=score,dim=-1),mask),
-                                                   axis=1),tf.reduce_sum(regularizer)),
-                      name = 'loss_multiclass')
+        term2 = tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.stop_gradient(Y_), logits=score, dim=-1)
+
+        term1 = tf.multiply(term2, mask)
+        reg = tf.reduce_sum(regularizer, keepdims=True)
+        loss = tf.reduce_mean(tf.add(term1, reg),
+                              name='loss_multiclass')
         return loss
 
     def test_loss_multiclass(self,score,Y_,mask,graph):
@@ -270,10 +283,11 @@ class Classifier:
     def loss_crf_target(self, log_likelihood, graph):
         regularizer = graph.get_collection('reg_crf_target')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        loss = tf.add(tf.reduce_mean(-log_likelihood),
-                      tf.truediv(tf.reduce_sum(regularizer),
-                                 tf.constant(self.nn_config['batch_size'],dtype='float32')),
-                      name='loss_crf_target')
+        # loss = tf.add(tf.reduce_mean(-log_likelihood),
+        #               tf.truediv(tf.reduce_sum(regularizer),
+        #                          tf.constant(self.nn_config['batch_size'],dtype='float32')),
+        #               name='loss_crf_target')
+        loss = tf.reduce_mean(tf.add(-log_likelihood, tf.reduce_sum(regularizer)), name='loss_crf_target')
         return loss
 
     def test_loss_crf_target(self,log_likelihood,graph):
@@ -359,16 +373,23 @@ class Classifier:
                 # multiclass
                 # train relationship between source data and target data
                 # Y_one_hot.shape = (batch size, words num, target NETypes num)
-                soft_log_mask = self.softmax_log_mask(X_id,graph)
-                Y_one_hot = self.Y_2one_hot(Y_,graph)
-                score = self.multiclass_score(X,graph)
-                pred = self.pred_multiclass(score,tag_seq_mask,graph)
-                loss = self.loss_multiclass(score,Y_one_hot,soft_log_mask,graph)
-                test_loss = self.test_loss_multiclass(score,Y_one_hot,soft_log_mask,graph)
-                train_op = self.optimize(loss,graph)
+                soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph), shape=(-1,))
+                Y_one_hot = self.Y_2one_hot(Y_, graph)
+                score = self.multiclass_score(X, graph)
+                pred = self.pred_multiclass(tf.reshape(score,
+                                                       shape=(-1, self.nn_config['words_num'],
+                                                              self.nn_config['target_NETypes_num'])),
+                                            tag_seq_mask,
+                                            graph)
+                loss = self.loss_multiclass(score,
+                                            tf.reshape(Y_one_hot, shape=(-1, self.nn_config['target_NETypes_num'])),
+                                            soft_log_mask, graph)
+                test_loss = self.test_loss_multiclass(score, tf.reshape(Y_one_hot,
+                                                                        shape=(-1, self.nn_config['target_NETypes_num'])),
+                                                      soft_log_mask,
+                                                      graph)
+                train_op = self.optimize(loss, graph)
                 graph.add_to_collection('train_op_multiclass', train_op)
-                accuracy_multiclass = self.accuracy(Y_,pred,tag_seq_mask,seq_len,graph)
-                graph.add_to_collection('accuracy_multiclass',accuracy_multiclass)
 
                 # crf target
                 log_likelihood, viterbi_seq = self.crf_target(X, Y_, seq_len, graph)
@@ -423,12 +444,12 @@ class Classifier:
                 report.write('session\n')
                 if self.nn_config['stage1'] == 'True':
                     sess.run(init, feed_dict={table: table_data})
-                    report.write('crf_source\n')
+                    report.write('=================crf_source=================\n')
                     start = datetime.now()
-                    for i in range(self.nn_config['epoch']):
+                    for i in range(self.nn_config['epoch_stage1']):
                         X_data,Y_data = self.df.source_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
                         sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
-                        if i%self.nn_config['mod'] == 0 and i!=0:
+                        if i%self.nn_config['mod_stage1'] == 0 and i!=0:
                             X_data,Y_data = self.df.source_data_generator('test')
                             pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
@@ -444,21 +465,14 @@ class Classifier:
                     saver.restore(sess,self.nn_config['model_sess'])
                     W_s_norm = tf.norm(W_s)
                     print('W_s_norm: ', str(sess.run(W_s_norm)))
-                    exit()
-                    print('================= new Train ===============\n')
-                    print('epoch:\n')
-                    print(str(self.nn_config['epoch'])+'\n')
-
-                    report.write('multiclass\n')
+                    report.write('=================multiclass=================\n')
                     report.flush()
                     start = datetime.now()
-                    self.nn_config['epoch'] = 101
-                    self.nn_config['mod'] = 10
-                    for i in range(self.nn_config['epoch']):
+                    for i in range(self.nn_config['epoch_stage2']):
                         X_data,Y_data = self.df.target_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
                         sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
                         #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
-                        if i%self.nn_config['mod'] == 0 and i!=0:
+                        if i%self.nn_config['mod_stage2'] == 0 and i!=0:
                             X_data,Y_data = self.df.target_data_generator('test')
                             pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
@@ -494,13 +508,13 @@ class Classifier:
                         #     report.flush()
                         #     start = end
                     report.write('\n')
-                    report.write('crf_target\n')
+                    report.write('=================crf_target=================\n')
                     start = datetime.now()
-                    for i in range(self.nn_config['epoch']):
+                    for i in range(self.nn_config['epoch_stage3']):
                         X_data, Y_data = self.df.target_data_generator('train',batch_num=i, batch_size=self.nn_config['batch_size'])
                         sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                        if i%self.nn_config['mod'] == 0 and i!=0:
+                        if i%self.nn_config['mod_stage3'] == 0 and i!=0:
                             X_data,Y_data = self.df.target_data_generator('test')
                             pred,loss = sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
