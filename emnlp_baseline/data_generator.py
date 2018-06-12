@@ -321,7 +321,7 @@ if __name__ == "__main__":
                      'instances_num': [1, 2, 4, 8, 16]},
 
 
-                    {'max_len': 200,  # 315 cadec
+                    {'max_len': 200,  # 315 bbn_cadec
                      'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_cadec.pkl',
                      'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
                      'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',

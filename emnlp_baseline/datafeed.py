@@ -4,6 +4,34 @@ from sklearn.utils import check_array
 import pickle
 import random
 
+class Dataset:
+    def __init__(self,dataset,**kwargs):
+        if len(kwargs)==0:
+            self.batch_size=len(dataset)
+        else:
+            self.batch_size=kwargs['batch_size']
+        self.dataset=dataset
+        self.count=0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.count<len(self.dataset):
+            if self.count+self.batch_size<len(self.dataset):
+                batch=self.dataset[self.count:self.count+self.batch_size]
+            else:
+                batch=self.dataset[self.count:]
+            self.count+=self.batch_size
+        else:
+            raise StopIteration
+        X=[]
+        Y_=[]
+        for instance in batch:
+            X.append(instance[0])
+            Y_.append(instance[1])
+        return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
+
 class DataFeed:
     def __init__(self,data_config):
         self.data_config = data_config
@@ -33,74 +61,20 @@ class DataFeed:
     def table_generator(self):
         return self.table
 
-    def source_data_generator(self,mode,**kwargs):
+    def source_data_generator(self,mode):
         if mode == 'train':
-            batch_num = kwargs['batch_num']
-            batch_size = kwargs['batch_size']
-            data_temp = self.source_data[:]
-        elif mode == 'test':
-            data_temp = self.source_data[-1000:]
-
-        if mode == 'train':
-            train_size = len(data_temp)
-            start = batch_num * batch_size % train_size
-            end = (batch_num * batch_size + batch_size) % train_size
-            if start < end:
-                batch = data_temp[start:end]
-            elif start >= end:
-                batch = data_temp[start:]
-                batch.extend(data_temp[0:end])
+            dataset = Dataset(self.source_data[:], batch_size=self.data_config['batch_size'])
         else:
-            batch = data_temp
-        X = []
-        Y_ = []
-        for instance in batch:
-            X.append(np.array(instance[0], dtype='int32'))
-            Y_.append(np.array(instance[1], dtype='int32'))
+            dataset = Dataset(self.source_data[-1000:])
+        return dataset
 
-        # during validation and test, to avoid errors are counted repeatedly,
-        # we need to avoid the same data sended back repeately
-        # print('X len: ',str(len(X)))
-        # print('Y_ len: ',str(len(Y_)))
-        # print('X: ')
-        # for x in X:
-        #     print('type: ',type(x),' len: ',str(len(x)),'\n')
-        # np.array(X)
-        # print('Y_: ')
-        # for y in Y_:
-        #     print('type: ', type(y), ' len: ', str(len(y)), '\n')
-        # np.array(Y_)
-        # print('====================')
-        return (np.array(X,dtype='int32'), np.array(Y_,dtype='int32'))
-
-    def target_data_generator(self,mode,**kwargs):
+    def target_data_generator(self,mode):
         if mode == 'train':
-            batch_num = kwargs['batch_num']
-            batch_size= kwargs['batch_size']
-            data_temp = self.target_train_data[self.data_config['k_instances']]
+            dataset=Dataset(self.target_train_data[self.data_config['k_instances']],batch_size=self.data_config['batch_size'])
         else:
-            data_temp = self.target_test_data
+            dataset = Dataset(self.target_test_data)
 
-        if mode == 'train':
-            train_size = len(data_temp)
-            start = batch_num * batch_size % train_size
-            end = (batch_num * batch_size + batch_size) % train_size
-            if start < end:
-                batch = data_temp[start:end]
-            elif start >= end:
-                batch = data_temp[start:]
-                batch.extend(data_temp[0:end])
-        else:
-            batch = data_temp
-        X = []
-        Y_ = []
-        for instance in batch:
-            X.append(np.array(instance[0], dtype='int32'))
-            Y_.append(np.array(instance[1], dtype='int32'))
-
-        # during validation and test, to avoid errors are counted repeatedly,
-        # we need to avoid the same data sended back repeately
-        return (np.array(X, dtype='int32'), np.array(Y_, dtype='int32'))
+        return dataset
 
     def id2label_generator(self):
         return self.id2label_dic

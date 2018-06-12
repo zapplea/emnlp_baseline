@@ -447,10 +447,12 @@ class Classifier:
                     report.write('=================crf_source=================\n')
                     start = datetime.now()
                     for i in range(self.nn_config['epoch_stage1']):
-                        X_data,Y_data = self.df.source_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
-                        sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
-                        if i%self.nn_config['mod_stage1'] == 0 and i!=0:
-                            X_data,Y_data = self.df.source_data_generator('test')
+                        dataset = self.df.source_data_generator('train')
+                        for X_data,Y_data in dataset:
+                            sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
+
+                        dataset = self.df.source_data_generator('test')
+                        for X_data,Y_data in dataset:
                             pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
                             end = datetime.now()
@@ -469,11 +471,12 @@ class Classifier:
                     report.flush()
                     start = datetime.now()
                     for i in range(self.nn_config['epoch_stage2']):
-                        X_data,Y_data = self.df.target_data_generator('train',batch_num=i,batch_size=self.nn_config['batch_size'])
-                        sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
+                        dataset= self.df.target_data_generator('train')
+                        for X_data,Y_data in dataset:
+                            sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
                         #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
-                        if i%self.nn_config['mod_stage2'] == 0 and i!=0:
-                            X_data,Y_data = self.df.target_data_generator('test')
+                        dataset = self.df.target_data_generator('test')
+                        for X_data,Y_data in dataset:
                             pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                             end = datetime.now()
@@ -511,11 +514,12 @@ class Classifier:
                     report.write('=================crf_target=================\n')
                     start = datetime.now()
                     for i in range(self.nn_config['epoch_stage3']):
-                        X_data, Y_data = self.df.target_data_generator('train',batch_num=i, batch_size=self.nn_config['batch_size'])
-                        sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
+                        dataset = self.df.target_data_generator('train')
+                        for X_data,Y_data in dataset:
+                            sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                        if i%self.nn_config['mod_stage3'] == 0 and i!=0:
-                            X_data,Y_data = self.df.target_data_generator('test')
+                        dataset = self.df.target_data_generator('test')
+                        for X_data,Y_data in dataset:
                             pred,loss = sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                             end = datetime.now()
@@ -557,21 +561,22 @@ class Classifier:
                         #     start = end
 
                     # final test
-                    X_data, Y_data = self.df.target_data_generator('test')
-                    length = X_data.shape[0]
-                    slides =[]
-                    avg=300
-                    for j in range(1,avg+1):
-                        slides.append(j/avg)
-                    slice_pre=0
-                    pred_labels=[]
-                    for slide in slides:
-                        slice_cur = int(math.floor(slide*length))
-                        pred_labels.append(sess.run(pred_crf_target,feed_dict={X:X_data[slice_pre:slice_cur],Y_:Y_data[slice_pre:slice_cur]}))
-                        slice_pre=slice_cur
-                    pred_labels = np.concatenate(pred_labels,axis=0)
+                    dataset = self.df.target_data_generator('test')
+                    for X_data,Y_data in dataset:
+                        length = X_data.shape[0]
+                        slides =[]
+                        avg=300
+                        for j in range(1,avg+1):
+                            slides.append(j/avg)
+                        slice_pre=0
+                        pred_labels=[]
+                        for slide in slides:
+                            slice_cur = int(math.floor(slide*length))
+                            pred_labels.append(sess.run(pred_crf_target,feed_dict={X:X_data[slice_pre:slice_cur],Y_:Y_data[slice_pre:slice_cur]}))
+                            slice_pre=slice_cur
+                        pred_labels = np.concatenate(pred_labels,axis=0)
 
-                    true_labels = Y_data
-                    report.close()
-                    print('finsh')
-                    return true_labels,pred_labels,X_data
+                        true_labels = Y_data
+                        report.close()
+                        print('finsh')
+                        return true_labels,pred_labels,X_data
