@@ -215,8 +215,8 @@ class Classifier:
         return loss
 
     def test_loss_multiclass(self,score,Y_,mask,graph):
-        loss = tf.reduce_mean(tf.reduce_sum(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_,logits=score),mask),
-                                                   axis=1),name='test_loss_multiclass')
+        loss = tf.reduce_mean(tf.multiply(tf.nn.softmax_cross_entropy_with_logits_v2(labels=Y_, logits=score), mask),
+                              name='test_loss_multiclass')
         return loss
 
     def opt_multiclass(self,loss,graph):
@@ -373,14 +373,18 @@ class Classifier:
                 # multiclass
                 # train relationship between source data and target data
                 # Y_one_hot.shape = (batch size, words num, target NETypes num)
+                print('1')
                 soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph), shape=(-1,))
                 Y_one_hot = self.Y_2one_hot(Y_, graph)
+                print('2')
                 score = self.multiclass_score(X, graph)
+                print('3')
                 pred = self.pred_multiclass(tf.reshape(score,
                                                        shape=(-1, self.nn_config['words_num'],
                                                               self.nn_config['target_NETypes_num'])),
                                             tag_seq_mask,
                                             graph)
+                print('4')
                 loss = self.loss_multiclass(score,
                                             tf.reshape(Y_one_hot, shape=(-1, self.nn_config['target_NETypes_num'])),
                                             soft_log_mask, graph)
@@ -390,7 +394,7 @@ class Classifier:
                                                       graph)
                 train_op = self.optimize(loss, graph)
                 graph.add_to_collection('train_op_multiclass', train_op)
-
+                print('')
                 # crf target
                 log_likelihood, viterbi_seq = self.crf_target(X, Y_, seq_len, graph)
                 loss = self.loss_crf_target(log_likelihood, graph)
