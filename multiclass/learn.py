@@ -36,11 +36,11 @@ if __name__=="__main__":
          'vocabulary_size': 2981402,
          'feature_dim': 200,
          'lr': 0.03,
-         'reg_rate': 0.00003,
+         'reg_rate': 0.000003,
          'source_NETypes_num': None,
          'target_NETypes_num': None,
          'pad_index': 1,
-         'reg_linear_rate':0.00003}
+         'reg_linear_rate':0.000003}
     ]
 
     # which configuration will be chosen
