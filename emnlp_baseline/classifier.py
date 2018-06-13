@@ -440,9 +440,9 @@ class Classifier:
             report.write(self.nn_config['stage1']+'\n')
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-                print('start training')
                 report.write('session\n')
                 if self.nn_config['stage1'] == 'True':
+                    print('start training stage1')
                     sess.run(init, feed_dict={table: table_data})
                     report.write('=================crf_source=================\n')
                     start = datetime.now()
@@ -469,6 +469,7 @@ class Classifier:
                     print('W_s_norm: ', str(sess.run(W_s_norm)))
                     report.write('=================multiclass=================\n')
                     report.flush()
+                    print('start training stage2')
                     start = datetime.now()
                     for i in range(self.nn_config['epoch_stage2']):
                         dataset= self.df.target_data_generator('train')
@@ -513,6 +514,7 @@ class Classifier:
                     report.write('\n')
                     report.write('=================crf_target=================\n')
                     start = datetime.now()
+                    print('start training stage3')
                     for i in range(self.nn_config['epoch_stage3']):
                         dataset = self.df.target_data_generator('train')
                         for X_data,Y_data in dataset:
