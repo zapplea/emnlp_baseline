@@ -4,16 +4,16 @@ if [ $USER = "liu121" ]
 then
     if [ $stage1 = "True" ]
     then
-        echo rm is forbidden
-        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/model_bbn/*
-        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/model_bbn200/*
-        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/model_conll/*
-        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/model_conll200/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/report_bbn_kn/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/report_cadec/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/report_cadec_simple/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/report_conll/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/report_nvd/*
+        echo remove
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/*
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec/*
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec_simple/*
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/bbn_nvd/*
+
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_bbn_kn/*
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/*
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/*
+        rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/*
     elif [ $stage1 = "False1" ]
     then
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_bbn_kn/*
