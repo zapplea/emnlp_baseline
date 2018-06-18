@@ -97,7 +97,7 @@ class Classifier:
                                   shape=(self.nn_config['source_NETypes_num'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
-        W_t = tf.matmul(W_s,W_t)
+        W_t = tf.matmul(W_s,W_t,name='target_W_t')
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
                                                               self.nn_config['target_NETypes_num']),

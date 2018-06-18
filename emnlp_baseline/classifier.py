@@ -85,7 +85,7 @@ class Classifier:
         :return: (batch size, words num), (batch size, words num)
         """
         # p(x,y)
-        W_s = tf.get_variable(name='W_s',initializer=tf.random_uniform(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
+        W_s = tf.get_variable(name='W_s',initializer=tf.random_normal(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
         W_trans = tf.get_variable(name='W_trans_crf_source',initializer=tf.zeros(shape=(self.nn_config['source_NETypes_num'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
@@ -265,7 +265,7 @@ class Classifier:
         # W_t.shape = (source_NETypes_num, target_NETypes_num)
         W_t = graph.get_tensor_by_name('W_t:0')
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
-        W_t = tf.matmul(W_s,W_t)
+        W_t = tf.matmul(W_s,W_t,name='target_W_t:0')
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
                                                               self.nn_config['target_NETypes_num']),
@@ -274,9 +274,8 @@ class Classifier:
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, 2*lstm cell size)
-        # score = tf.reshape(tf.matmul(tf.matmul(X,W_s), W_t),
-        #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
-
+        score = tf.reshape(tf.matmul(X, W_t),
+                           shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
         log_likelihood, transition_params = tf.contrib.crf.crf_log_likelihood(score, Y_, seq_len, W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score, transition_params, seq_len)
         graph.add_to_collection('pred_crf_target', viterbi_seq)
@@ -369,8 +368,6 @@ class Classifier:
                 test_loss = self.test_loss_crf_source(log_likelihood,graph)
                 train_op = self.optimize(loss,graph)
                 graph.add_to_collection('train_op_crf_source', train_op)
-                accuracy_crf_source = self.accuracy(Y_,viterbi_seq,tag_seq_mask,seq_len,graph)
-                graph.add_to_collection('accuracy_crf_source',accuracy_crf_source)
 
                 # multiclass
                 # train relationship between source data and target data
@@ -392,14 +389,13 @@ class Classifier:
                                                       graph)
                 train_op = self.optimize(loss, graph)
                 graph.add_to_collection('train_op_multiclass', train_op)
+
                 # crf target
                 log_likelihood, viterbi_seq = self.crf_target(X, Y_, seq_len, graph)
                 loss = self.loss_crf_target(log_likelihood, graph)
                 test_loss = self.test_loss_crf_target(log_likelihood, graph)
                 train_op = self.optimize(loss, graph)
                 graph.add_to_collection('train_op_crf_target',train_op)
-                accuracy_crf_target = self.accuracy(Y_,viterbi_seq,tag_seq_mask,seq_len,graph)
-                graph.add_to_collection('accuracy_crf_target',accuracy_crf_target)
                 saver = tf.train.Saver()
         else:
             with graph.as_default():
@@ -437,6 +433,10 @@ class Classifier:
                 pred_crf_target = graph.get_collection('pred_crf_target')[0]
                 train_loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
 
+                W_s = tf.norm(graph.get_tensor_by_name('W_s:0'))
+                W_t = tf.norm(graph.get_tensor_by_name('W_t:0'))
+                target_W_t = tf.norm(graph.get_tensor_by_name('target_W_t:0'))
+
                 init = tf.global_variables_initializer()
             report = open(self.nn_config['report'], 'a+')
             report.write(self.nn_config['stage1']+'\n')
@@ -464,11 +464,7 @@ class Classifier:
                             start = end
                     saver.save(sess,self.nn_config['model'])
                 else:
-                    # sess.run(init, feed_dict={table: table_data})
-                    W_s = graph.get_tensor_by_name('W_s:0')
                     saver.restore(sess,self.nn_config['model_sess'])
-                    W_s_norm = tf.norm(W_s)
-                    print('W_s_norm: ', str(sess.run(W_s_norm)))
                     report.write('=================multiclass=================\n')
                     report.flush()
                     print('start training stage2')
@@ -487,32 +483,6 @@ class Classifier:
                             report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
                             report.flush()
                             start = end
-                        # if i%self.nn_config['mod'] == 0 and i!=0:
-                        #     X_data,Y_data = self.df.target_data_generator('test')
-                        #     length = X_data.shape[0]
-                        #     slides = []
-                        #     avg = 300
-                        #     for j in range(1, avg + 1):
-                        #         slides.append(j / avg)
-                        #     slice_pre = 0
-                        #     pred_labels = []
-                        #     losses = []
-                        #     for slide in slides:
-                        #         slice_cur = int(math.floor(slide * length))
-                        #         pred,loss=sess.run([pred_multiclass,test_loss_multiclass],
-                        #                             feed_dict={X: X_data[slice_pre:slice_cur],
-                        #                                 Y_: Y_data[slice_pre:slice_cur]})
-                        #         pred_labels.append(pred)
-                        #         losses.append(loss)
-                        #         slice_pre = slice_cur
-                        #     pred_labels = np.concatenate(pred_labels, axis=0)
-                        #     f1_macro, f1_micro = self.f1(Y_data,pred_labels,self.nn_config['target_NETypes_num'])
-                        #     end = datetime.now()
-                        #     time_cost = end - start
-                        #     report.write('stage2:\nepoch:{}, time_cost:{}, test_loss:{}, train_loss:{} macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(np.mean(losses)),str(train_loss),str(f1_macro),str(f1_micro)))
-                        #     report.write('norm:'+str(np.sum(sess.run(tf.get_collection('reg_crf_source')))+np.sum(sess.run(tf.get_collection('reg_multiclass')))+np.sum(sess.run(tf.get_collection('reg_crf_target')))) + '\n')
-                        #     report.flush()
-                        #     start = end
                     report.write('\n')
                     report.write('=================crf_target=================\n')
                     start = datetime.now()
@@ -524,11 +494,13 @@ class Classifier:
                         #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         dataset = self.df.target_data_generator('test')
                         for X_data,Y_data in dataset:
-                            pred,loss = sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
+                            pred,test_loss,train_loss,W_s_data,W_t_data,target_W_t_data = \
+                                sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target,W_s,W_t,target_W_t],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                             end = datetime.now()
                             time_cost = end - start
-                            report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
+                            report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_s:{}, W_t:{}, target_W_t:{}\n'.
+                                         format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_s_data),str(W_t_data),str(target_W_t_data)))
                             report.flush()
                             start = end
                         # if i%self.nn_config['mod'] == 0 and i!=0:
