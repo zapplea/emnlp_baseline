@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/che313/dlnlp')
+sys.path.append('/home/liu121/dlnlp')
 
 #from pathlib import Path
 import argparse
@@ -92,7 +92,7 @@ if __name__=="__main__":
                 nn_config['report_path'] = '/datastore/che313/yibing_data/nosqldb/coling_baseline/report_cadec/report' + k
                 nn_config['labels_num'] = 6
             elif args.dn == "bbn_cadec_simple":
-                # cadec
+                # cadec_simple
                 data_config = {
                     'trainData_filePath': '/datastore/liu121/nosqldb2/ner_zero/data_cadec/train'+k+'.pkl',
                     'testData_filePath': '/datastore/liu121/nosqldb2/ner_zero/data_cadec/test.pkl',
@@ -105,7 +105,7 @@ if __name__=="__main__":
                 nn_config['report_path'] = '/datastore/che313/yibing_data/nosqldb/coling_baseline/report_cadec/report' + k
                 nn_config['labels_num'] = 6
             elif args.dn == "bbn_nvd":
-                # cadec
+                # nvd
                 data_config = {
                     'trainData_filePath': '/datastore/liu121/nosqldb2/ner_zero/data_cadec/train'+k+'.pkl',
                     'testData_filePath': '/datastore/liu121/nosqldb2/ner_zero/data_cadec/test.pkl',

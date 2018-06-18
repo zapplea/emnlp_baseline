@@ -144,7 +144,7 @@ class DataGenerator:
         Bp_words = self.B(Bp_element, dic)
         return dataset_id, Bp_words,dic
 
-    def write(self,datset_id,Bp_words,):
+    def write(self,dataset_id,Bp_words,):
 
 
 

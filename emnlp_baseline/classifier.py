@@ -85,7 +85,7 @@ class Classifier:
         :return: (batch size, words num), (batch size, words num)
         """
         # p(x,y)
-        W_s = tf.get_variable(name='W_s',initializer=tf.random_normal(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
+        W_s = tf.get_variable(name='W_s',initializer=tf.random_uniform(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
         W_trans = tf.get_variable(name='W_trans_crf_source',initializer=tf.zeros(shape=(self.nn_config['source_NETypes_num'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
@@ -276,8 +276,7 @@ class Classifier:
         # score.shape = (batch size, words num, 2*lstm cell size)
         # score = tf.reshape(tf.matmul(tf.matmul(X,W_s), W_t),
         #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
-        score = tf.reshape(tf.matmul(X, W_t),
-                           shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
+
         log_likelihood, transition_params = tf.contrib.crf.crf_log_likelihood(score, Y_, seq_len, W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score, transition_params, seq_len)
         graph.add_to_collection('pred_crf_target', viterbi_seq)
