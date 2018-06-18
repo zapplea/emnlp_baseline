@@ -2,7 +2,8 @@ import tensorflow as tf
 from datetime import datetime
 import sklearn
 import numpy as np
-
+# target model read source data
+# value of W_s and W_t initializes new W_t
 class Classifier:
     def __init__(self, nn_config, datafeed):
         self.nn_config = nn_config
@@ -224,7 +225,7 @@ class Classifier:
                 start = datetime.now()
                 print('start training stage3')
                 for i in range(self.nn_config['epoch_stage3']):
-                    dataset = self.df.target_data_generator('train')
+                    dataset = self.df.source_data_generator('train')
                     train_loss_list=[]
                     for X_data,Y_data in dataset:
                         sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
@@ -232,7 +233,7 @@ class Classifier:
                         train_loss_list.append(train_loss)
                     train_loss=np.mean(train_loss_list)
                     #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                    dataset = self.df.target_data_generator('test')
+                    dataset = self.df.source_data_generator('test')
                     for X_data,Y_data in dataset:
                         # pred,test_loss,train_loss, W_s_data, W_t_data = sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target, W_s, W_t],feed_dict={X:X_data,Y_:Y_data})
                         pred, test_loss, W_t_data = sess.run(
