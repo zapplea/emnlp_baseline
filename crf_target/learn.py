@@ -18,7 +18,9 @@ from crf_target.datafeed import DataFeed
 from crf_target.classifier import Classifier
 
 def main(nn_config,data_config):
+    print('======================load_data======================')
     df = DataFeed(data_config)
+    print('======================load_over======================')
     nn_config['source_NETypes_num']=df.source_NETypes_num
     nn_config['target_NETypes_num']=df.target_NETypes_num
     print('source_NETypes_num: ',str(nn_config['source_NETypes_num']))
