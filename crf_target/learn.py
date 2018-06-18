@@ -12,9 +12,10 @@ elif cur_user_name == "che313":
     sys.path.append('/home/che313/emnlp_baseline')
 
 import argparse
-from pathlib import Path
 
+print('======================import DataFeed======================')
 from crf_target.datafeed import DataFeed
+print('======================import Classifier======================')
 from crf_target.classifier import Classifier
 
 def main(nn_config,data_config):

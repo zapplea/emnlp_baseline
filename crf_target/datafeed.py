@@ -1,8 +1,5 @@
-import gensim
 import numpy as np
-from sklearn.utils import check_array
 import pickle
-import random
 
 class Dataset:
     def __init__(self,dataset,**kwargs):

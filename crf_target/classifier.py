@@ -2,7 +2,6 @@ import tensorflow as tf
 from datetime import datetime
 import sklearn
 import numpy as np
-import math
 
 class Classifier:
     def __init__(self, nn_config, datafeed):
