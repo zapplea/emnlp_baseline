@@ -97,7 +97,7 @@ class Classifier:
                                   shape=(self.nn_config['source_NETypes_num'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
-        W_t = tf.matmul(W_s,W_t,name='target_W_t')
+        W_t = tf.matmul(W_s,W_t)
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
                                                               self.nn_config['target_NETypes_num']),
@@ -203,6 +203,9 @@ class Classifier:
                 pred_crf_target = graph.get_collection('pred_crf_target')[0]
                 train_loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
 
+                W_s = tf.norm(graph.get_tensor_by_name('W_s:0'))
+                W_t = tf.norm(graph.get_tensor_by_name('W_t:0'))
+
                 init = tf.global_variables_initializer()
             report = open(self.nn_config['report'], 'a+')
             table_data = self.df.table_generator()
@@ -220,10 +223,11 @@ class Classifier:
                     #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                     dataset = self.df.target_data_generator('test')
                     for X_data,Y_data in dataset:
-                        pred,test_loss,train_loss = sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
+                        pred,test_loss,train_loss, W_s_data, W_t_data = sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target, W_s, W_t],feed_dict={X:X_data,Y_:Y_data})
                         f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                         end = datetime.now()
                         time_cost = end - start
-                        report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro)))
+                        report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_s:{}, W_t:{}\n'.
+                                     format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_s_data),str(W_t_data)))
                         report.flush()
                         start = end
