@@ -84,7 +84,7 @@ if __name__ == "__main__":
                                'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_bbn_kn/conlleval' + str(k)}
                 nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/report/report_'+k
                 nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/model/model0/model0.ckpt.meta'
-                nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/model0/model0.ckpt'
+                nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/model/model0/model0.ckpt'
                 nn_config['words_num'] = 100
             elif args.dn=="bbn_cadec":
                 # args.dn == "cadec"
