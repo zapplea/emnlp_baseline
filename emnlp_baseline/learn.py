@@ -161,7 +161,7 @@ if __name__ == "__main__":
                                'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_nvd/conlleval' + str(
                                    k)}
                 nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/report/report_' + k
-                nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/mode0/model0.ckpt.meta'
+                nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/model0/model0.ckpt.meta'
                 nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/model0/model0.ckpt'
                 nn_config['words_num'] = 100
             main(nn_config,data_config)
