@@ -225,9 +225,12 @@ class Classifier:
                 print('start training stage3')
                 for i in range(self.nn_config['epoch_stage3']):
                     dataset = self.df.target_data_generator('train')
+                    train_loss_list=[]
                     for X_data,Y_data in dataset:
                         sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                    train_loss = sess.run(test_loss_crf_target,feed_dict={X: X_data, Y_: Y_data})
+                        train_loss = sess.run(test_loss_crf_target,feed_dict={X: X_data, Y_: Y_data})
+                        train_loss_list.append(train_loss)
+                    train_loss=np.mean(train_loss_list)
                     #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                     dataset = self.df.target_data_generator('test')
                     for X_data,Y_data in dataset:
