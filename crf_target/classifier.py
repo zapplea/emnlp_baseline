@@ -227,12 +227,13 @@ class Classifier:
                     dataset = self.df.target_data_generator('train')
                     for X_data,Y_data in dataset:
                         sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
+                    train_loss = sess.run(test_loss_crf_target,feed_dict={X: X_data, Y_: Y_data})
                     #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                     dataset = self.df.target_data_generator('test')
                     for X_data,Y_data in dataset:
                         # pred,test_loss,train_loss, W_s_data, W_t_data = sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target, W_s, W_t],feed_dict={X:X_data,Y_:Y_data})
-                        pred, test_loss, train_loss, W_t_data = sess.run(
-                            [pred_crf_target, test_loss_crf_target, train_loss_crf_target, W_t],
+                        pred, test_loss, W_t_data = sess.run(
+                            [pred_crf_target, test_loss_crf_target, W_t],
                             feed_dict={X: X_data, Y_: Y_data})
                         f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                         end = datetime.now()
