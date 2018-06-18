@@ -31,7 +31,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--num',type=int)
-    parser.add_argument('--stage1',type=str)
     parser.add_argument('--dn',type=str)
     args = parser.parse_args()
 
@@ -45,7 +44,6 @@ if __name__ == "__main__":
                  'pad_index': 1,
                  'epoch_stage2':200,
                  'epoch_stage3':100}
-    nn_config['stage1'] = args.stage1
     nn_config['mod'] = 1
     nn_config['epoch'] = 3
 
