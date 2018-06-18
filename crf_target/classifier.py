@@ -220,10 +220,10 @@ class Classifier:
                     #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                     dataset = self.df.target_data_generator('test')
                     for X_data,Y_data in dataset:
-                        pred,loss = sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
+                        pred,test_loss,train_loss = sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
                         f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                         end = datetime.now()
                         time_cost = end - start
-                        report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
+                        report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro)))
                         report.flush()
                         start = end
