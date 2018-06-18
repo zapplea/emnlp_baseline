@@ -265,6 +265,7 @@ class Classifier:
         # W_t.shape = (source_NETypes_num, target_NETypes_num)
         W_t = graph.get_tensor_by_name('W_t:0')
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
+        W_t = tf.matmul(W_s,W_t)
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
                                                               self.nn_config['target_NETypes_num']),
@@ -273,7 +274,9 @@ class Classifier:
         # X.shape = (batch size*words num, 2*lstm cell size)
         X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, 2*lstm cell size)
-        score = tf.reshape(tf.matmul(tf.matmul(X,W_s), W_t),
+        # score = tf.reshape(tf.matmul(tf.matmul(X,W_s), W_t),
+        #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
+        score = tf.reshape(tf.matmul(X, W_t),
                            shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
         log_likelihood, transition_params = tf.contrib.crf.crf_log_likelihood(score, Y_, seq_len, W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score, transition_params, seq_len)

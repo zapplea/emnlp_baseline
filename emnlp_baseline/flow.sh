@@ -20,6 +20,11 @@ then
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_cadec/*
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_nvd/*
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_cadec_simple/*
+
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/report/report_*.0
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec/report/report_*.0
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec_simple/report/report_*.0
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_nvd/report/report_*.0
     elif [ $stage1 = "False2" ]
     then
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_bbn_kn/*
@@ -27,6 +32,10 @@ then
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_nvd/*
         rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_cadec_simple/*
 
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_bbn_kn/report/report_*.0
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/report/report_*.0
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/report/report_*.0
+        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/report/report_*.0
     fi
 fi
 

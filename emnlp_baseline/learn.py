@@ -56,7 +56,7 @@ if __name__ == "__main__":
                      'source_NETypes_num': None,
                      'target_NETypes_num': None,
                      'pad_index': 1,
-                     'epoch_stage2':2500,
+                     'epoch_stage2':200,
                      'epoch_stage3':100}
         nn_config['stage1'] = args.stage1
         nn_config['mod'] = 1
