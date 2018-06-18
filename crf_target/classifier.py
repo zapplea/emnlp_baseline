@@ -85,18 +85,26 @@ class Classifier:
         """
         # p(x,y)
         # W_s.shape = (2*lstm cell size, source NETypes num)
-        W_s = tf.get_variable(name='W_s',
-                              initializer=tf.random_uniform(
-                                  shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['source_NETypes_num']),
-                                  dtype='float32'))
-        graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
-        # W_t.shape = (source_NETypes_num, target_NETypes_num)
+
+        # W_s = tf.get_variable(name='W_s',
+        #                       initializer=tf.random_uniform(
+        #                           shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['source_NETypes_num']),
+        #                           dtype='float32'))
+        # graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
+        # # W_t.shape = (source_NETypes_num, target_NETypes_num)
+        # W_t = tf.get_variable(name='W_t',
+        #                       initializer=tf.random_uniform(
+        #                           shape=(self.nn_config['source_NETypes_num'], self.nn_config['target_NETypes_num']),
+        #                           dtype='float32'))
+        # graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
+        # W_t = tf.matmul(W_s,W_t)
+
         W_t = tf.get_variable(name='W_t',
                               initializer=tf.random_uniform(
-                                  shape=(self.nn_config['source_NETypes_num'], self.nn_config['target_NETypes_num']),
+                                  shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
-        W_t = tf.matmul(W_s,W_t)
+
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
                                                               self.nn_config['target_NETypes_num']),
