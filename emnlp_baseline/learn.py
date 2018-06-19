@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Train the relation model and target crf model
     if args.stage1=='False1' or args.stage1=='False2' or args.stage1=='False0' or args.stage1=='False4' or args.stage1=='False5' or args.stage1=='False6':
 
-        nn_config = {'lstm_cell_size': 300,
+        nn_config = {'lstm_cell_size': 150,
                      'vocabulary_size': 2981402,
                      'feature_dim': 200,
                      'lr': 0.000003,

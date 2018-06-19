@@ -37,16 +37,16 @@ if __name__ == "__main__":
     parser.add_argument('--dn',type=str)
     args = parser.parse_args()
 
-    nn_config = {'lstm_cell_size': 300,
+    nn_config = {'lstm_cell_size': 150,
                  'vocabulary_size': 2981402,
                  'feature_dim': 200,
-                 'lr': 0.000003,
-                 'reg_rate': 0.0003,
+                 'lr': 0.03,
+                 'reg_rate': 0.00003,
                  'source_NETypes_num': None,
                  'target_NETypes_num': None,
                  'pad_index': 1,
                  'epoch_stage2':200,
-                 'epoch_stage3':1000}
+                 'epoch_stage3':150}
     nn_config['mod'] = 1
     nn_config['epoch'] = 3
 
