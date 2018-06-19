@@ -46,7 +46,7 @@ if __name__ == "__main__":
          'source_NETypes_num': None,
          'target_NETypes_num': None,
          'pad_index': 1,
-         'epoch_stage1':5,}
+         'epoch_stage1':2,}
     ]
     nn_config = nn_configs[args.num]
     # BBN

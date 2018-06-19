@@ -49,7 +49,7 @@ if __name__ == "__main__":
                  'target_NETypes_num': None,
                  'pad_index': 1,
                  'epoch_stage2':200,
-                 'epoch_stage3':5}
+                 'epoch_stage3':2}
     nn_config['mod'] = 1
     nn_config['epoch'] = 3
 
