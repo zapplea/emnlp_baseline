@@ -117,7 +117,7 @@ class Classifier:
         # score = tf.reshape(tf.matmul(tf.matmul(X,W_s), W_t),
         #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
         score = tf.reshape(tf.matmul(X, W_t),
-                           shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
+                           shape=(-1, self.nn_config['words_num'], self.nn_config['source_NETypes_num']))
         log_likelihood, transition_params = tf.contrib.crf.crf_log_likelihood(score, Y_, seq_len, W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score, transition_params, seq_len)
         graph.add_to_collection('pred_crf_target', viterbi_seq)
@@ -239,7 +239,7 @@ class Classifier:
                         pred, test_loss, W_t_data = sess.run(
                             [pred_crf_target, test_loss_crf_target, W_t],
                             feed_dict={X: X_data, Y_: Y_data})
-                        f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
+                        f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
                         end = datetime.now()
                         time_cost = end - start
                         report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_t:{}\n'.
