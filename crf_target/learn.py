@@ -68,7 +68,7 @@ if __name__ == "__main__":
     for k in k_groups:
         # BBN
         data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                       'pkl_filePath': '/datastore/liu121/nosqldb2/crf_target/data/data_bbn_bbn_kn.pkl',
+                       'pkl_filePath': '/datastore/liu121/nosqldb2/crf_target/data/data_conll_bbn_kn.pkl',
                        'k_instances': k,
                        'batch_size':50,
                        'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_target/conlleval'}

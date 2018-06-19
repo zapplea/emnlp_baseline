@@ -51,7 +51,7 @@ if __name__ == "__main__":
     nn_config = nn_configs[args.num]
     # BBN
     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                   'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_bbn_bbn_kn.pkl',
+                   'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_conll_bbn_kn.pkl',
                    'batch_size':50,
                    'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_source/conlleval'}
     nn_config['words_num'] =100
