@@ -35,8 +35,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--num',type=int)
-    parser.add_argument('--stage1',type=str)
-    parser.add_argument('--dn',type=str)
     args = parser.parse_args()
 
     nn_configs = [
@@ -51,16 +49,14 @@ if __name__ == "__main__":
          'epoch_stage1':5,}
     ]
     nn_config = nn_configs[args.num]
-    nn_config['stage1'] = args.stage1
     # BBN
-    if args.dn == "bbn_bbn_kn":
-        data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                       'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_bbn_bbn_kn.pkl',
-                       'batch_size':50,
-                       'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_source/conlleval'}
-        nn_config['words_num'] =100
-        report = '/datastore/liu121/nosqldb2/crf_source/report/'
-        model = '/datastore/liu121/nosqldb2/crf_source/model/'
+    data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
+                   'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_bbn_bbn_kn.pkl',
+                   'batch_size':50,
+                   'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_source/conlleval'}
+    nn_config['words_num'] =100
+    report = '/datastore/liu121/nosqldb2/crf_source/report/'
+    model = '/datastore/liu121/nosqldb2/crf_source/model/'
 
     model = model +'model'+str(args.num)
     path = Path(model)

@@ -192,7 +192,6 @@ class Classifier:
                 init = tf.global_variables_initializer()
 
             report = open(self.nn_config['report'], 'a+')
-            report.write(self.nn_config['stage1']+'\n')
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
                 report.write('session\n')
