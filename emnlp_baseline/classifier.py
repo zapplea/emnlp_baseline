@@ -259,13 +259,12 @@ class Classifier:
         :return: (batch size, max words num), (batch size, max words num)
         """
         # p(x,y)
-        # W_s.shape = (2*lstm cell size, source NETypes num)
-        W_s = graph.get_tensor_by_name('W_s:0')
-        graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
-        # W_t.shape = (source_NETypes_num, target_NETypes_num)
-        W_t = graph.get_tensor_by_name('W_t:0')
+        # W_s.shape = (2*lstm cell size, target NETypes num)
+        W_t = tf.get_variable(name='stage3_W_t',
+                              initializer=tf.random_normal(
+                                  shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['target_NETypes_num']),
+                                  dtype='float32'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
-        W_t = tf.matmul(W_s,W_t)
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
                                                               self.nn_config['target_NETypes_num']),
@@ -433,10 +432,12 @@ class Classifier:
                 pred_crf_target = graph.get_collection('pred_crf_target')[0]
                 train_loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
 
-                W_s = tf.norm(graph.get_tensor_by_name('W_s:0'))
-                W_t = tf.norm(graph.get_tensor_by_name('W_t:0'))
+                W_s = graph.get_tensor_by_name('W_s:0')
+                W_t = graph.get_tensor_by_name('W_t:0')
+                stage3_W_t = graph.get_tensor_by_name('stage3_W_t:0')
 
                 init = tf.global_variables_initializer()
+
             report = open(self.nn_config['report'], 'a+')
             report.write(self.nn_config['stage1']+'\n')
             table_data = self.df.table_generator()
@@ -484,6 +485,9 @@ class Classifier:
                             start = end
                     report.write('\n')
                     report.write('=================crf_target=================\n')
+                    W_s_data = sess.run(W_s)
+                    W_t_data = sess.run(W_t)
+                    stage3_W_t.load(np.matmul(W_s_data,W_t_data))
                     start = datetime.now()
                     print('start training stage3')
                     for i in range(self.nn_config['epoch_stage3']):
@@ -493,8 +497,8 @@ class Classifier:
                         #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         dataset = self.df.target_data_generator('test')
                         for X_data,Y_data in dataset:
-                            pred,test_loss,train_loss,W_s_data,W_t_data = \
-                                sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target,W_s,W_t],feed_dict={X:X_data,Y_:Y_data})
+                            pred,test_loss,train_loss= \
+                                sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
                             f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
                             end = datetime.now()
                             time_cost = end - start
