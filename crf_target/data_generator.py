@@ -1,6 +1,6 @@
 import sys
-sys.path.append('/home/liu121/dlnlp')
-from nerd.data.util.readers.BBNDataReader import BBNDataReader
+sys.path.append('/home/liu121/emnlp_baseline')
+from util.readers.BBNDataReader import BBNDataReader
 
 import gensim
 import numpy as np
