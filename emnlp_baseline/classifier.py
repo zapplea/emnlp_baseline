@@ -85,7 +85,7 @@ class Classifier:
         :return: (batch size, words num), (batch size, words num)
         """
         # p(x,y)
-        W_s = tf.get_variable(name='W_s',initializer=tf.random_normal(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
+        W_s = tf.get_variable(name='W_s',initializer=tf.zeros(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
         W_trans = tf.get_variable(name='W_trans_crf_source',initializer=tf.zeros(shape=(self.nn_config['source_NETypes_num'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
@@ -261,7 +261,7 @@ class Classifier:
         # p(x,y)
         # W_s.shape = (2*lstm cell size, target NETypes num)
         W_t = tf.get_variable(name='stage3_W_t',
-                              initializer=tf.random_normal(
+                              initializer=tf.zeros(
                                   shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))

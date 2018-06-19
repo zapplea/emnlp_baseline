@@ -2,6 +2,7 @@ import tensorflow as tf
 from datetime import datetime
 import sklearn
 import numpy as np
+import math
 
 class Classifier:
     def __init__(self, nn_config, datafeed):
@@ -84,7 +85,7 @@ class Classifier:
         :return: (batch size, max words num), (batch size, max words num)
         """
         W_t = tf.get_variable(name='W_t',
-                              initializer=tf.random_normal(
+                              initializer=tf.zeros(
                                   shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['source_NETypes_num']),
                                   dtype='float32'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
@@ -229,3 +230,26 @@ class Classifier:
                                      format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_t_data)))
                         report.flush()
                         start = end
+
+                saver.save(sess, self.nn_config['model'])
+                # final test
+                dataset = self.df.source_data_generator('test')
+                for X_data, Y_data in dataset:
+                    length = X_data.shape[0]
+                    slides = []
+                    avg = 300
+                    for j in range(1, avg + 1):
+                        slides.append(j / avg)
+                    slice_pre = 0
+                    pred_labels = []
+                    for slide in slides:
+                        slice_cur = int(math.floor(slide * length))
+                        pred_labels.append(sess.run(pred_crf_target, feed_dict={X: X_data[slice_pre:slice_cur],
+                                                                                Y_: Y_data[slice_pre:slice_cur]}))
+                        slice_pre = slice_cur
+                    pred_labels = np.concatenate(pred_labels, axis=0)
+
+                    true_labels = Y_data
+                    report.close()
+                    print('finsh')
+                    return true_labels, pred_labels, X_data

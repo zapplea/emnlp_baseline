@@ -263,7 +263,7 @@ def table_vec_and_dic():
 if __name__ == "__main__":
     data_configs =[
                     {'max_len': 100,  # conll_bbn_kn
-                     'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_conll_bbn_kn.pkl',
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/crf_target/data/data_conll_bbn_kn.pkl',
                      'source_train_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
                      'source_test_Conll_filePath':'/datastore/liu121/nosqldb2/conll2003/conll_testa',
                      'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',

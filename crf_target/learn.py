@@ -12,29 +12,32 @@ elif cur_user_name == "che313":
     sys.path.append('/home/che313/emnlp_baseline')
 
 import argparse
+from pathlib import Path
 
-print('======================import DataFeed======================')
 from crf_target.datafeed import DataFeed
-print('======================import Classifier======================')
 from crf_target.classifier import Classifier
+from emnlp_baseline.metrics import Metrics
 
 def main(nn_config,data_config):
-    print('======================load_data======================')
     df = DataFeed(data_config)
-    print('======================load_over======================')
     nn_config['source_NETypes_num']=df.source_NETypes_num
     nn_config['target_NETypes_num']=df.target_NETypes_num
     print('source_NETypes_num: ',str(nn_config['source_NETypes_num']))
     print('target_NETypes_num: ',str(nn_config['target_NETypes_num']))
     cl = Classifier(nn_config,df)
-    cl.train()
+    mt = Metrics(data_config)
+    true_labels, pred_labels, X_data = cl.train()
+    id2label_dic = df.source_id2label_generator()
+    I = mt.word_id2txt(X_data, true_labels, pred_labels, id2label_dic)
+    print('output')
+    mt.conll_eval_file(I)
+    print('finish output')
 
 if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--num',type=int)
-    parser.add_argument('--dn',type=str)
     args = parser.parse_args()
 
     nn_config = {'lstm_cell_size': 150,
@@ -64,92 +67,25 @@ if __name__ == "__main__":
     k_groups = k_shot[args.num]
     for k in k_groups:
         # BBN
-        if args.dn == "bbn_bbn_kn":
-            data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                           'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_bbn_kn.pkl',
-                           'k_instances': k,
-                           'batch_size':50,
-                           'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_bbn_kn/conlleval' + str(k)}
-            nn_config['report'] = '/datastore/liu121/nosqldb2/crf_target/report_'+k
-            nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/model/model0/model0.ckpt.meta'
-            nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/model/model0/model0.ckpt'
-            nn_config['words_num'] = 100
-        # elif args.dn=="bbn_cadec":
-        #     # args.dn == "cadec"
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_cadec.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_cadec/conlleval' + str(k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec/report/report_'+k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 200
-        # elif args.dn=="bbn_nvd":
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_nvd.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_nvd/conlleval' + str(
-        #                        k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_nvd/report/report_' + k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_nvd/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_nvd/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 100
-        # elif args.dn=="bbn_cadec_simple":
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_cadec_simple.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_cadec_simple/conlleval' + str(
-        #                        k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec_simple/report/report_' + k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec_simple/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec_simple/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 200
-        # # CONLL
-        # elif args.dn=="conll_bbn_kn":
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_bbn_kn.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_bbn_kn/conlleval' + str(
-        #                        k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_bbn_kn/report/report_' + k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_bbn_kn/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_bbn_kn/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 100
-        # elif args.dn=="conll_cadec":
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_cadec.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_cadec/conlleval' + str(
-        #                        k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/report/report_' + k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 200
-        # elif args.dn == "conll_cadec_simple":
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_cadec_simple.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_cadec_simple/conlleval' + str(
-        #                        k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/report/report_' + k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 200
-        # elif args.dn=="conll_nvd":
-        #     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-        #                    'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_nvd.pkl',
-        #                    'k_instances': k,
-        #                    'batch_size': 50,
-        #                    'conlleval_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_nvd/conlleval' + str(
-        #                        k)}
-        #     nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/report/report_' + k
-        #     nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/model0/model0.ckpt.meta'
-        #     nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/model0/model0.ckpt'
-        #     nn_config['words_num'] = 100
-        main(nn_config,data_config)
+        data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
+                       'pkl_filePath': '/datastore/liu121/nosqldb2/crf_target/data/data_bbn_bbn_kn.pkl',
+                       'k_instances': k,
+                       'batch_size':50,
+                       'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_target/conlleval'}
+        report = '/datastore/liu121/nosqldb2/crf_target/report/'
+        model = '/datastore/liu121/nosqldb2/crf_target/model/'
+        nn_config['words_num'] = 100
+
+        model = model + 'model' + str(args.num)
+        path = Path(model)
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
+        path = Path(report)
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
+
+        model = model + '/model' + str(args.num) + '.ckpt'
+        nn_config['model'] = model
+        report = report + 'report_' + str(args.num)
+        nn_config['report'] = report
+        main(nn_config, data_config)

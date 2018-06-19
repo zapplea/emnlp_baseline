@@ -39,7 +39,10 @@ class DataFeed:
 
         f = open(self.data_config['pkl_filePath'],'rb')
         data_dic = pickle.load(f)
-        self.source_data = data_dic['source_data']
+        self.source_train_data = data_dic['source_train_data']
+        self.source_test_data = data_dic['source_test_data']
+        self.source_id2label_dic = data_dic['id2label_dic']
+
         # random.shuffle(self.source_data)
         self.source_NETypes_num = data_dic['source_NETypes_num']
         self.target_train_data = data_dic['target_train_data']
@@ -63,10 +66,13 @@ class DataFeed:
 
     def source_data_generator(self,mode):
         if mode == 'train':
-            dataset = Dataset(self.source_data[:], batch_size=self.data_config['batch_size'])
+            dataset = Dataset(self.source_train_data, batch_size=self.data_config['batch_size'])
         else:
-            dataset = Dataset(self.source_data[-1000:])
+            dataset = Dataset(self.source_test_data)
         return dataset
+
+    def source_id2label_generator(self):
+        return self.source_id2label_dic
 
     def target_data_generator(self,mode):
         if mode == 'train':

@@ -85,7 +85,7 @@ class Classifier:
         :return: (batch size, words num), (batch size, words num)
         """
         # p(x,y)
-        W_s = tf.get_variable(name='W_s',initializer=tf.random_normal(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
+        W_s = tf.get_variable(name='W_s',initializer=tf.zeros(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
         W_trans = tf.get_variable(name='W_trans_crf_source',initializer=tf.zeros(shape=(self.nn_config['source_NETypes_num'],self.nn_config['source_NETypes_num']),dtype='float32'))
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
@@ -125,22 +125,6 @@ class Classifier:
         train_op = tf.train.GradientDescentOptimizer(self.nn_config['lr']).minimize(loss)
         return train_op
 
-    def accuracy(self,Y_,Y,tag_seq_mask,seq_len,graph):
-        """
-        :param Y_:  (batch size, max words num) 
-        :param Y: 
-        :param tag_seq_mask: (batch size, max words num); used to mask #PAD#
-        :param seq_len: (batch size,)
-        :param graph: 
-        :return: 
-        """
-        condition = tf.equal(Y_,Y)
-        correct_labels_num=tf.reduce_sum(tf.multiply(tf.where(condition,tf.ones_like(Y,dtype='float32'),
-                                                     tf.zeros_like(Y,dtype='float32')),tf.cast(tag_seq_mask,dtype='float32')))
-        total_labels_num = tf.reduce_sum(tf.cast(seq_len,dtype='float32'))
-        accuracy = tf.truediv(correct_labels_num,total_labels_num)
-        return accuracy
-
     def f1(self,Y_,Y,labels_num):
         """
         
@@ -169,7 +153,6 @@ class Classifier:
             # X.shape = (batch size, words num)
             X_id = self.X_input(graph)
             seq_len = self.sequence_length(X_id,graph)
-            tag_seq_mask = self.tag_sequence_mask(X_id, graph)
             Y_ = self.Y_input(graph)
             mask = self.lookup_mask(X_id,graph)
             # X.shape = (batch size, words num, feature dim)
@@ -233,3 +216,24 @@ class Classifier:
                         report.flush()
                         start = end
                 saver.save(sess,self.nn_config['model'])
+                # final test
+                dataset = self.df.source_data_generator('test')
+                for X_data, Y_data in dataset:
+                    length = X_data.shape[0]
+                    slides = []
+                    avg = 300
+                    for j in range(1, avg + 1):
+                        slides.append(j / avg)
+                    slice_pre = 0
+                    pred_labels = []
+                    for slide in slides:
+                        slice_cur = int(math.floor(slide * length))
+                        pred_labels.append(sess.run(pred_crf_source, feed_dict={X: X_data[slice_pre:slice_cur],
+                                                                                Y_: Y_data[slice_pre:slice_cur]}))
+                        slice_pre = slice_cur
+                    pred_labels = np.concatenate(pred_labels, axis=0)
+
+                    true_labels = Y_data
+                    report.close()
+                    print('finsh')
+                    return true_labels, pred_labels, X_data
