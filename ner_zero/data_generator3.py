@@ -121,8 +121,8 @@ class DataGenerator:
         return dataset_id, Bp_words, dic
 
 
-    def  test_data_gen(self):
-        train_data = BBNDataReader.readFile(filePath=self.data_config['trainConll_filePath'],
+    def test_data_gen(self):
+        train_data = BBNDataReader.readFile(filePath=self.data_config['testConll_filePath'],
                                             are_tweets=self.data_config['are_tweets'])
         train_mc_gen = McGenerator(train_data)
         pos_candidates = train_mc_gen.get_all_positive_candidates()
@@ -144,8 +144,8 @@ class DataGenerator:
         Bp_words = self.B(Bp_element, dic)
         return dataset_id, Bp_words,dic
 
-    def write(self,dataset_id,Bp_words,):
-
+    def write(self,dataset, Bp_words,):
+        pass
 
 
 if __name__ == "__main__":
@@ -165,10 +165,10 @@ if __name__ == "__main__":
                         #  'are_tweets': False
                         #  },
                         {'trainConll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw',
+                         'train_jsonPath':'',
                          'trainData_filePath': '/datastore/liu121/nosqldb2/ner_zero/data_bbn_kn/train_kn',
 
                          'testConll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval',
-                         'test_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/eval_kn.json',
                          'testData_filePath': '/datastore/liu121/nosqldb2/ner_zero/data_bbn_kn/test_kn.pkl',
 
                          'table_filePath': '/datastore/liu121/nosqldb2/ner_zero/data/table.pkl',
@@ -194,5 +194,6 @@ if __name__ == "__main__":
                         ]
     for data_gen_config in data_gen_configs:
         dg = DataGenerator(data_gen_config)
-        dg.data_gen()
+        dg.train_data_gen()
+        dg.test_data_gen()
 

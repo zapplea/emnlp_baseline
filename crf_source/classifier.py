@@ -2,6 +2,7 @@ import tensorflow as tf
 from datetime import datetime
 import sklearn
 import numpy as np
+import math
 
 class Classifier:
     def __init__(self, nn_config, datafeed):
@@ -71,63 +72,74 @@ class Classifier:
         graph.add_to_collection('bilstm_outputs',outputs)
         return outputs
 
-    # #####################
-    #      target crf
-    # #####################
-    def crf_target(self, X, Y_, seq_len, graph):
+    # ###################
+    #     source crf
+    # ###################
+    def crf_source(self,X,Y_,seq_len,graph):
         """
-
+        
         :param X: (batch size, max time step, 2*lstm cell size)
-        :param Y_: (batch size, max words num)
+        :param Y_: (batch size, words num)
         :param seq_len: 
         :param graph: 
-        :return: (batch size, max words num), (batch size, max words num)
+        :return: (batch size, words num), (batch size, words num)
         """
-        W_t = tf.get_variable(name='W_t',
-                              initializer=tf.random_normal(
-                                  shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['source_NETypes_num']),
-                                  dtype='float32'))
-        graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
-
-        W_trans = tf.get_variable(name='W_trans_crf_target',
-                                  initializer=tf.zeros(shape=(self.nn_config['source_NETypes_num'],
-                                                              self.nn_config['source_NETypes_num']),
-                                                       dtype='float32'))
-        graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
+        # p(x,y)
+        W_s = tf.get_variable(name='W_s',initializer=tf.random_normal(shape=(2*self.nn_config['lstm_cell_size'],self.nn_config['source_NETypes_num']),dtype='float32'))
+        graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
+        W_trans = tf.get_variable(name='W_trans_crf_source',initializer=tf.zeros(shape=(self.nn_config['source_NETypes_num'],self.nn_config['source_NETypes_num']),dtype='float32'))
+        graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
         # X.shape = (batch size*words num, 2*lstm cell size)
-        X = tf.reshape(X, shape=(-1, 2 * self.nn_config['lstm_cell_size']))
+        X = tf.reshape(X,shape=(-1,2*self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, 2*lstm cell size)
-        # score = tf.reshape(tf.matmul(tf.matmul(X,W_s), W_t),
-        #                    shape=(-1, self.nn_config['words_num'], self.nn_config['target_NETypes_num']))
-        score = tf.reshape(tf.matmul(X, W_t),
-                           shape=(-1, self.nn_config['words_num'], self.nn_config['source_NETypes_num']))
-        log_likelihood, transition_params = tf.contrib.crf.crf_log_likelihood(score, Y_, seq_len, W_trans)
-        viterbi_seq, _ = tf.contrib.crf.crf_decode(score, transition_params, seq_len)
-        graph.add_to_collection('pred_crf_target', viterbi_seq)
+        score = tf.reshape(tf.matmul(X,W_s),shape=(-1,self.nn_config['words_num'],self.nn_config['source_NETypes_num']))
+        # log_likelihood.shape=(batch_size,)
+        log_likelihood, transition_params= tf.contrib.crf.crf_log_likelihood(score,Y_,seq_len,W_trans)
+        viterbi_seq, _ = tf.contrib.crf.crf_decode(score,transition_params,seq_len)
+        graph.add_to_collection('pred_crf_source',viterbi_seq)
         return log_likelihood, viterbi_seq
 
-    def loss_crf_target(self, log_likelihood, graph):
-        regularizer = graph.get_collection('reg_crf_target')
+    def loss_crf_source(self,log_likelihood,graph):
+        """
+        
+        :param log_likelihood: shape=(batch size,) 
+        :param graph: 
+        :return: 
+        """
+        regularizer = graph.get_collection('reg_crf_source')
         regularizer.extend(graph.get_collection('bilstm_reg'))
-        # loss = tf.add(tf.reduce_mean(-log_likelihood),
-        #               tf.truediv(tf.reduce_sum(regularizer),
-        #                          tf.constant(self.nn_config['batch_size'],dtype='float32')),
-        #               name='loss_crf_target')
-        loss = tf.reduce_mean(tf.add(-log_likelihood, tf.reduce_sum(regularizer)), name='loss_crf_target')
+        loss = tf.reduce_mean(tf.add(-log_likelihood,tf.reduce_sum(regularizer)),name='loss_crf_source')
         return loss
 
-    def test_loss_crf_target(self,log_likelihood,graph):
-        loss = tf.reduce_mean(-log_likelihood,name='test_loss_crf_target')
+    def test_loss_crf_source(self,log_likelihood,graph):
+        loss = tf.reduce_mean(-log_likelihood,name='test_loss_crf_source')
         return loss
 
-    def opt_crf_target(self, loss, graph):
+
+    def opt_crf_source(self,loss,graph):
         train_op = tf.train.GradientDescentOptimizer(self.nn_config['lr']).minimize(loss)
-        graph.add_to_collection('train_op_crf_target', train_op)
+        graph.add_to_collection('train_op_crf_source',train_op)
         return train_op
 
     def optimize(self, loss, graph):
         train_op = tf.train.GradientDescentOptimizer(self.nn_config['lr']).minimize(loss)
         return train_op
+
+    def accuracy(self,Y_,Y,tag_seq_mask,seq_len,graph):
+        """
+        :param Y_:  (batch size, max words num) 
+        :param Y: 
+        :param tag_seq_mask: (batch size, max words num); used to mask #PAD#
+        :param seq_len: (batch size,)
+        :param graph: 
+        :return: 
+        """
+        condition = tf.equal(Y_,Y)
+        correct_labels_num=tf.reduce_sum(tf.multiply(tf.where(condition,tf.ones_like(Y,dtype='float32'),
+                                                     tf.zeros_like(Y,dtype='float32')),tf.cast(tag_seq_mask,dtype='float32')))
+        total_labels_num = tf.reduce_sum(tf.cast(seq_len,dtype='float32'))
+        accuracy = tf.truediv(correct_labels_num,total_labels_num)
+        return accuracy
 
     def f1(self,Y_,Y,labels_num):
         """
@@ -157,6 +169,7 @@ class Classifier:
             # X.shape = (batch size, words num)
             X_id = self.X_input(graph)
             seq_len = self.sequence_length(X_id,graph)
+            tag_seq_mask = self.tag_sequence_mask(X_id, graph)
             Y_ = self.Y_input(graph)
             mask = self.lookup_mask(X_id,graph)
             # X.shape = (batch size, words num, feature dim)
@@ -169,12 +182,12 @@ class Classifier:
                 graph.add_to_collection('bilstm_reg',
                                         tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(graph.get_tensor_by_name('bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
 
-            # crf target
-            log_likelihood, viterbi_seq = self.crf_target(X, Y_, seq_len, graph)
-            loss = self.loss_crf_target(log_likelihood, graph)
-            test_loss = self.test_loss_crf_target(log_likelihood, graph)
-            train_op = self.optimize(loss, graph)
-            graph.add_to_collection('train_op_crf_target',train_op)
+            # crf source
+            log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
+            loss = self.loss_crf_source(log_likelihood,graph)
+            test_loss = self.test_loss_crf_source(log_likelihood,graph)
+            train_op = self.optimize(loss,graph)
+            graph.add_to_collection('train_op_crf_source', train_op)
             saver = tf.train.Saver()
         return graph,saver
 
@@ -186,46 +199,37 @@ class Classifier:
                 Y_ = graph.get_tensor_by_name('Y_:0')
                 table = graph.get_tensor_by_name('table:0')
 
-                # crf target
-                train_op_crf_target = graph.get_collection('train_op_crf_target')[0]
-                # accuracy_crf_target = graph.get_collection('accuracy_crf_target')[0]
-                #loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
-                test_loss_crf_target = graph.get_tensor_by_name('test_loss_crf_target:0')
-                pred_crf_target = graph.get_collection('pred_crf_target')[0]
-                train_loss_crf_target = graph.get_tensor_by_name('loss_crf_target:0')
-
-                # W_s = tf.norm(graph.get_tensor_by_name('W_s:0'))
-                W_t = tf.norm(graph.get_tensor_by_name('W_t:0'))
+                # crf source
+                train_op_crf_source = graph.get_collection('train_op_crf_source')[0]
+                # accuracy_crf_source = graph.get_collection('accuracy_crf_source')[0]
+                #loss_crf_source = graph.get_tensor_by_name('loss_crf_source:0')
+                test_loss_crf_source = graph.get_tensor_by_name('test_loss_crf_source:0')
+                pred_crf_source = graph.get_collection('pred_crf_source')[0]
 
                 init = tf.global_variables_initializer()
+
             report = open(self.nn_config['report'], 'a+')
+            report.write(self.nn_config['stage1']+'\n')
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-                sess.run(init, feed_dict={table: table_data})
                 report.write('session\n')
-                report.write('\n')
-                report.write('=================crf_target=================\n')
+                print('start training stage1')
+                sess.run(init, feed_dict={table: table_data})
+                report.write('=================crf_source=================\n')
+                report.flush()
                 start = datetime.now()
-                print('start training stage3')
-                for i in range(self.nn_config['epoch_stage3']):
+                for i in range(self.nn_config['epoch_stage1']):
                     dataset = self.df.source_data_generator('train')
-                    train_loss_list=[]
                     for X_data,Y_data in dataset:
-                        sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
-                        train_loss = sess.run(test_loss_crf_target,feed_dict={X: X_data, Y_: Y_data})
-                        train_loss_list.append(train_loss)
-                    train_loss=np.mean(train_loss_list)
-                    #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
+                        sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
+
                     dataset = self.df.source_data_generator('test')
                     for X_data,Y_data in dataset:
-                        # pred,test_loss,train_loss, W_s_data, W_t_data = sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target, W_s, W_t],feed_dict={X:X_data,Y_:Y_data})
-                        pred, test_loss, W_t_data = sess.run(
-                            [pred_crf_target, test_loss_crf_target, W_t],
-                            feed_dict={X: X_data, Y_: Y_data})
-                        f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
+                        pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
+                        f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
                         end = datetime.now()
-                        time_cost = end - start
-                        report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_t:{}\n'.
-                                     format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_t_data)))
+                        time_cost = end-start
+                        report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i),str(time_cost),str(loss),str(f1_macro),str(f1_micro)))
                         report.flush()
                         start = end
+                saver.save(sess,self.nn_config['model'])
