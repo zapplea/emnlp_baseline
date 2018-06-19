@@ -25,8 +25,8 @@ class Preprocess:
                 f.write(line)
 
 if __name__=="__main__":
-    configs=[{'org_filePath':'/datastore/liu121/nosqldb2/conll2003/conll_train_original',
-            'conll_outPath':'/datastore/liu121/nosqldb2/conll2003/conll_train'},
+    configs=[#{'org_filePath':'/datastore/liu121/nosqldb2/conll2003/conll_train_original',
+            #'conll_outPath':'/datastore/liu121/nosqldb2/conll2003/conll_train'},
              {'org_filePath':'/datastore/liu121/nosqldb2/conll2003/conll_testa_original',
             'conll_outPath':'/datastore/liu121/nosqldb2/conll2003/conll_testa'}]
     for config in configs:
