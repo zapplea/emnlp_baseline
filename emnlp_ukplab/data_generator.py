@@ -22,7 +22,7 @@ class DataGenerator:
         data = BBNDataReader.readFile(filePath=filePath)
         return data
 
-    def target_nn_data_generator(self, data, labels_dic, labels_num):
+    def target_nn_data_generator(self, data):
         data_len = len(data.text)
         # train_data = [[text,labels], ...]
         nn_data = []
@@ -31,19 +31,14 @@ class DataGenerator:
             labels = data.labels[i]
             if len(text) > self.data_config['max_len']:
                 continue
-
             y_ = []
             for label in labels:
                 if label == 'OTHER':
                     label = 'O'
-                if label not in labels_dic:
-                    labels_dic[label] = labels_num
-                    labels_num += 1
-                # y_.append(labels_dic[label])
                 y_.append(label)
 
-            nn_data.append((, y_))
-        return nn_data, labels_num, labels_dic
+            nn_data.append((text, y_))
+        return nn_data
 
 
     def target_data_gnerator(self):
