@@ -4,11 +4,7 @@ sys.path.append('/home/liu121/emnlp_baseline')
 sys.path.append('home/liu121/dlnlp')
 from nerd.data.util.readers.BBNDataReader import BBNDataReader
 
-import gensim
-import numpy as np
-from sklearn.utils import check_array
-import pickle
-import random
+from pathlib import Path
 import json
 
 
@@ -81,32 +77,24 @@ class DataGenerator:
     def main(self):
         target_train_data = self.target_data_gnerator()
         sample = self.target_data_split(target_train_data)
-
+        self.write(sample)
 
 if __name__ == "__main__":
     data_configs = [
-        # {'max_len':822,#275
-        #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_unk.pkl',
-        #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_unk/data_train',
-        #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_unk/data_test_draw',
-        #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_unk/data_test_eval',
-        #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_unk/draw_unk.json',
-        #  'groups_num':5,
-        #  'instances_num':[1,2,4,8,16]},
 
         {'max_len': 100,  # bbn_kn
          'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
          'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
          'groups_num': 5,
          'instances_num': [1, 2, 4, 8, 16],
-         'conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn'},
+         'conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/'},
 
         {'max_len': 200,  # 315 cadec
          'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
          'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
          'groups_num': 5,
          'instances_num': [1, 2, 4, 8, 16],
-         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec'},
+         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec/'},
 
         # {'max_len': 200,  # cadec_simple
         #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec_simple/cadec_draw.txt',
@@ -120,11 +108,12 @@ if __name__ == "__main__":
          'target_train_jsonPath': '/datastore/liu121/nosqldb2/nvd/draw.json',
          'groups_num': 5,
          'instances_num': [1, 2, 4, 8, 16],
-         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/nvd'},
+         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/nvd/'},
     ]
 
     for data_config in data_configs:
-        print('================================')
-        print(data_config['pkl_filePath'])
+        path = Path(data_config['conll_filePath'])
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
         dg = DataGenerator(data_config)
         dg.main()
