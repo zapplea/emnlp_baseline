@@ -22,44 +22,6 @@ class DataGenerator:
         data = BBNDataReader.readFile(filePath=filePath)
         return data
 
-    def nn_data_generator(self, data, labels_dic):
-        data_len = len(data.text)
-        # train_data = [[text,labels], ...]
-        nn_data = []
-        labels_num = 1
-        for i in range(data_len):
-            text = data.text[i]
-            labels = data.labels[i]
-            if len(text) > self.data_config['max_len']:
-                continue
-            if len(text) > self.data_config['max_len']:
-                exit()
-            x = []
-            for word in text:
-                if word not in self.dictionary:
-                    x.append(self.dictionary['#UNK#'])
-                else:
-                    x.append(self.dictionary[word])
-            while len(x) < self.data_config['max_len']:
-                x.append(self.dictionary['#PAD#'])
-            y_ = []
-            for label in labels:
-                if label == 'OTHER':
-                    label = 'O'
-                if label not in labels_dic:
-                    labels_dic[label] = labels_num
-                    labels_num += 1
-                # y_.append(labels_dic[label])
-                y_.append(label)
-            while len(y_) < self.data_config['max_len']:
-                y_.append('O')
-            # print('labels: \n',labels_dic)
-            # print('x:\n',x)
-            # print('y_:\n',y_)
-            # exit()
-            nn_data.append((x, y_))
-        return nn_data, labels_num, labels_dic
-
     def target_nn_data_generator(self, data, labels_dic, labels_num):
         data_len = len(data.text)
         # train_data = [[text,labels], ...]
@@ -69,16 +31,7 @@ class DataGenerator:
             labels = data.labels[i]
             if len(text) > self.data_config['max_len']:
                 continue
-            if len(text) > self.data_config['max_len']:
-                exit()
-            x = []
-            for word in text:
-                if word not in self.dictionary:
-                    x.append(self.dictionary['#UNK#'])
-                else:
-                    x.append(self.dictionary[word])
-            while len(x) < self.data_config['max_len']:
-                x.append(self.dictionary['#PAD#'])
+
             y_ = []
             for label in labels:
                 if label == 'OTHER':
@@ -88,32 +41,10 @@ class DataGenerator:
                     labels_num += 1
                 # y_.append(labels_dic[label])
                 y_.append(label)
-            while len(y_) < self.data_config['max_len']:
-                y_.append('O')
-            # print('labels: \n',labels_dic)
-            # print('x:\n',x)
-            # print('y_:\n',y_)
-            # exit()
-            nn_data.append((x, y_))
+
+            nn_data.append((, y_))
         return nn_data, labels_num, labels_dic
 
-    def source_data_generator(self):
-        data = self.conll_data_reader(self.data_config['source_Conll_filePath'])
-        labels_dic = {'O': 0}
-        source_data, source_labels_num, labels_dic = self.nn_data_generator(data, labels_dic)
-        random.shuffle(source_data)
-        return source_data, source_labels_num, labels_dic
-
-    def check(self, data, label_dic):
-        print('check: \n')
-        ids = set()
-        for label in label_dic:
-            ids.add(label_dic[label])
-        for instance in data:
-            y = instance[1]
-            for label in y:
-                if label not in ids:
-                    print(str(label))
 
     def target_data_gnerator(self):
         target_draw_data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
@@ -153,25 +84,6 @@ class DataGenerator:
                             continue
                         instance = data[id]
                         sample[affix].append(instance)
-        # type2instances={}
-        # data_len = len(data)
-        # for i in range(data_len):
-        #     x,y_ = data[i]
-        #     labels = set(y_)
-        #     for label in labels:
-        #         if label not in type2instances:
-        #             type2instances[label] = [(x,y_)]
-        #         else:
-        #             type2instances[label].append((x,y_))
-        #         random.shuffle(type2instances[label])
-        # sample = {}
-        # for k in [1,2,4,8,16]:
-        #     sample[k]=[]
-        #     for label in type2instances:
-        #         # [(x,y_),...]
-        #         instances = type2instances[label]
-        #         for i in range(k):
-        #             sample[k].append(instances[i])
         return sample
 
     def id2label(self, labels_dic):
@@ -190,32 +102,6 @@ class DataGenerator:
         with open(self.data_config['pkl_filePath'], 'wb') as f:
             pickle.dump(data, f)
             f.flush()
-
-    def check2(self, id2labels, data):
-        print('\ncheck target train:')
-        # for instance in data:
-        #     print(str(instance)+'\n')
-        print('id2label_dic: \n', str(id2labels))
-        for group in data:
-            instances = data[group]
-            for instance in instances:
-                y = instance[1]
-                for label in y:
-                    if label not in id2labels:
-                        print('label: ', str(label), ' type:', type(label))
-                        print('instance_text:\n ', instance[0])
-                        print('instance_label:\n ', y)
-
-    def check3(self, id2labels, data):
-        print('\ncheck target test')
-        print('id2label_dic: \n', str(id2labels))
-        for instance in data:
-            y = instance[1]
-            for label in y:
-                if label not in id2labels:
-                    print('label: ', str(label), ' type:', type(label))
-                    print('instance_text:\n ', instance[0])
-                    print('instance_label:\n ', y)
 
     def labels_share_dic(self, source_labels_dic, target_labels_dic):
         new_target_labels_dic = {}

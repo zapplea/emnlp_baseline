@@ -194,9 +194,9 @@ class DataSplit:
                 mention_start = element['mention_start']
                 mention_end = element['mention_end']+1
                 if type_txt not in t2sentenceID:
-                    t2sentenceID[type_txt]=[(i,mention_start,mention_end)]
+                    t2sentenceID[type_txt]=[(len(t2sentenceID),mention_start,mention_end)]
                 else:
-                    t2sentenceID[type_txt].append((i,mention_start,mention_end))
+                    t2sentenceID[type_txt].append((len(t2sentenceID),mention_start,mention_end))
         return t2sentenceID
 
     def split(self,t2sentenceID,is_train,**kwargs):
