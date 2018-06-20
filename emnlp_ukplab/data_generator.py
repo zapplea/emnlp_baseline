@@ -112,6 +112,7 @@ if __name__ == "__main__":
     ]
 
     for data_config in data_configs:
+        print(data_config['conll_filePath'],'\n')
         path = Path(data_config['conll_filePath'])
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
