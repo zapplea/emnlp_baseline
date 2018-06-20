@@ -218,13 +218,13 @@ if __name__ == "__main__":
     for flag in [True]:
         is_draw = flag
         if is_draw:
-            data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/cadec/Conll/cadec_draw',
+            data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration':5,
                            'json_filePath':'/datastore/liu121/nosqldb2/cadec/json/draw.json',
                            'max_len':200}
         else:
-            data_config = {'Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/cadec_eval',
+            data_config = {'Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration': 5,
                            'json_filePath': '/datastore/liu121/nosqldb2/cadec/json/eval.json',
