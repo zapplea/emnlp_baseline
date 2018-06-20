@@ -68,7 +68,7 @@ class DataGenerator:
                     text = instance[0]
                     label = instance[1]
                     for i in range(len(text)):
-                        f.write(text[i]+' '+label[i])
+                        f.write(text[i]+' '+label[i]+'\n')
                     f.write('\n')
                     f.flush()
 
