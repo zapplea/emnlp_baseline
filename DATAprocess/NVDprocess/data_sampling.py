@@ -182,6 +182,9 @@ class DataSplit:
         t2sentenceID={}
         for i in range(data_len):
             sentence = data.text[i]
+            if len(sentence)>self.data_config['max_len']:
+                continue
+
             labels = data.labels[i]
             tag = data.pos[i]
             tree = self.generate_tree(sentence, labels, tag)
@@ -222,12 +225,14 @@ if __name__ == "__main__":
             data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/nvd/nvd_test_draw',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration':5,
-                           'json_filePath':'/datastore/liu121/nosqldb2/nvd/draw.json'}
+                           'json_filePath':'/datastore/liu121/nosqldb2/nvd/draw.json',
+                           'max_len':100}
         else:
             data_config = {'Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_eval',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration': 5,
-                           'json_filePath': '/datastore/liu121/nosqldb2/nvd/eval.json'}
+                           'json_filePath': '/datastore/liu121/nosqldb2/nvd/eval.json',
+                           'max_len':100}
         data = BBNDataReader.readFile(filePath=data_config['Conll_filePath'])
         ds = DataSplit(data_config)
         t2sentenceID = ds.mct_gen(data)
