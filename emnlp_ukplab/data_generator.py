@@ -77,8 +77,6 @@ class DataGenerator:
     def dev_generator(self):
         data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
         data_len = len(data.text)
-        random.shuffle(data)
-        random.shuffle(data)
         # train_data = [[text,labels], ...]
         nn_data = []
         for i in range(data_len):
@@ -100,10 +98,11 @@ class DataGenerator:
                     label = self.check_begin(label, i, labels)
                     y_.append(label)
             nn_data.append((text, y_))
-            if len(nn_data)>self.data_config['dev_nums']:
-                break
 
-        return nn_data
+        random.shuffle(nn_data)
+        random.shuffle(nn_data)
+
+        return nn_data[-self.data_config['conll_filePath']]
 
     def write(self, sample,dev_data):
         name = self.data_config['conll_filePath'].split('/')[-2]
