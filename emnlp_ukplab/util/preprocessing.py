@@ -54,7 +54,8 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
         paths = [trainData, devData, testData]
 
         logging.info(":: Transform "+datasetName+" dataset ::")
-        pklObjects['data'][datasetName] = createPklFiles(paths, mappings, datasetColumns, commentSymbol, valTransformations, padOneTokenSentence)
+        pklObjects['data'][datasetName]\
+            = createPklFiles(paths, mappings, datasetColumns, commentSymbol, valTransformations, padOneTokenSentence)
 
     
     f = open(outputPath, 'wb')
