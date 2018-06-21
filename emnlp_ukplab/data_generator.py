@@ -123,10 +123,10 @@ class DataGenerator:
                 for instance in dev_data:
                     text = instance[0]
                     label = instance[1]
-                    print('len_text: ', len(text))
-                    print('len_label: ',len(label))
+                    # print('len_text: ', len(text))
+                    # print('len_label: ',len(label))
                     for i in range(len(text)):
-                        print(i)
+                        # print(i)
                         f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
                     f.write('\n')
                     f.flush()
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     ]
 
     for data_config in data_configs:
-        data_config['dev_nums']=1000
+        data_config['dev_nums']=100
         print(data_config['conll_filePath'],'\n')
         path = Path(data_config['conll_filePath'])
         if not path.exists():
