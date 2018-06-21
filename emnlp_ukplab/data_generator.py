@@ -4,7 +4,7 @@ from nerd.data.util.readers.BBNDataReader import BBNDataReader
 
 from pathlib import Path
 import json
-
+import random
 
 class DataGenerator:
     def __init__(self, data_config):
@@ -24,7 +24,8 @@ class DataGenerator:
                 new_label = 'B-'+label
         return new_label
 
-    def target_nn_data_generator(self, data):
+    def target_data_gnerator(self):
+        data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
         data_len = len(data.text)
         # train_data = [[text,labels], ...]
         nn_data = []
@@ -36,23 +37,18 @@ class DataGenerator:
             y_ = []
             for i in range(len(labels)):
                 if 'I-' in labels[i]:
-                    labels[i]=labels[i].replace('I-','')
+                    labels[i] = labels[i].replace('I-', '')
 
             for i in range(len(labels)):
                 label = labels[i]
-                if label == 'OTHER' or label=='O':
+                if label == 'OTHER' or label == 'O':
                     label = 'O'
                     y_.append(label)
                 else:
-                    label=self.check_begin(label,i,labels)
+                    label = self.check_begin(label, i, labels)
                     y_.append(label)
             nn_data.append((text, y_))
         return nn_data
-
-    def target_data_gnerator(self):
-        target_draw_data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
-        target_train_data = self.target_nn_data_generator(target_draw_data)
-        return target_train_data
 
     # TODO: there are two kindes of target data: draw and eval. draw is used to train, and eval to predict.
     def target_data_split(self, data):
@@ -78,11 +74,54 @@ class DataGenerator:
                         sample[affix].append(instance)
         return sample
 
-    def write(self, sample):
+    def dev_generator(self):
+        data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
+        data_len = len(data.text)
+        random.shuffle(data)
+        random.shuffle(data)
+        # train_data = [[text,labels], ...]
+        nn_data = []
+        for i in range(data_len):
+            text = data.text[i]
+            labels = data.labels[i]
+            if len(text) > self.data_config['max_len']:
+                continue
+            y_ = []
+            for i in range(len(labels)):
+                if 'I-' in labels[i]:
+                    labels[i] = labels[i].replace('I-', '')
+
+            for i in range(len(labels)):
+                label = labels[i]
+                if label == 'OTHER' or label == 'O':
+                    label = 'O'
+                    y_.append(label)
+                else:
+                    label = self.check_begin(label, i, labels)
+                    y_.append(label)
+            nn_data.append((text, y_))
+            if len(nn_data)>self.data_config['dev_nums']:
+                break
+
+        return nn_data
+
+    def write(self, sample,dev_data):
+        name = self.data_config['conll_filePath'].split('/')[-2]
         for key in sample:
             data = sample[key]
-            with open(self.data_config['conll_filePath']+key, 'w') as f:
+            path = Path(self.data_config['conll_filePath']+name+key+'/')
+            if not path.exists():
+                path.mkdir(parents=True, exist_ok=True)
+            with open(self.data_config['conll_filePath']+name+key+'/'+'train.txt', 'w') as f:
                 for instance in data:
+                    text = instance[0]
+                    label = instance[1]
+                    for i in range(len(text)):
+                        f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
+                    f.write('\n')
+                    f.flush()
+            with open(self.data_config['conll_filePath'] + name + key + '/' + 'dev.txt', 'w') as f:
+                for instance in dev_data:
                     text = instance[0]
                     label = instance[1]
                     for i in range(len(text)):
@@ -92,8 +131,9 @@ class DataGenerator:
 
     def main(self):
         target_train_data = self.target_data_gnerator()
-        sample = self.target_data_split(target_train_data)
-        self.write(sample)
+        dev_data = self.dev_generator()
+        test_sample = self.target_data_split(target_train_data)
+        self.write(test_sample,dev_data)
 
 if __name__ == "__main__":
     data_configs = [
@@ -128,6 +168,7 @@ if __name__ == "__main__":
     ]
 
     for data_config in data_configs:
+        data_config['dev_nums']=1000
         print(data_config['conll_filePath'],'\n')
         path = Path(data_config['conll_filePath'])
         if not path.exists():
