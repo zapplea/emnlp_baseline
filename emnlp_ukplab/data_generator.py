@@ -74,35 +74,11 @@ class DataGenerator:
                         sample[affix].append(instance)
         return sample
 
-    def dev_generator(self):
-        data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
-        data_len = len(data.text)
-        # train_data = [[text,labels], ...]
-        nn_data = []
-        for i in range(data_len):
-            text = data.text[i]
-            labels = data.labels[i]
-            if len(text) > self.data_config['max_len']:
-                continue
-            y_ = []
-            for i in range(len(labels)):
-                if 'I-' in labels[i]:
-                    labels[i] = labels[i].replace('I-', '')
-
-            for i in range(len(labels)):
-                label = labels[i]
-                if label == 'OTHER' or label == 'O':
-                    label = 'O'
-                    y_.append(label)
-                else:
-                    label = self.check_begin(label, i, labels)
-                    y_.append(label)
-            nn_data.append((text, y_))
-
+    def dev_generator(self,nn_data):
         random.shuffle(nn_data)
         random.shuffle(nn_data)
 
-        return nn_data[-self.data_config['dev_nums']]
+        return nn_data[-self.data_config['dev_nums']:]
 
     def write(self, sample,dev_data):
         name = self.data_config['conll_filePath'].split('/')[-2]
@@ -123,25 +99,24 @@ class DataGenerator:
                 for instance in dev_data:
                     text = instance[0]
                     label = instance[1]
-                    print('================')
-                    print('len_text: ', len(text))
-                    print(text)
-                    print('len_label: ',len(label))
-                    print(label)
+                    # print('================')
+                    # print('len_text: ', len(text))
+                    # print(text)
+                    # print('len_label: ',len(label))
+                    # print(label)
                     for i in range(len(text)):
-                        print(i)
-                        print(text[i])
-                        print(label[i])
+                        # print(i)
+                        # print(text[i])
+                        # print(label[i])
                         f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
                     f.write('\n')
                     f.flush()
 
     def main(self):
         target_train_data = self.target_data_gnerator()
-        dev_data = self.dev_generator()
-        print(dev_data)
-        exit()
         test_sample = self.target_data_split(target_train_data)
+        dev_data = self.dev_generator(target_train_data)
+
         self.write(test_sample,dev_data)
 
 if __name__ == "__main__":
@@ -177,7 +152,7 @@ if __name__ == "__main__":
     ]
 
     for data_config in data_configs:
-        data_config['dev_nums']=100
+        data_config['dev_nums']=1000
         print(data_config['conll_filePath'],'\n')
         path = Path(data_config['conll_filePath'])
         if not path.exists():
