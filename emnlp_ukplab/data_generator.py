@@ -44,7 +44,7 @@ class DataGenerator:
                     label = 'O'
                     y_.append(label)
                 else:
-                    label=self.check_begin(lable,i,labels)
+                    label=self.check_begin(label,i,labels)
                     y_.append(label)
             nn_data.append((text, y_))
         return nn_data
