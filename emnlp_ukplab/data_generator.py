@@ -139,6 +139,8 @@ class DataGenerator:
     def main(self):
         target_train_data = self.target_data_gnerator()
         dev_data = self.dev_generator()
+        print(dev_data)
+        exit()
         test_sample = self.target_data_split(target_train_data)
         self.write(test_sample,dev_data)
 
