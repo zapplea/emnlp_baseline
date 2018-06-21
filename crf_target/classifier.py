@@ -3,11 +3,14 @@ from datetime import datetime
 import sklearn
 import numpy as np
 import math
+from util.eval.evaluate_overlap import evaluate
 
 class Classifier:
-    def __init__(self, nn_config, datafeed):
+    def __init__(self, nn_config, datafeed,data_config, metrics):
         self.nn_config = nn_config
         self.df = datafeed
+        self.data_config = data_config
+        self.mt = metrics
 
     def X_input(self,graph):
         """
@@ -226,30 +229,48 @@ class Classifier:
                         f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
                         end = datetime.now()
                         time_cost = end - start
-                        report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_t:{}\n'.
-                                     format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_t_data)))
+                        # report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_t:{}\n'.
+                        #              format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_t_data)))
+
+                        true_labels=Y_data
+                        pred_labels = pred
+                        id2label_dic = self.df.source_id2label_generator()
+                        I = self.mt.word_id2txt(X_data, true_labels, pred_labels, id2label_dic)
+                        self.mt.conll_eval_file(I)
+                        eval_result=evaluate(self.data_config['conlleval_filePath'])
+                        report.write('=========================')
+                        report.write(eval_result["per_f1"]+'\n')
+                        report.write(eval_result["per_pre"]+'\n')
+                        report.write(eval_result["per_recall"] + '\n')
+                        report.write(eval_result["micro_f1"] + '\n')
+                        report.write(eval_result["micro_pre"] + '\n')
+                        report.write(eval_result["micro_recall"] + '\n')
+                        report.write(eval_result["macro_f1"] + '\n')
+                        report.write(eval_result["macro_pre"] + '\n')
+                        report.write(eval_result["macro_recall"] + '\n')
+                        report.write('=========================')
                         report.flush()
                         start = end
 
                 saver.save(sess, self.nn_config['model'])
-                # final test
-                dataset = self.df.source_data_generator('test')
-                for X_data, Y_data in dataset:
-                    length = X_data.shape[0]
-                    slides = []
-                    avg = 300
-                    for j in range(1, avg + 1):
-                        slides.append(j / avg)
-                    slice_pre = 0
-                    pred_labels = []
-                    for slide in slides:
-                        slice_cur = int(math.floor(slide * length))
-                        pred_labels.append(sess.run(pred_crf_target, feed_dict={X: X_data[slice_pre:slice_cur],
-                                                                                Y_: Y_data[slice_pre:slice_cur]}))
-                        slice_pre = slice_cur
-                    pred_labels = np.concatenate(pred_labels, axis=0)
-
-                    true_labels = Y_data
-                    report.close()
-                    print('finsh')
-                    return true_labels, pred_labels, X_data
+                # # final test
+                # dataset = self.df.source_data_generator('test')
+                # for X_data, Y_data in dataset:
+                #     length = X_data.shape[0]
+                #     slides = []
+                #     avg = 300
+                #     for j in range(1, avg + 1):
+                #         slides.append(j / avg)
+                #     slice_pre = 0
+                #     pred_labels = []
+                #     for slide in slides:
+                #         slice_cur = int(math.floor(slide * length))
+                #         pred_labels.append(sess.run(pred_crf_target, feed_dict={X: X_data[slice_pre:slice_cur],
+                #                                                                 Y_: Y_data[slice_pre:slice_cur]}))
+                #         slice_pre = slice_cur
+                #     pred_labels = np.concatenate(pred_labels, axis=0)
+                #
+                #     true_labels = Y_data
+                #     report.close()
+                #     print('finsh')
+                #     return true_labels, pred_labels, X_data

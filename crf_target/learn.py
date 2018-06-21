@@ -8,8 +8,6 @@ cur_user_name = pwd.getpwuid(os.getuid()).pw_name
 
 if cur_user_name == "liu121":
     sys.path.append('/home/liu121/emnlp_baseline')
-elif cur_user_name == "che313":
-    sys.path.append('/home/che313/emnlp_baseline')
 
 import argparse
 from pathlib import Path
@@ -18,20 +16,22 @@ from crf_target.datafeed import DataFeed
 from crf_target.classifier import Classifier
 from emnlp_baseline.metrics import Metrics
 
+
 def main(nn_config,data_config):
     df = DataFeed(data_config)
     nn_config['source_NETypes_num']=df.source_NETypes_num
     nn_config['target_NETypes_num']=df.target_NETypes_num
     print('source_NETypes_num: ',str(nn_config['source_NETypes_num']))
     print('target_NETypes_num: ',str(nn_config['target_NETypes_num']))
-    cl = Classifier(nn_config,df)
     mt = Metrics(data_config)
-    true_labels, pred_labels, X_data = cl.train()
-    id2label_dic = df.source_id2label_generator()
-    I = mt.word_id2txt(X_data, true_labels, pred_labels, id2label_dic)
-    print('output')
-    mt.conll_eval_file(I)
-    print('finish output')
+    cl = Classifier(nn_config,df,data_config,mt)
+    cl.train()
+    # true_labels, pred_labels, X_data = cl.train()
+    # id2label_dic = df.source_id2label_generator()
+    # I = mt.word_id2txt(X_data, true_labels, pred_labels, id2label_dic)
+    # print('output')
+    # mt.conll_eval_file(I)
+    # print('finish output')
 
 if __name__ == "__main__":
 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
                        'pkl_filePath': '/datastore/liu121/nosqldb2/crf_target/data/data_conll_bbn_kn.pkl',
                        'k_instances': k,
                        'batch_size':50,
-                       'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_target/conlleval'}
+                       'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_target/conlleval'+str(args.num)}
         report = '/datastore/liu121/nosqldb2/crf_target/report/'
         model = '/datastore/liu121/nosqldb2/crf_target/model/'
         nn_config['words_num'] = 100

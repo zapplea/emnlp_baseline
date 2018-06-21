@@ -21,14 +21,15 @@ def main(nn_config,data_config):
     nn_config['target_NETypes_num']=df.target_NETypes_num
     print('source_NETypes_num: ',str(nn_config['source_NETypes_num']))
     print('target_NETypes_num: ',str(nn_config['target_NETypes_num']))
-    cl = Classifier(nn_config,df)
     mt = Metrics(data_config)
-    true_labels, pred_labels, X_data = cl.train()
-    id2label_dic = df.source_id2label_generator()
-    I = mt.word_id2txt(X_data,true_labels,pred_labels,id2label_dic)
-    print('output')
-    mt.conll_eval_file(I)
-    print('finish output')
+    cl = Classifier(nn_config,df,data_config,mt)
+    cl.train()
+    # true_labels, pred_labels, X_data = cl.train()
+    # id2label_dic = df.source_id2label_generator()
+    # I = mt.word_id2txt(X_data,true_labels,pred_labels,id2label_dic)
+    # print('output')
+    # mt.conll_eval_file(I)
+    # print('finish output')
 
 if __name__ == "__main__":
 
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
                    'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_conll_bbn_kn.pkl',
                    'batch_size':50,
-                   'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_source/conlleval'}
+                   'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_source/conlleval'+str(args.num)}
     nn_config['words_num'] =100
     report = '/datastore/liu121/nosqldb2/crf_source/report/'
     model = '/datastore/liu121/nosqldb2/crf_source/model/'
