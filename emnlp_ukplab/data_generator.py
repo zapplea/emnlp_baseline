@@ -102,7 +102,7 @@ class DataGenerator:
         random.shuffle(nn_data)
         random.shuffle(nn_data)
 
-        return nn_data[-self.data_config['conll_filePath']]
+        return nn_data[-self.data_config['dev_nums']]
 
     def write(self, sample,dev_data):
         name = self.data_config['conll_filePath'].split('/')[-2]
