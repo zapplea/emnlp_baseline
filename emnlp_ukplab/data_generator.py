@@ -123,8 +123,9 @@ class DataGenerator:
                 for instance in dev_data:
                     text = instance[0]
                     label = instance[1]
+                    print('len_text: ', len(text))
+                    print('len_label: ',len(label))
                     for i in range(len(text)):
-                        print(len(text))
                         print(i)
                         f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
                     f.write('\n')
