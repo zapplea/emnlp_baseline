@@ -24,8 +24,8 @@ class DataGenerator:
                 new_label = 'B-'+label
         return new_label
 
-    def target_data_gnerator(self):
-        data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
+    def data_gnerator(self,filePath):
+        data = self.conll_data_reader(filePath)
         data_len = len(data.text)
         # train_data = [[text,labels], ...]
         nn_data = []
@@ -80,7 +80,7 @@ class DataGenerator:
 
         return nn_data[-self.data_config['dev_nums']:]
 
-    def write(self, sample,dev_data):
+    def write(self, sample,dev_data,eval_data):
         name = self.data_config['conll_filePath'].split('/')[-2]
         for key in sample:
             data = sample[key]
@@ -95,6 +95,7 @@ class DataGenerator:
                         f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
                     f.write('\n')
                     f.flush()
+
             with open(self.data_config['conll_filePath'] + name + key + '/' + 'dev.txt', 'w') as f:
                 for instance in dev_data:
                     text = instance[0]
@@ -112,12 +113,29 @@ class DataGenerator:
                     f.write('\n')
                     f.flush()
 
+            with open(self.data_config['conll_filePath'] + name + key + '/' + 'test.txt', 'w') as f:
+                for instance in eval_data:
+                    text = instance[0]
+                    label = instance[1]
+                    # print('================')
+                    # print('len_text: ', len(text))
+                    # print(text)
+                    # print('len_label: ',len(label))
+                    # print(label)
+                    for i in range(len(text)):
+                        # print(i)
+                        # print(text[i])
+                        # print(label[i])
+                        f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
+                    f.write('\n')
+                    f.flush()
+
     def main(self):
-        target_train_data = self.target_data_gnerator()
+        target_train_data = self.data_gnerator(self.data_config['target_train_Conll_filePath'])
         test_sample = self.target_data_split(target_train_data)
         dev_data = self.dev_generator(target_train_data)
-
-        self.write(test_sample,dev_data)
+        eval_data = self.data_gnerator(self.data_config['target_eval_Conll_filePath'])
+        self.write(test_sample,dev_data,eval_data)
 
 if __name__ == "__main__":
     data_configs = [
@@ -127,14 +145,16 @@ if __name__ == "__main__":
          'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
          'groups_num': 5,
          'instances_num': [1, 2, 4, 8, 16],
-         'conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/'},
+         'conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/',
+         'target_eval_Conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn_eval'},
 
         {'max_len': 200,  # 315 cadec
          'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
          'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
          'groups_num': 5,
          'instances_num': [1, 2, 4, 8, 16],
-         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec/'},
+         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec/',
+         'target_eval_Conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec_eval'},
 
         # {'max_len': 200,  # cadec_simple
         #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec_simple/cadec_draw.txt',
@@ -148,7 +168,8 @@ if __name__ == "__main__":
          'target_train_jsonPath': '/datastore/liu121/nosqldb2/nvd/draw.json',
          'groups_num': 5,
          'instances_num': [1, 2, 4, 8, 16],
-         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/nvd/'},
+         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/nvd/',
+         'target_eval_Conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn_eval'},
     ]
 
     for data_config in data_configs:
