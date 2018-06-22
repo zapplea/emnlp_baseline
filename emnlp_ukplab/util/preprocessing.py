@@ -138,17 +138,10 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
         if count==0:
             count+=1
             continue
-        print('line: ',line)
         split = line.rstrip().split()
-        print('split: ',split)
-        print('len split: ',len(split))
         word = split[0]
-        print('word: ',word)
         if embeddingsDimension == None:
             embeddingsDimension = len(split) - 1
-        print('embDim: ',embeddingsDimension)
-        if count==2:
-            exit()
         if (len(
                 split) - 1) != embeddingsDimension:  # Assure that all lines in the embeddings file are of the same length
             print("ERROR: A line in the embeddings file had more or less  dimensions than expected. Skip token.")
