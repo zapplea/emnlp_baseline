@@ -137,7 +137,7 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
     for line in embeddingsIn:
         count+=1
         print('line: ',line)
-        split = line.rstrip().split(",")
+        split = line.rstrip().split()
         print('split: ',split)
         word = split[0]
         print('word: ',word)
