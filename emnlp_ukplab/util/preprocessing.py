@@ -181,13 +181,17 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
                 if word not in word2Idx and wordLower not in word2Idx and wordNormalized not in word2Idx:
                     fd[wordNormalized] += 1
 
+    k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
     if frequencyThresholdUnknownTokens != None and frequencyThresholdUnknownTokens >= 0:
         fd = nltk.FreqDist()
         for datasetName, datasetFile in datasetFiles.items():
-            dataColumnsIdx = {y: x for x, y in datasetFile['columns'].items()}
-            tokenIdx = dataColumnsIdx['tokens']
-            datasetPath = 'data/%s/' % datasetName
-            createFD(datasetPath + 'train.txt', tokenIdx, fd, word2Idx)
+            for k in k_shot:
+                trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/train.txt' % (datasetName, datasetName + k)
+
+                dataColumnsIdx = {y: x for x, y in datasetFile['columns'].items()}
+                tokenIdx = dataColumnsIdx['tokens']
+                datasetPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/' % (datasetName, datasetName + k)
+                createFD(datasetPath + 'train.txt', tokenIdx, fd, word2Idx)
 
         addedWords = 0
         for word, freq in fd.most_common(10000):
