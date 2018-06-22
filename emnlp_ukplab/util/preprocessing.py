@@ -132,7 +132,8 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
 
     embeddingsIn = gzip.open(embeddingsPath, "rt") if embeddingsPath.endswith('.gz') else open(embeddingsPath,
                                                                                                encoding="utf8")
-
+    print(type(embeddingsIn))
+    exit()
     embeddingsDimension = None
 
     for line in embeddingsIn:
