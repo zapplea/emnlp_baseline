@@ -1,6 +1,6 @@
 #!/bin/bash
-rm /datastore/liu121/nosqldb2/crf_target/report/*
-rm /datastore/liu121/nosqldb2/crf_target/model/*
+rm -r /datastore/liu121/nosqldb2/crf_target/report/*
+rm -r /datastore/liu121/nosqldb2/crf_target/model/*
 sbatch run_learn.sh 0
 sbatch run_learn.sh 1
 sbatch run_learn.sh 2
