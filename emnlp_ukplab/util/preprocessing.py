@@ -31,10 +31,10 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
         padOneTokenSentence: True to pad one sentence tokens (needed for CRF classifier)
     """
     embeddingsName = os.path.splitext(embeddingsPath)[0]
-    pklName = "_".join(sorted(datasets.keys()) + [embeddingsName])
+    pklName = "_".join(sorted(datasets.keys()))
     outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/' + pklName + '.pkl'
     print('outputPath: ',outputPath)
-    
+
     if os.path.isfile(outputPath):
         logging.info("Using existent pickle file: %s" % outputPath)
         return outputPath
