@@ -133,8 +133,9 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
     embeddingsIn = gzip.open(embeddingsPath, "rt") if embeddingsPath.endswith('.gz') else open(embeddingsPath,
                                                                                                encoding="utf8")
     embeddingsDimension = None
-
+    count=0
     for line in embeddingsIn:
+        count+=1
         print('line: ',line)
         split = line.rstrip().split(" ")
         print('split: ',split)
@@ -143,7 +144,8 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
         if embeddingsDimension == None:
             embeddingsDimension = len(split) - 1
         print('embDim: ',embeddingsDimension)
-        exit()
+        if count==2:
+            exit()
         if (len(
                 split) - 1) != embeddingsDimension:  # Assure that all lines in the embeddings file are of the same length
             print("ERROR: A line in the embeddings file had more or less  dimensions than expected. Skip token.")
