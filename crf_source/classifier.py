@@ -222,7 +222,8 @@ class Classifier:
                         I = self.mt.word_id2txt(X_data, true_labels, pred_labels, id2label_dic)
                         self.mt.conll_eval_file(I)
                         eval_result = evaluate(self.data_config['conlleval_filePath'])
-                        report.write('=========================')
+                        report.write('=========================\n')
+                        report.write('loss: %s'% str(loss))
                         report.write(eval_result["per_f1"] + '\n')
                         report.write(eval_result["per_pre"] + '\n')
                         report.write(eval_result["per_recall"] + '\n')
@@ -232,7 +233,7 @@ class Classifier:
                         report.write(eval_result["macro_f1"] + '\n')
                         report.write(eval_result["macro_pre"] + '\n')
                         report.write(eval_result["macro_recall"] + '\n')
-                        report.write('=========================')
+                        report.write('=========================\n')
 
                         report.flush()
                         start = end

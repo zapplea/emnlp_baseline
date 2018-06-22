@@ -32,8 +32,9 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
     """
     embeddingsName = os.path.splitext(embeddingsPath)[0]
     pklName = "_".join(sorted(datasets.keys()) + [embeddingsName])
-    outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/pkl/' + pklName + '.pkl'
-
+    outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/' + pklName + '.pkl'
+    print('outputPath: ',outputPath)
+    
     if os.path.isfile(outputPath):
         logging.info("Using existent pickle file: %s" % outputPath)
         return outputPath
