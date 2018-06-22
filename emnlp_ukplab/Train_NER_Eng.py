@@ -50,7 +50,7 @@ datasets = {
          'commentSymbol': None}
 }
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
-embeddingsPath = 'reimers_german_embeddings.gz'
+embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
 pickleFile = perpareDataset(embeddingsPath, datasets)
