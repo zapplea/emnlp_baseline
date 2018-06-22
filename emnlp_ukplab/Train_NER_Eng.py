@@ -33,22 +33,17 @@ logger.addHandler(ch)
 #
 ######################################################
 datasets = {
-    'BBNEval':                                   #Name of the dataset
+    'bbn_kn':                                   #Name of the dataset
         {'columns': {1:'tokens', 2:'NER_bbn'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
          'label': 'NER_bbn',                      #Which column we like to predict
          'evaluate': True,                        #Should we evaluate on this task? Set true always for single task setups
          'commentSymbol': None},                   #Lines in the input data starting with this string will be skipped. Can be used to skip comments
-    'CadecEval':
+    'cadec':
         {'columns': {1:'tokens', 2:'NER_cadec'},
          'label': 'NER_cadec',
          'evaluate': True,
          'commentSymbol': None},
-    'CadecSimpleEval':
-        {'columns': {1:'tokens', 2:'NER_cadecsimple'},
-         'label': 'NER_cadecsimple',
-         'evaluate': True,
-         'commentSymbol': None},
-    'NVDEval':
+    'nvd':
         {'columns': {1:'tokens', 2:'NER_nvd'},
          'label': 'NER_nvd',
          'evaluate': True,
@@ -59,7 +54,8 @@ embeddingsPath = 'reimers_german_embeddings.gz'
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
 pickleFile = perpareDataset(embeddingsPath, datasets)
-
+print('data prepare successful: %s' % pickleFile)
+exit()
 
 ######################################################
 #
