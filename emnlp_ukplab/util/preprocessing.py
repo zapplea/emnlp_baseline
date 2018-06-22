@@ -50,9 +50,9 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
         datasetColumns = dataset['columns']
         commentSymbol = dataset['commentSymbol']
         for k in k_shot:
-            trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/train.txt' % (datasetName,datasetName+k)
-            devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/train.txt' % (datasetName,datasetName+k)
-            testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/train.txt' % (datasetName,datasetName+k)
+            trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName+k)
+            devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName+k)
+            testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName+k)
             paths = [trainData, devData, testData]
 
             logging.info(":: Transform "+datasetName+k+" dataset ::")
@@ -186,11 +186,9 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
         fd = nltk.FreqDist()
         for datasetName, datasetFile in datasetFiles.items():
             for k in k_shot:
-                trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/train.txt' % (datasetName, datasetName + k)
-
                 dataColumnsIdx = {y: x for x, y in datasetFile['columns'].items()}
                 tokenIdx = dataColumnsIdx['tokens']
-                datasetPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/%s/%s/' % (datasetName, datasetName + k)
+                datasetPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/' % (datasetName, datasetName + k)
                 createFD(datasetPath + 'train.txt', tokenIdx, fd, word2Idx)
 
         addedWords = 0
