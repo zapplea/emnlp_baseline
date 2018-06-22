@@ -135,7 +135,9 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
     embeddingsDimension = None
     count=0
     for line in embeddingsIn:
-        count+=1
+        if count==0:
+            count+=1
+            continue
         print('line: ',line)
         split = line.rstrip().split()
         print('split: ',split)
