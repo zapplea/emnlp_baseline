@@ -53,7 +53,7 @@ class Metrics:
         return I
 
     def conll_eval_file(self, I):
-        with open(self.data_config['conlleval_filePath'], 'w+') as f:
+        with open(self.conll_filePath, 'w+') as f:
             for t in I:
                 pred_labels_txt = t[0]
                 true_labels_txt = t[1]
