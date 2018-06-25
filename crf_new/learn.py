@@ -91,13 +91,13 @@ if __name__ == "__main__":
     nn_config['bilstm_num_layers']=1
     # BBN
     data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
-                   'pkl_filePath': '/datastore/liu121/nosqldb2/crf_source/data/data_conll_bbn_kn.pkl',
+                   'pkl_filePath': '/datastore/liu121/nosqldb2/crf_new/data/data_conll_bbn_kn.pkl',
                    'batch_size':50,
-                   'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_source/conlleval'+str(args.num)}
+                   'conlleval_filePath': '/datastore/liu121/nosqldb2/crf_new/conlleval'+str(args.num)}
 
 
-    report = '/datastore/liu121/nosqldb2/crf_source/report/'
-    model = '/datastore/liu121/nosqldb2/crf_source/model/'
+    report = '/datastore/liu121/nosqldb2/crf_new/report/'
+    model = '/datastore/liu121/nosqldb2/crf_new/model/'
 
     model = model +'model'+str(args.num)
     path = Path(model)
