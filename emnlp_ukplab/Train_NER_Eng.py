@@ -56,7 +56,6 @@ embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 pickleFile = perpareDataset(embeddingsPath, datasets)
 print('data prepare successful: %s' % pickleFile)
 exit()
-
 ######################################################
 #
 # The training of the network starts here
