@@ -71,9 +71,10 @@ print('data prepare successful: %s' % pickleFile)
 
 #Load the embeddings and the dataset
 embeddings, mappings, data = loadDatasetPickle(pickleFile)
-print('data type: ',type(data))
-for key in data:
+print('mappings type: ',type(mappings))
+for key in mappings:
     print(key)
+exit()
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}
 
