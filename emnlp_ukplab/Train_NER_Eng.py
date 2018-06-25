@@ -87,7 +87,7 @@ embeddings, mappings, data = loadDatasetPickle(pickleFile)
         #     print('----',subsubkey)
 
     # print('=========================')
-exit()
+
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}
 
