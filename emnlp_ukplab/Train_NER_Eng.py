@@ -2,15 +2,12 @@
 # the GermEval 2014 dataset (https://sites.google.com/site/germeval2014ner/).
 # The code use the embeddings by Reimers et al. (https://www.ukp.tu-darmstadt.de/research/ukp-in-challenges/germeval-2014/)
 from __future__ import print_function
-import sys
-sys.path.append('/home/liu121/emnlp_baseline')
 
 import os
 import logging
 import sys
 from neuralnets.BiLSTM import BiLSTM
 from util.preprocessing import perpareDataset, loadDatasetPickle
-from emnlp_baseline.metrics import Metrics
 
 from keras import backend as K
 
@@ -75,13 +72,16 @@ print('data prepare successful: %s' % pickleFile)
 
 #Load the embeddings and the dataset
 embeddings, mappings, data = loadDatasetPickle(pickleFile)
-print('mappings type: ',type(mappings))
-for key in mappings:
-    print(key)
-    print(mappings[key])
-    print('===============')
+# print('mappings type: ',type(mappings))
+# for key in mappings:
+#     print(key)
+#     print(mappings[key])
+#     print('===============')
 
-print('embeddings type:',type(embeddings))
+print('embeddings type:',type(data))
+for key in data:
+    print(data[key])
+    print('=========================')
 exit()
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}

@@ -3,11 +3,9 @@ import sklearn
 import pickle
 
 class Metrics:
-    def __init__(self,data_config):
-        self.data_config = data_config
-        f = open(self.data_config['table_filePath'], 'rb')
-        dictionary = pickle.load(f)
-        f.close()
+    def __init__(self,conll_filePath,dictionary):
+        self.conll_filePath = conll_filePath
+        self.dictionary = dictionary
         self.id2word = {v: k for k, v in dictionary.items()}
 
     def word_id2txt(self,X_data, true_labels, pred_labels, id2label):
@@ -31,6 +29,7 @@ class Metrics:
                     print('label: ',id2label)
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
+                type_txt = type_txt.replace('B-','')
                 tlabel_txt.append(type_txt)
                 cur_length += 1
                 if cur_length >= true_length:

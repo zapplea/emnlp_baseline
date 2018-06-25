@@ -6,7 +6,11 @@ License: Apache-2.0
 """
 
 from __future__ import print_function
+import sys
+sys.path.append('/home/liu121/emnlp_baseline')
+
 from util import BIOF1Validation
+from emnlp_ukplab.util.metrics import Metrics
 
 import keras
 from keras.optimizers import *
@@ -50,6 +54,12 @@ class BiLSTM:
     def setMappings(self, mappings, embeddings):
         self.embeddings = embeddings
         self.mappings = mappings
+
+        dictionary={}
+        for key in embeddings:
+            dictionary[embeddings[key]]=key
+        conll_filePath='/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll.txt'
+        self.mt=Metrics(conll_filePath,dictionary)
 
     def setDataset(self, datasets, data):
         self.datasets = datasets
@@ -478,7 +488,23 @@ class BiLSTM:
                 predIdx += 1   
         
         return predLabels
-    
+
+    def evaluate(self,modelName,devMatrix,testMatrix):
+        self.evaluateScore(modelName,devMatrix)
+        self.evaluateScore(modelName,testMatrix)
+
+    def evaluateScore(self, modelName, sentences):
+        labelKey = self.labelKeys[modelName]
+        model = self.models[modelName]
+        idx2Label = self.idx2Labels[modelName]
+
+        correctLabels = [sentences[idx][labelKey] for idx in range(len(sentences))]
+        predLabels = self.predictLabels(model, sentences)
+        I = self.mt.word_id2txt(, true_labels, pred_labels, id2label_dic)
+
+
+
+
    
     def computeScore(self, modelName, devMatrix, testMatrix):
         if self.labelKeys[modelName].endswith('_BIO') or self.labelKeys[modelName].endswith('_IOBES') or self.labelKeys[modelName].endswith('_IOB'):
