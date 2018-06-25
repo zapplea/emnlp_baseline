@@ -80,8 +80,12 @@ embeddings, mappings, data = loadDatasetPickle(pickleFile)
 
 print('embeddings type:',type(data))
 for key in data:
+    print(key)
     for subkey in data[key]:
-        print(subkey)
+        print('--',subkey)
+        for subsubkey in data[key][subkey]:
+            print('----',subsubkey)
+
     print('=========================')
 exit()
 # Some network hyperparameters
