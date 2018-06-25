@@ -66,7 +66,6 @@ class BiLSTM:
             for name in list(self.datasets.keys()):
                 self.modelNames.append(name+k)
         print('modelNames: ',self.modelNames)
-        exit()
         # self.modelNames = list(self.datasets.keys())
 
         self.evaluateModelNames = []
