@@ -56,11 +56,8 @@ class BiLSTM:
         self.embeddings = embeddings
         self.mappings = mappings
 
-        dictionary={}
-        for key in mappings['tokens']:
-            dictionary[mappings['tokens'][key]]=key
         self.conll_filePath='/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll.txt'
-        self.mt=Metrics(self.conll_filePath,dictionary)
+        self.mt=Metrics(self.conll_filePath,mappings['tokens'])
 
     def setDataset(self, datasets, data):
         self.datasets = datasets
