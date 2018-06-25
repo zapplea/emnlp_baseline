@@ -16,4 +16,4 @@ module load keras/2.1.3-py36
 module load protobuf/3.5.1
 
 echo "loaded"
-python Train_NER_Eng.py
+python ../Train_NER_Eng.py
