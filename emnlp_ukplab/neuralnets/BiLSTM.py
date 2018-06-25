@@ -56,7 +56,8 @@ class BiLSTM:
         self.embeddings = embeddings
         self.mappings = mappings
 
-        print(mappings)
+        for key in mappings:
+            print(key)
         dictionary={}
         for key in embeddings:
             dictionary[embeddings[key]]=key
