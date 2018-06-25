@@ -45,20 +45,17 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
     mappings = {'tokens': word2Idx, 'casing': casing2Idx}
     pklObjects = {'embeddings': embeddings, 'mappings': mappings, 'datasets': datasets, 'data': {}}
 
-    k_shot = ['1.0','2.0','4.0','8.0','16.0']
-
     for datasetName, dataset in datasets.items():
         datasetColumns = dataset['columns']
         commentSymbol = dataset['commentSymbol']
-        for k in k_shot:
-            trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName+k)
-            devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName+k)
-            testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName+k)
-            paths = [trainData, devData, testData]
+        trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName)
+        devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName)
+        testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName)
+        paths = [trainData, devData, testData]
 
-            logging.info(":: Transform "+datasetName+k+" dataset ::")
-            pklObjects['data'][datasetName+k]\
-                = createPklFiles(paths, mappings, datasetColumns, commentSymbol, valTransformations, padOneTokenSentence)
+        logging.info(":: Transform "+datasetName+k+" dataset ::")
+        pklObjects['data'][datasetName+k]\
+            = createPklFiles(paths, mappings, datasetColumns, commentSymbol, valTransformations, padOneTokenSentence)
 
     
     f = open(outputPath, 'wb')

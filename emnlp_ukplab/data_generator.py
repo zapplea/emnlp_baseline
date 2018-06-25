@@ -84,10 +84,11 @@ class DataGenerator:
         name = self.data_config['conll_filePath'].split('/')[-2]
         for key in sample:
             data = sample[key]
-            path = Path(self.data_config['conll_filePath']+name+key+'/')
+            root = self.data_config['conll_filePath']+name+'__'+key+'/'
+            path = Path(root)
             if not path.exists():
                 path.mkdir(parents=True, exist_ok=True)
-            with open(self.data_config['conll_filePath']+name+key+'/'+'train.txt', 'w') as f:
+            with open(root+'train.txt', 'w') as f:
                 for instance in data:
                     text = instance[0]
                     label = instance[1]
@@ -96,36 +97,20 @@ class DataGenerator:
                     f.write('\n')
                     f.flush()
 
-            with open(self.data_config['conll_filePath'] + name + key + '/' + 'dev.txt', 'w') as f:
+            with open(root + 'dev.txt', 'w') as f:
                 for instance in dev_data:
                     text = instance[0]
                     label = instance[1]
-                    # print('================')
-                    # print('len_text: ', len(text))
-                    # print(text)
-                    # print('len_label: ',len(label))
-                    # print(label)
                     for i in range(len(text)):
-                        # print(i)
-                        # print(text[i])
-                        # print(label[i])
                         f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
                     f.write('\n')
                     f.flush()
 
-            with open(self.data_config['conll_filePath'] + name + key + '/' + 'test.txt', 'w') as f:
+            with open(root + 'test.txt', 'w') as f:
                 for instance in eval_data:
                     text = instance[0]
                     label = instance[1]
-                    # print('================')
-                    # print('len_text: ', len(text))
-                    # print(text)
-                    # print('len_label: ',len(label))
-                    # print(label)
                     for i in range(len(text)):
-                        # print(i)
-                        # print(text[i])
-                        # print(label[i])
                         f.write(str(i+1)+' '+text[i]+' '+label[i]+'\n')
                     f.write('\n')
                     f.flush()

@@ -60,13 +60,8 @@ class BiLSTM:
         self.epoch = 0
         self.learning_rate_updates = {'sgd': {1: 0.1, 3: 0.05, 5: 0.01}}
 
-        k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
-        self.modelNames=[]
-        for k in k_shot:
-            for name in list(self.datasets.keys()):
-                self.modelNames.append(name+k)
-        print('modelNames: ',self.modelNames)
-        # self.modelNames = list(self.datasets.keys())
+
+        self.modelNames = list(self.datasets.keys())
 
         self.evaluateModelNames = []
         self.labelKeys = {}
