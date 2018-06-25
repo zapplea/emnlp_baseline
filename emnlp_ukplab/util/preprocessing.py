@@ -48,9 +48,10 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
     for datasetName, dataset in datasets.items():
         datasetColumns = dataset['columns']
         commentSymbol = dataset['commentSymbol']
-        trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName)
-        devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName)
-        testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (datasetName,datasetName)
+        rootName = datasetName.split('__')[0]
+        trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
+        devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
+        testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
         paths = [trainData, devData, testData]
 
         logging.info(":: Transform "+datasetName+k+" dataset ::")
@@ -179,15 +180,14 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
                 if word not in word2Idx and wordLower not in word2Idx and wordNormalized not in word2Idx:
                     fd[wordNormalized] += 1
 
-    k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
     if frequencyThresholdUnknownTokens != None and frequencyThresholdUnknownTokens >= 0:
         fd = nltk.FreqDist()
         for datasetName, datasetFile in datasetFiles.items():
-            for k in k_shot:
-                dataColumnsIdx = {y: x for x, y in datasetFile['columns'].items()}
-                tokenIdx = dataColumnsIdx['tokens']
-                datasetPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/' % (datasetName, datasetName + k)
-                createFD(datasetPath + 'train.txt', tokenIdx, fd, word2Idx)
+            dataColumnsIdx = {y: x for x, y in datasetFile['columns'].items()}
+            tokenIdx = dataColumnsIdx['tokens']
+            rootName = datasetName.split('__')[0]
+            datasetPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/' % (rootName, datasetName)
+            createFD(datasetPath + 'train.txt', tokenIdx, fd, word2Idx)
 
         addedWords = 0
         for word, freq in fd.most_common(10000):

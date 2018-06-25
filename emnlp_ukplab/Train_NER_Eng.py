@@ -32,7 +32,7 @@ logger.addHandler(ch)
 # Data preprocessing
 #
 ######################################################
-datasets = {
+seeds = {
     'bbn_kn':                                   #Name of the dataset
         {'columns': {1:'tokens', 2:'NER_bbn'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
          'label': 'NER_bbn',                      #Which column we like to predict
@@ -49,6 +49,13 @@ datasets = {
          'evaluate': True,
          'commentSymbol': None}
 }
+
+k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
+datasets={}
+for key in seeds:
+    for k in k_shot:
+        datasets[key+'__'+k]=seeds[key]
+
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
 embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 
