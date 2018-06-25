@@ -14,6 +14,6 @@ module load cudnn/v6
 module load cuda/8.0.61
 module load keras/2.1.3-py36
 module load protobuf/3.5.1
-
 echo "loaded"
+rm /datastore/liu121/nosqldb2/emnlp_ukplab/models/*
 python ../Train_NER_Eng.py
