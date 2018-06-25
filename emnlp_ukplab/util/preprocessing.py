@@ -60,8 +60,8 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
         testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
         paths = [trainData, devData, testData]
 
-        logging.info(":: Transform "+datasetName+k+" dataset ::")
-        pklObjects['data'][datasetName+k]\
+        logging.info(":: Transform "+datasetName+" dataset ::")
+        pklObjects['data'][datasetName]\
             = createPklFiles(paths, mappings, datasetColumns, commentSymbol, valTransformations, padOneTokenSentence)
 
     
