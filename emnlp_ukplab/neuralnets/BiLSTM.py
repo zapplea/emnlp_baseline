@@ -500,7 +500,7 @@ class BiLSTM:
 
         correctLabels = [sentences[idx][labelKey] for idx in range(len(sentences))]
         predLabels = self.predictLabels(model, sentences)
-        I = self.mt.word_id2txt(, true_labels, pred_labels, id2label_dic)
+        #I = self.mt.word_id2txt(, true_labels, pred_labels, id2label_dic)
 
 
 
