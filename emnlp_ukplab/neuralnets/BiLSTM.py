@@ -11,6 +11,7 @@ sys.path.append('/home/liu121/emnlp_baseline')
 
 from util import BIOF1Validation
 from emnlp_ukplab.util.metrics import Metrics
+from util.eval.evaluate_overlap import evaluate as overlap_eval
 
 import keras
 from keras.optimizers import *
@@ -58,8 +59,8 @@ class BiLSTM:
         dictionary={}
         for key in embeddings:
             dictionary[embeddings[key]]=key
-        conll_filePath='/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll.txt'
-        self.mt=Metrics(conll_filePath,dictionary)
+        self.conll_filePath='/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll.txt'
+        self.mt=Metrics(self.conll_filePath,dictionary)
 
     def setDataset(self, datasets, data):
         self.datasets = datasets
@@ -405,28 +406,28 @@ class BiLSTM:
             start_time = time.time() 
             for modelName in self.evaluateModelNames:
                 logging.info("-- %s --" % (modelName))
-                dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
-         
+                # dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
+                self.evaluate(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
                 
-                if dev_score > max_dev_score[modelName]:
-                    max_dev_score[modelName] = dev_score
-                    max_test_score[modelName] = test_score
-                    no_improvement_since = 0
-
-                    #Save the model
-                    if self.modelSavePath != None:
-                        self.saveModel(modelName, epoch, dev_score, test_score)
-                else:
-                    no_improvement_since += 1
+                # if dev_score > max_dev_score[modelName]:
+                #     max_dev_score[modelName] = dev_score
+                #     max_test_score[modelName] = test_score
+                #     no_improvement_since = 0
+                #
+                #     #Save the model
+                #     if self.modelSavePath != None:
+                #         self.saveModel(modelName, epoch, dev_score, test_score)
+                # else:
+                #     no_improvement_since += 1
                     
                     
-                if self.resultsSavePath != None:
-                    self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score, max_dev_score[modelName], max_test_score[modelName]])))
-                    self.resultsSavePath.write("\n")
-                    self.resultsSavePath.flush()
-                
-                logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
-                logging.info("")
+                # if self.resultsSavePath != None:
+                #     self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score, max_dev_score[modelName], max_test_score[modelName]])))
+                #     self.resultsSavePath.write("\n")
+                #     self.resultsSavePath.flush()
+                #
+                # logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
+                # logging.info("")
                 
             logging.info("%.2f sec for evaluation" % (time.time() - start_time))
             
@@ -490,7 +491,9 @@ class BiLSTM:
         return predLabels
 
     def evaluate(self,modelName,devMatrix,testMatrix):
+        print('===============devMatrix===============')
         self.evaluateScore(modelName,devMatrix)
+        print('===============testMatrix===============')
         self.evaluateScore(modelName,testMatrix)
 
     def evaluateScore(self, modelName, sentences):
@@ -500,10 +503,23 @@ class BiLSTM:
 
         correctLabels = [sentences[idx][labelKey] for idx in range(len(sentences))]
         predLabels = self.predictLabels(model, sentences)
-        #I = self.mt.word_id2txt(, true_labels, pred_labels, id2label_dic)
-
-
-
+        X_data=[]
+        for instance in sentences:
+            X_data.append(instance['tokens'])
+        I = self.mt.word_id2txt(X_data, correctLabels, predLabels, idx2Label)
+        self.mt.conll_eval_file(I)
+        eval_result = overlap_eval(self.conll_filePath)
+        print('========\n')
+        print(eval_result["per_f1"] + '\n')
+        print(eval_result["per_pre"] + '\n')
+        print(eval_result["per_recall"] + '\n')
+        print(eval_result["micro_f1"] + '\n')
+        print(eval_result["micro_pre"] + '\n')
+        print(eval_result["micro_recall"] + '\n')
+        print(eval_result["macro_f1"] + '\n')
+        print(eval_result["macro_pre"] + '\n')
+        print(eval_result["macro_recall"] + '\n')
+        print('========\n')
 
    
     def computeScore(self, modelName, devMatrix, testMatrix):

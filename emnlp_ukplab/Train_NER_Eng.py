@@ -78,15 +78,15 @@ embeddings, mappings, data = loadDatasetPickle(pickleFile)
 #     print(mappings[key])
 #     print('===============')
 
-print('embeddings type:',type(data))
-for key in data:
-    print(key)
-    for subkey in data[key]:
-        print('--',subkey)
+# print('embeddings type:',type(data))
+# for key in data:
+#     print(key)
+#     for subkey in data[key]:
+#         print('--',subkey)
         # for subsubkey in data[key][subkey]:
         #     print('----',subsubkey)
 
-    print('=========================')
+    # print('=========================')
 exit()
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}
