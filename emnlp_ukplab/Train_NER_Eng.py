@@ -67,15 +67,17 @@ embeddings, mappings, data = loadDatasetPickle(pickleFile)
 print('data type: ',type(data))
 for key in data:
     print(key)
-exit()
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}
 
-
+print('BiLSTM')
 model = BiLSTM(params)
+print('setMappings')
 model.setMappings(mappings, embeddings)
+print('setDataset')
 model.setDataset(datasets, data)
 model.modelSavePath = "models/[ModelName]_[DevScore]_[TestScore]_[Epoch].h5"
+print('fit')
 model.fit(epochs=25)
 
 
