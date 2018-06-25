@@ -83,8 +83,8 @@ for key in data:
     print(key)
     for subkey in data[key]:
         print('--',subkey)
-        for subsubkey in data[key][subkey]:
-            print('----',subsubkey)
+        # for subsubkey in data[key][subkey]:
+        #     print('----',subsubkey)
 
     print('=========================')
 exit()
