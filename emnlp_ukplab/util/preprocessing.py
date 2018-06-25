@@ -31,7 +31,13 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
         padOneTokenSentence: True to pad one sentence tokens (needed for CRF classifier)
     """
     embeddingsName = os.path.splitext(embeddingsPath)[0]
-    pklName = "_".join(sorted(datasets.keys()))
+    pklName = []
+    for key in datasets.keys():
+        name = key.split('__')[0]
+        if name not in pklName:
+            pklName.append(name)
+    pklName='_'.join(pklName)
+
     outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/' + pklName + '.pkl'
     print('outputPath: ',outputPath)
 
