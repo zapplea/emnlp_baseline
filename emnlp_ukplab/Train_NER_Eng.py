@@ -55,7 +55,6 @@ embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
 pickleFile = perpareDataset(embeddingsPath, datasets)
 print('data prepare successful: %s' % pickleFile)
-exit()
 ######################################################
 #
 # The training of the network starts here
@@ -65,7 +64,9 @@ exit()
 
 #Load the embeddings and the dataset
 embeddings, mappings, data = loadDatasetPickle(pickleFile)
+print('data type: ',type(data))
 
+exit()
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}
 
