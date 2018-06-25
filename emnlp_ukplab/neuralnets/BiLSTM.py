@@ -11,7 +11,7 @@ sys.path.append('/home/liu121/emnlp_baseline')
 
 from util import BIOF1Validation
 from emnlp_ukplab.util.metrics import Metrics
-from util.eval.evaluate_overlap import evaluate as overlap_eval
+from emnlp_ukplab.util.evaluate_overlap import evaluate as overlap_eval
 
 import keras
 from keras.optimizers import *
