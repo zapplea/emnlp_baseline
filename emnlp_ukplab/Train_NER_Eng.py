@@ -83,7 +83,7 @@ print('setMappings')
 model.setMappings(mappings, embeddings)
 print('setDataset')
 model.setDataset(datasets, data)
-model.modelSavePath = "models/[ModelName]_[DevScore]_[TestScore]_[Epoch].h5"
+model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_[DevScore]_[TestScore]_[Epoch].h5"
 print('fit')
 model.fit(epochs=25)
 
