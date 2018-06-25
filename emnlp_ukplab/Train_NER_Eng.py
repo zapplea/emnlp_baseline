@@ -80,7 +80,7 @@ embeddings, mappings, data = loadDatasetPickle(pickleFile)
 
 print('embeddings type:',type(data))
 for key in data:
-    print(data[key])
+    print(key)
     print('=========================')
 exit()
 # Some network hyperparameters
