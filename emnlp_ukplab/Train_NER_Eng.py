@@ -8,6 +8,7 @@ import logging
 import sys
 from neuralnets.BiLSTM import BiLSTM
 from util.preprocessing import perpareDataset, loadDatasetPickle
+import argparse
 
 from keras import backend as K
 
@@ -33,6 +34,10 @@ logger.addHandler(ch)
 # Data preprocessing
 #
 ######################################################
+parser = argparse.ArgumentParser()
+parser.add_argument('--mod',type=str)
+args = parser.parse_args()
+
 seeds = {
     'bbn_kn':                                   #Name of the dataset
         {'columns': {1:'tokens', 2:'NER_bbn'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
@@ -51,11 +56,12 @@ seeds = {
          'commentSymbol': None}
 }
 
+seed=seeds[args.mod]
+
 k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
 datasets={}
-for key in seeds:
-    for k in k_shot:
-        datasets[key+'__'+k]=seeds[key]
+for k in k_shot:
+    datasets[args.mod+'__'+k]=seed
 
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
 embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
@@ -91,15 +97,9 @@ embeddings, mappings, data = loadDatasetPickle(pickleFile)
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50}
 
-print('BiLSTM')
+print('####################### BBN #######################')
 model = BiLSTM(params)
-print('setMappings')
 model.setMappings(mappings, embeddings)
-print('setDataset')
 model.setDataset(datasets, data)
-model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_[DevScore]_[TestScore]_[Epoch].h5"
-print('fit')
-model.fit(epochs=25)
-
-
-
+model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_[DevScore]_[TestScore]_[Epoch]_bbn.h5"
+model.fit(epochs=100)
