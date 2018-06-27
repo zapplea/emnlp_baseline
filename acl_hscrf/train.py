@@ -104,6 +104,8 @@ if __name__ == "__main__":
         print('========================')
         print('train_labels: \n',train_labels[-1])
         print('train_features: \n',train_features[-1])
+        for element in train_features[-1]:
+            print(f_map[element])
         #print('f_map: \n', f_map)
         print('c_map: \n', c_map)
         print('========================')
