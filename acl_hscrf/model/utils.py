@@ -95,7 +95,7 @@ def basic_type(lines):
     return labels
 
 
-def get_crf_scrf_label(SCRF_l_map):
+def get_crf_scrf_label():
     SCRF_l_map = {}
 
     SCRF_l_map['PER'] = 0
