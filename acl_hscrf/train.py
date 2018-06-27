@@ -42,7 +42,7 @@ if __name__ == "__main__":
     parser.add_argument('--early_stop', type=int, default=10, help='early stop epoch number')
     parser.add_argument('--start_epoch', type=int, default=0, help='start point of epoch')
     parser.add_argument('--checkpoint', default='./checkpoint/', help='checkpoint path')
-    parser.add_argument('--word_embedding_dim', type=int, default=100, help='dimension of word embedding')
+    parser.add_argument('--word_embedding_dim', type=int, default=200, help='dimension of word embedding')
     parser.add_argument('--char_embedding_dim', type=int, default=30, help='dimension of character embedding')
     parser.add_argument('--scrf_dense_dim', type=int, default=100, help='dimension of scrf features')
     parser.add_argument('--index_embeds_dim', type=int, default=10, help='dimension of index embedding')
