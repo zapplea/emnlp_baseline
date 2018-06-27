@@ -88,6 +88,10 @@ def basic_type(lines):
         if not (line.isspace() or (len(line) > 10 and line[0:10] == '-DOCSTART-')):
             line = line.rstrip('\n').split()
             label = line[-1]
+            if label == 'O':
+                continue
+            if 'I-' in label:
+                label=label.replace('I-','')
             if label not in labels:
                 labels[label]=num
                 num+=1
@@ -95,14 +99,8 @@ def basic_type(lines):
     return labels
 
 
-def get_crf_scrf_label():
-    SCRF_l_map = {}
-
-    SCRF_l_map['PER'] = 0
-    SCRF_l_map['LOC'] = 1
-    SCRF_l_map['ORG'] = 2
-    SCRF_l_map['MISC'] = 3
-
+def get_crf_scrf_label(lines):
+    SCRF_l_map =basic_type(lines)
     CRF_l_map = {}
     for pre in ['S-', 'B-', 'I-', 'E-']:
         for suf in SCRF_l_map.keys():

@@ -66,16 +66,18 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    CRF_l_map, SCRF_l_map = utils.get_crf_scrf_label()
-    print(CRF_l_map)
-    print(SCRF_l_map)
-    exit()
+    #CRF_l_map, SCRF_l_map = utils.get_crf_scrf_label()
+
     print('setting:')
     print(args)
 
     print('loading corpus')
     with codecs.open(args.train_file, 'r', 'utf-8') as f:
         lines = f.readlines()
+    CRF_l_map, SCRF_l_map=utils.get_crf_scrf_label(lines)
+    print(CRF_l_map)
+    print(SCRF_l_map)
+    exit()
 
     with codecs.open(args.dev_file, 'r', 'utf-8') as f:
         dev_lines = f.readlines()
