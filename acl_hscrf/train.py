@@ -103,9 +103,10 @@ if __name__ == "__main__":
                                        if_shrink_w_feature=False)
         print('========================')
         print('train_labels: \n',train_labels)
-        print('f_map: \n', f_map)
+        #print('f_map: \n', f_map)
         print('c_map: \n', c_map)
         print('========================')
+        exit()
         f_set = {v for v in f_map}
 
         f_map = utils.shrink_features(f_map, train_features, args.mini_count)
