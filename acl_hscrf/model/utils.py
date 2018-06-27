@@ -62,12 +62,47 @@ def concatChar(input_lines, char_dict):
     return features
 
 
-def get_crf_scrf_label():
+# def get_crf_scrf_label():
+#     SCRF_l_map = {}
+#     SCRF_l_map['PER'] = 0
+#     SCRF_l_map['LOC'] = 1
+#     SCRF_l_map['ORG'] = 2
+#     SCRF_l_map['MISC'] = 3
+#     CRF_l_map = {}
+#     for pre in ['S-', 'B-', 'I-', 'E-']:
+#         for suf in SCRF_l_map.keys():
+#             CRF_l_map[pre + suf] = len(CRF_l_map)
+#     SCRF_l_map['<START>'] = 4
+#     SCRF_l_map['<STOP>'] = 5
+#     SCRF_l_map['O'] = 6
+#     CRF_l_map['<start>'] = len(CRF_l_map)
+#     CRF_l_map['<pad>'] = len(CRF_l_map)
+#     CRF_l_map['O'] = len(CRF_l_map)
+#
+#     return CRF_l_map, SCRF_l_map
+
+def basic_type(lines):
+    labels ={}
+    num = 0
+    for line in lines:
+        if not (line.isspace() or (len(line) > 10 and line[0:10] == '-DOCSTART-')):
+            line = line.rstrip('\n').split()
+            label = line[-1]
+            if label not in labels:
+                labels[label]=num
+                num+=1
+
+    return labels
+
+
+def get_crf_scrf_label(SCRF_l_map):
     SCRF_l_map = {}
+
     SCRF_l_map['PER'] = 0
     SCRF_l_map['LOC'] = 1
     SCRF_l_map['ORG'] = 2
     SCRF_l_map['MISC'] = 3
+
     CRF_l_map = {}
     for pre in ['S-', 'B-', 'I-', 'E-']:
         for suf in SCRF_l_map.keys():
