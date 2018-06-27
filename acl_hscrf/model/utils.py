@@ -90,7 +90,7 @@ def basic_type(lines):
             label = line[-1]
             if label == 'O':
                 continue
-            if 'I-' in label:
+            if 'I-' in label or 'B-' in label:
                 label=label.replace('I-','')
             if label not in labels:
                 labels[label]=num
