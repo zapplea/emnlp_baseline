@@ -103,6 +103,7 @@ if __name__ == "__main__":
                                        if_shrink_w_feature=False)
         print('========================')
         print('train_labels: \n',train_labels[-1])
+        # train features are words; f_map is {word : id}
         print('train_features: \n',train_features[-1])
         for element in train_features[-1]:
             print(f_map[element])
