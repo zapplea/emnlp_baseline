@@ -126,6 +126,7 @@ if __name__ == "__main__":
 
     print('constructing dataset')
     dataset, dataset_onlycrf = utils.construct_bucket_mean_vb_wc(train_features, train_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], ALLOW_SPANLEN=args.allowspan, train_set=True)
+
     print('type_dataset: ',type(dataset))
     print('type_dataset_onlycrf: ',type(dataset_onlycrf))
     exit()
