@@ -28,7 +28,7 @@ print('seed: ', seed)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Learning with LM-LSTM-CRF together with Language Model')
-    parser.add_argument('--emb_file', default='./data/glove.6B.100d.txt', help='path to pre-trained embedding')
+    parser.add_argument('--emb_file', default='/datastore/liu121/nosqldb2/acl_hscrf/skipgram', help='path to pre-trained embedding')
     parser.add_argument('--train_file', default='./data/eng.train', help='path to training file')
     parser.add_argument('--dev_file', default='./data/eng.testa', help='path to development file')
     parser.add_argument('--test_file', default='./data/eng.testb', help='path to test file')
@@ -109,7 +109,6 @@ if __name__ == "__main__":
         #print('f_map: \n', f_map)
         print('c_map: \n', c_map)
         print('========================')
-        exit()
         f_set = {v for v in f_map}
 
         f_map = utils.shrink_features(f_map, train_features, args.mini_count)
@@ -118,13 +117,18 @@ if __name__ == "__main__":
 
         f_map, embedding_tensor, in_doc_words = utils.load_embedding(args.emb_file, ' ', f_map, dt_f_set, args.unk, args.word_embedding_dim, shrink_to_corpus=args.shrink_embedding)
 
+        print('in_doc_words: \n', in_doc_words)
+
         l_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), dev_labels))
         l_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), test_labels), l_set)
 
-    exit()
 
     print('constructing dataset')
     dataset, dataset_onlycrf = utils.construct_bucket_mean_vb_wc(train_features, train_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], ALLOW_SPANLEN=args.allowspan, train_set=True)
+    print('type_dataset: ',type(dataset))
+    print('type_dataset_onlycrf: ',type(dataset_onlycrf))
+    exit()
+
     dev_dataset = utils.construct_bucket_mean_vb_wc(dev_features, dev_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
     test_dataset = utils.construct_bucket_mean_vb_wc(test_features, test_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
 
