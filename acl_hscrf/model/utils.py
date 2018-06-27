@@ -101,13 +101,14 @@ def basic_type(lines):
 
 def get_crf_scrf_label(lines):
     SCRF_l_map =basic_type(lines)
+    print(SCRF_l_map)
     CRF_l_map = {}
     for pre in ['S-', 'B-', 'I-', 'E-']:
         for suf in SCRF_l_map.keys():
             CRF_l_map[pre + suf] = len(CRF_l_map)
-    SCRF_l_map['<START>'] = 4
-    SCRF_l_map['<STOP>'] = 5
-    SCRF_l_map['O'] = 6
+    SCRF_l_map['<START>'] = len(SCRF_l_map)
+    SCRF_l_map['<STOP>'] = len(SCRF_l_map)
+    SCRF_l_map['O'] = len(SCRF_l_map)
     CRF_l_map['<start>'] = len(CRF_l_map)
     CRF_l_map['<pad>'] = len(CRF_l_map)
     CRF_l_map['O'] = len(CRF_l_map)
