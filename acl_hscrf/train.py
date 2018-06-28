@@ -67,8 +67,7 @@ if __name__ == "__main__":
     parser.add_argument('--char_lstm', action='store_true', help='use lstm for characters embedding or not')
     parser.add_argument('--allowspan', type=int, default=6, help='allowed max segment length')
     parser.add_argument('--grconv', action='store_true', help='use grconv')
-    parser.add_argument('--report',type=str)
-    parser.add_argument('--conll_eval',type=str)
+    parser.add_argument('--conll_fp',type=str)
 
     # TODO: check how to use UNK in this program
     args = parser.parse_args()
@@ -135,12 +134,12 @@ if __name__ == "__main__":
 
     print('constructing dataset')
     dataset, dataset_onlycrf = utils.construct_bucket_mean_vb_wc(train_features, train_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], ALLOW_SPANLEN=args.allowspan, train_set=True)
-    print(dataset)
-    exit()
     dev_dataset = utils.construct_bucket_mean_vb_wc(dev_features, dev_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
     test_dataset = utils.construct_bucket_mean_vb_wc(test_features, test_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
 
     dataset_loader = [torch.utils.data.DataLoader(tup, args.batch_size, shuffle=True, drop_last=False) for tup in dataset]
+    for instance in dataset_loader:
+        print(instance.numpy())
     dataset_loader_crf = [torch.utils.data.DataLoader(tup, 3, shuffle=True, drop_last=False) for tup in dataset_onlycrf] if dataset_onlycrf else None
     dev_dataset_loader = [torch.utils.data.DataLoader(tup, 50, shuffle=False, drop_last=False) for tup in dev_dataset]
     test_dataset_loader = [torch.utils.data.DataLoader(tup, 50, shuffle=False, drop_last=False) for tup in test_dataset]
@@ -234,7 +233,25 @@ if __name__ == "__main__":
             true_labels, crf_pred_labels, scrf_pred_labels, joint_pred_labels = evaluator.labels_extractor()
 
             mt = Metrics(args.conll_eval, f_map)
-            I = mt.word_id2txt()
+            labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
+            for mod in ['Crf','Scrf','Joint']:
+                # crf result
+                I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2SCRF)
+                mt.conll_eval_file(I)
+                eval_result = overlap_eval(args.conll_fp)
+                print('==================== ' + mod + '====================')
+                print('========\n')
+                print(eval_result["per_f1"] + '\n')
+                print(eval_result["per_pre"] + '\n')
+                print(eval_result["per_recall"] + '\n')
+                print(eval_result["micro_f1"] + '\n')
+                print(eval_result["micro_pre"] + '\n')
+                print(eval_result["micro_recall"] + '\n')
+                print(eval_result["macro_f1"] + '\n')
+                print(eval_result["macro_pre"] + '\n')
+                print(eval_result["macro_recall"] + '\n')
+                print('========\n')
+
             evaluator.labels_clear()
 
             best_test_f1_crf = test_f1_crf
