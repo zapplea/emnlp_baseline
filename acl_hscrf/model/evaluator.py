@@ -19,8 +19,10 @@ class evaluator():
         self.r_l_map = utils.revlut(l_map)
         self.SCRF_r_l_map = utils.revlut(SCRF_l_map)
 
-        self.pred_labels=[]
-        self.true_labels=[]
+        self.true_labels = []
+        self.scrf_pred_labels=[]
+        self.crf_pred_labels = []
+        self.joint_pred_labels = []
 
     def reset(self):
         """
@@ -62,6 +64,11 @@ class evaluator():
             decoded_data_crf = decoded_data_crf[:length]
             decode_data_scrf = decode_data_scrf[:length]
             decode_data_jnt = decode_data_jnt[:length]
+
+            self.true_labels.append(gold)
+            self.crf_pred_labels.append(decoded_data_crf)
+            self.scrf_pred_labels.append(decode_data_scrf)
+            self.joint_pred_labels.append(decode_data_jnt)
 
             correct_labels_i, total_labels_i, gold_count_i, guess_count_i, overlap_count_i = self.eval_instance(
                 decoded_data_crf, gold)
@@ -137,8 +144,6 @@ class evaluator():
             gold (seq_len): ground-truth
 
         """
-        self.pred_labels.append(best_path)
-        self.true_labels.append(gold)
         total_labels = len(best_path)
         correct_labels = np.sum(np.equal(best_path, gold))
 
@@ -206,8 +211,10 @@ class evaluator():
         return self.f1_score()
 
     def labels_extractor(self):
-        return self.pred_labels,self.true_labels
+        return self.true_labels, self.crf_pred_labels, self.scrf_pred_labels, self.joint_pred_labels
 
     def labels_clear(self):
-        self.pred_labels=[]
+        self.crf_pred_labels=[]
+        self.scrf_pred_labels=[]
+        self.joint_pred_labels=[]
         self.true_labels=[]

@@ -96,8 +96,6 @@ if __name__ == "__main__":
         test_lines = f.readlines()
 
     dev_features, dev_labels = utils.read_corpus(dev_lines)
-    print(dev_features)
-    exit()
     test_features, test_labels = utils.read_corpus(test_lines)
 
     if args.load_check_point:
@@ -119,7 +117,6 @@ if __name__ == "__main__":
             utils.generate_corpus_char(lines, if_shrink_c_feature=True,
                                        c_thresholds=args.mini_count,
                                        if_shrink_w_feature=False)
-        dictionary = copy.deepcopy(f_map)
         f_set = {v for v in f_map}
 
         f_map = utils.shrink_features(f_map, train_features, args.mini_count)
@@ -138,6 +135,8 @@ if __name__ == "__main__":
 
     print('constructing dataset')
     dataset, dataset_onlycrf = utils.construct_bucket_mean_vb_wc(train_features, train_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], ALLOW_SPANLEN=args.allowspan, train_set=True)
+    print(dataset)
+    exit()
     dev_dataset = utils.construct_bucket_mean_vb_wc(dev_features, dev_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
     test_dataset = utils.construct_bucket_mean_vb_wc(test_features, test_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
 
@@ -232,9 +231,10 @@ if __name__ == "__main__":
             test_f1_crf, test_pre_crf, test_rec_crf, test_acc_crf, test_f1_scrf, test_pre_scrf, test_rec_scrf, test_acc_scrf, test_f1_jnt, test_pre_jnt, test_rec_jnt, test_acc_jnt = \
                         evaluator.calc_score(model, test_dataset_loader)
 
-            pred_labels, true_labels = evaluator.labels_extractor()
-            mt = Metrics(args.conll_eval, dictionary)
+            true_labels, crf_pred_labels, scrf_pred_labels, joint_pred_labels = evaluator.labels_extractor()
 
+            mt = Metrics(args.conll_eval, f_map)
+            I = mt.word_id2txt()
             evaluator.labels_clear()
 
             best_test_f1_crf = test_f1_crf
