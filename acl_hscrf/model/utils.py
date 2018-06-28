@@ -335,7 +335,9 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
 
     """
     emb_filePath = '/datastore/liu121/nosqldb2/acl_hscrf/pkl/table.pkl'
+    print(os.path.isfile(emb_filePath))
     if not os.path.isfile(emb_filePath):
+        print('create embedding')
         feature_set = set([key.lower() for key in feature_map])
         full_feature_set = set([key.lower() for key in full_feature_set])
 
@@ -391,6 +393,7 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         with open(emb_filePath,'wb') as f:
             pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
     else:
+        print('load embedding')
         with open(emb_filePath,'rb') as f:
             data = pickle.load(f)
             word_dict=data['word_dict']
