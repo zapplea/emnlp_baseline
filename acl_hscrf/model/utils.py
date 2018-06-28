@@ -4,6 +4,8 @@ from functools import reduce
 import numpy as np
 import torch
 import json
+import pickle
+import os
 
 import torch.nn as nn
 import torch.nn.init
@@ -308,7 +310,7 @@ def iob2(tags):
         if split[0] == 'B':
             continue
         elif i == 0 or tags[i - 1] == 'O':  # conversion IOB1 to IOB2
-            tags[i] = 'B' + '-'.join(tag[1:])
+            tags[i] = 'B' + tag[1:]
         elif tags[i - 1][1:] == tag[1:]:
             continue
         else:
@@ -332,59 +334,68 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         shrink_to_corpus: whether to shrink out-of-corpus or not
 
     """
+    emb_filePath = '/datastore/liu121/nosqldb2/acl_hscrf/pkl/table.pkl'
+    if not os.path.isfile(emb_filePath):
+        feature_set = set([key.lower() for key in feature_map])
+        full_feature_set = set([key.lower() for key in full_feature_set])
 
-    feature_set = set([key.lower() for key in feature_map])
-    full_feature_set = set([key.lower() for key in full_feature_set])
 
-    
-    word_dict = {v:(k+1) for (k,v) in enumerate(feature_set - set(['<unk>']))}
-    word_dict['<unk>'] = 0
+        word_dict = {v:(k+1) for (k,v) in enumerate(feature_set - set(['<unk>']))}
+        word_dict['<unk>'] = 0
 
-    in_doc_freq_num = len(word_dict)
-    rand_embedding_tensor = torch.FloatTensor(in_doc_freq_num, emb_len)
-    init_embedding(rand_embedding_tensor)
+        in_doc_freq_num = len(word_dict)
+        rand_embedding_tensor = torch.FloatTensor(in_doc_freq_num, emb_len)
+        init_embedding(rand_embedding_tensor)
 
-    indoc_embedding_array = list()
-    indoc_word_array = list()
-    outdoc_embedding_array = list()
-    outdoc_word_array = list()
+        indoc_embedding_array = list()
+        indoc_word_array = list()
+        outdoc_embedding_array = list()
+        outdoc_word_array = list()
 
-    for line in open(emb_file, 'r'):
-        line = line.split(delimiter)
-        vector = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
+        for line in open(emb_file, 'r'):
+            line = line.split(delimiter)
+            vector = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
 
-        if shrink_to_train and line[0] not in feature_set:
-            continue
+            if shrink_to_train and line[0] not in feature_set:
+                continue
 
-        if line[0] == unk:
-            rand_embedding_tensor[0] = torch.FloatTensor(vector) #unk is 0
-        elif line[0] in word_dict:
-            rand_embedding_tensor[word_dict[line[0]]] = torch.FloatTensor(vector)
-        elif line[0] in full_feature_set:
-            indoc_embedding_array.append(vector)
-            indoc_word_array.append(line[0])
-        elif not shrink_to_corpus:
-            outdoc_word_array.append(line[0])
-            outdoc_embedding_array.append(vector)
-    
-    embedding_tensor_0 = torch.FloatTensor(np.asarray(indoc_embedding_array))
+            if line[0] == unk:
+                rand_embedding_tensor[0] = torch.FloatTensor(vector) #unk is 0
+            elif line[0] in word_dict:
+                rand_embedding_tensor[word_dict[line[0]]] = torch.FloatTensor(vector)
+            elif line[0] in full_feature_set:
+                indoc_embedding_array.append(vector)
+                indoc_word_array.append(line[0])
+            elif not shrink_to_corpus:
+                outdoc_word_array.append(line[0])
+                outdoc_embedding_array.append(vector)
 
-    if not shrink_to_corpus:
-        embedding_tensor_1 = torch.FloatTensor(np.asarray(outdoc_embedding_array))
-        word_emb_len = embedding_tensor_0.size(1)
-        assert(word_emb_len == emb_len)
+        embedding_tensor_0 = torch.FloatTensor(np.asarray(indoc_embedding_array))
 
-    if shrink_to_corpus:
-        embedding_tensor = torch.cat([rand_embedding_tensor, embedding_tensor_0], 0)
-    else:
-        embedding_tensor = torch.cat([rand_embedding_tensor, embedding_tensor_0, embedding_tensor_1], 0)
+        if not shrink_to_corpus:
+            embedding_tensor_1 = torch.FloatTensor(np.asarray(outdoc_embedding_array))
+            word_emb_len = embedding_tensor_0.size(1)
+            assert(word_emb_len == emb_len)
 
-    for word in indoc_word_array:
-        word_dict[word] = len(word_dict)
-    in_doc_num = len(word_dict)
-    if  not shrink_to_corpus:
-        for word in outdoc_word_array:
+        if shrink_to_corpus:
+            embedding_tensor = torch.cat([rand_embedding_tensor, embedding_tensor_0], 0)
+        else:
+            embedding_tensor = torch.cat([rand_embedding_tensor, embedding_tensor_0, embedding_tensor_1], 0)
+
+        for word in indoc_word_array:
             word_dict[word] = len(word_dict)
+        in_doc_num = len(word_dict)
+        if  not shrink_to_corpus:
+            for word in outdoc_word_array:
+                word_dict[word] = len(word_dict)
+        with open(emb_filePath,'wb') as f:
+            pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
+    else:
+        with open(emb_filePath,'rb') as f:
+            data = pickle.load(f)
+            word_dict=data['word_dict']
+            embedding_tensor=data['embedding_tensor']
+            in_doc_num = data['in_doc_num']
 
     return word_dict, embedding_tensor, in_doc_num
 
