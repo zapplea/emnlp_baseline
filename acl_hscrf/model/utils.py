@@ -225,6 +225,8 @@ def generate_corpus(lines, if_shrink_feature=False, thresholds=1):
             labels.append(iob_iobes(tmp_ll))
             tmp_fl = list()
             tmp_ll = list()
+    print('len tmp_ll: \n',len(tmp_ll))
+    print('in generate corpus')
     if len(tmp_fl) > 0:
         features.append(tmp_fl)
         print('tmp_ll: \n',tmp_ll)
