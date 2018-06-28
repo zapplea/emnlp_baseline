@@ -1,6 +1,6 @@
 from __future__ import print_function
-import metrics
-import evaluate_overlap
+from metrics import Metrics
+from evaluate_overlap import evaluate as overlap_eval
 
 import time
 import torch
