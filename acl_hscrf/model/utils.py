@@ -227,6 +227,9 @@ def generate_corpus(lines, if_shrink_feature=False, thresholds=1):
             tmp_ll = list()
     if len(tmp_fl) > 0:
         features.append(tmp_fl)
+        print('tmp_ll: \n',tmp_ll)
+        print('iob_iobes_tmp_ll: \n',iob_iobes(tmp_ll))
+        exit()
         labels.append(iob_iobes(tmp_ll))
     for ls in labels:
         for l in ls:
@@ -269,7 +272,7 @@ def read_corpus(lines):
 
     return features, labels
 
-
+# TODO: understand its mechanism
 def iob_iobes(tags):
     """
     IOB -> IOBES

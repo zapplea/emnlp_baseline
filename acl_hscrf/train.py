@@ -76,6 +76,12 @@ if __name__ == "__main__":
     with codecs.open(args.train_file, 'r', 'utf-8') as f:
         lines = f.readlines()
     CRF_l_map, SCRF_l_map=utils.get_crf_scrf_label(lines)
+    id2CRF={}
+    id2SCRF={}
+    for key in CRF_l_map:
+        id2CRF[CRF_l_map[key]]=key
+    for key in SCRF_l_map:
+        id2SCRF[SCRF_l_map[key]]=key
     print(CRF_l_map)
     print(SCRF_l_map)
 
@@ -108,7 +114,6 @@ if __name__ == "__main__":
                                        if_shrink_w_feature=False)
         print('========================')
         print('train_labels: \n',train_labels[-1])
-        print('c_map: \n',c_map)
         print('train_features: \n',train_features[-1])
         for element in train_features[-1]:
             print(f_map[element])
@@ -133,11 +138,6 @@ if __name__ == "__main__":
 
     print('constructing dataset')
     dataset, dataset_onlycrf = utils.construct_bucket_mean_vb_wc(train_features, train_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], ALLOW_SPANLEN=args.allowspan, train_set=True)
-
-    print('type_dataset: ',type(dataset))
-    print('type_dataset_onlycrf: ',type(dataset_onlycrf))
-    exit()
-
     dev_dataset = utils.construct_bucket_mean_vb_wc(dev_features, dev_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
     test_dataset = utils.construct_bucket_mean_vb_wc(test_features, test_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
 
