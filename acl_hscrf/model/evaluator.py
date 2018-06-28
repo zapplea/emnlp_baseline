@@ -19,6 +19,9 @@ class evaluator():
         self.r_l_map = utils.revlut(l_map)
         self.SCRF_r_l_map = utils.revlut(SCRF_l_map)
 
+        self.pred_labels=[]
+        self.true_labels=[]
+
     def reset(self):
         """
         re-set all states
@@ -134,6 +137,8 @@ class evaluator():
             gold (seq_len): ground-truth
 
         """
+        self.pred_labels.append(best_path)
+        self.true_labels.append(gold)
         total_labels = len(best_path)
         correct_labels = np.sum(np.equal(best_path, gold))
 
@@ -199,3 +204,10 @@ class evaluator():
             self.calc_f1_batch(tg, decoded_crf, decoded_scrf, decoded_jnt)
 
         return self.f1_score()
+
+    def labels_extractor(self):
+        return self.pred_labels,self.true_labels
+
+    def labels_clear(self):
+        self.pred_labels=[]
+        self.true_labels=[]

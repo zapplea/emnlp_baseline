@@ -101,7 +101,6 @@ def basic_type(lines):
 
 def get_crf_scrf_label(lines):
     SCRF_l_map =basic_type(lines)
-    print(SCRF_l_map)
     CRF_l_map = {}
     for pre in ['S-', 'B-', 'I-', 'E-']:
         for suf in SCRF_l_map.keys():
@@ -222,9 +221,6 @@ def generate_corpus(lines, if_shrink_feature=False, thresholds=1):
             tmp_ll.append(line[-1])
         elif len(tmp_fl) > 0:
             features.append(tmp_fl)
-            print('tmp_ll: \n', tmp_ll)
-            print('iob_iobes_tmp_ll: \n', iob_iobes(tmp_ll))
-            exit()
             labels.append(iob_iobes(tmp_ll))
             tmp_fl = list()
             tmp_ll = list()
@@ -301,8 +297,7 @@ def iob_iobes(tags):
 
 def iob2(tags):
     """
-    Check that tags have a valid IOB format.
-    Tags in IOB1 format are converted to IOB2.
+    generate Begin type
     """
     for i, tag in enumerate(tags):
         if tag == 'O':
@@ -313,7 +308,7 @@ def iob2(tags):
         if split[0] == 'B':
             continue
         elif i == 0 or tags[i - 1] == 'O':  # conversion IOB1 to IOB2
-            tags[i] = 'B' + tag[1:]
+            tags[i] = 'B' + '-'.join(tag[1:])
         elif tags[i - 1][1:] == tag[1:]:
             continue
         else:

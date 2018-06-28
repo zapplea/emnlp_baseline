@@ -1,4 +1,9 @@
 from __future__ import print_function
+import sys
+sys.path.append('/home/liu121/emnlp_baseline')
+from acl_hscrf.util.metrics import Metrics
+from acl_hscrf.util.evaluate_overlap import evaluate as overlap_eval
+
 import time
 import torch
 import torch.nn as nn
@@ -63,6 +68,8 @@ if __name__ == "__main__":
     parser.add_argument('--char_lstm', action='store_true', help='use lstm for characters embedding or not')
     parser.add_argument('--allowspan', type=int, default=6, help='allowed max segment length')
     parser.add_argument('--grconv', action='store_true', help='use grconv')
+    parser.add_argument('--report',type=str)
+    parser.add_argument('--conll_eval',type=str)
 
     # TODO: check how to use UNK in this program
     args = parser.parse_args()
@@ -82,8 +89,7 @@ if __name__ == "__main__":
         id2CRF[CRF_l_map[key]]=key
     for key in SCRF_l_map:
         id2SCRF[SCRF_l_map[key]]=key
-    print(CRF_l_map)
-    print(SCRF_l_map)
+    id2Type={'SCRF':id2SCRF,'CRF':id2CRF}
 
     with codecs.open(args.dev_file, 'r', 'utf-8') as f:
         dev_lines = f.readlines()
@@ -112,12 +118,8 @@ if __name__ == "__main__":
             utils.generate_corpus_char(lines, if_shrink_c_feature=True,
                                        c_thresholds=args.mini_count,
                                        if_shrink_w_feature=False)
-        print('========================')
-        print('train_labels: \n',train_labels[-1])
-        print('train_features: \n',train_features[-1])
-        for element in train_features[-1]:
-            print(f_map[element])
-        print('========================')
+        print('f_map: \n',f_map)
+        exit()
         f_set = {v for v in f_map}
 
         f_map = utils.shrink_features(f_map, train_features, args.mini_count)
@@ -225,11 +227,14 @@ if __name__ == "__main__":
         dev_f1_crf, dev_pre_crf, dev_rec_crf, dev_acc_crf, dev_f1_scrf, dev_pre_scrf, dev_rec_scrf, dev_acc_scrf, dev_f1_jnt, dev_pre_jnt, dev_rec_jnt, dev_acc_jnt = \
                 evaluator.calc_score(model, dev_dataset_loader)
 
+        pred_labels, true_labels=evaluator.labels_extractor()
+
+        evaluator.labels_clear()
+
         if dev_f1_jnt > best_dev_f1_jnt:
             early_stop_epochs = 0
             test_f1_crf, test_pre_crf, test_rec_crf, test_acc_crf, test_f1_scrf, test_pre_scrf, test_rec_scrf, test_acc_scrf, test_f1_jnt, test_pre_jnt, test_rec_jnt, test_acc_jnt = \
                         evaluator.calc_score(model, test_dataset_loader)
-
             best_test_f1_crf = test_f1_crf
             best_test_f1_scrf = test_f1_scrf
 
