@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument('--allowspan', type=int, default=6, help='allowed max segment length')
     parser.add_argument('--grconv', action='store_true', help='use grconv')
 
+    # TODO: check how to use UNK in this program
     args = parser.parse_args()
 
     #CRF_l_map, SCRF_l_map = utils.get_crf_scrf_label()
@@ -75,8 +76,8 @@ if __name__ == "__main__":
     with codecs.open(args.train_file, 'r', 'utf-8') as f:
         lines = f.readlines()
     CRF_l_map, SCRF_l_map=utils.get_crf_scrf_label(lines)
-    #print(CRF_l_map)
-    #print(SCRF_l_map)
+    print(CRF_l_map)
+    print(SCRF_l_map)
 
     with codecs.open(args.dev_file, 'r', 'utf-8') as f:
         dev_lines = f.readlines()
@@ -100,7 +101,7 @@ if __name__ == "__main__":
             sys.exit()
     else:
         print('constructing coding table')
-        # train features are words; f_map is {word : id}
+        # train features are words; f_map is {word : id}; c_map: character map
         train_features, train_labels, f_map, _, c_map = \
             utils.generate_corpus_char(lines, if_shrink_c_feature=True,
                                        c_thresholds=args.mini_count,
@@ -108,7 +109,6 @@ if __name__ == "__main__":
         print('========================')
         print('train_labels: \n',train_labels[-1])
         print('c_map: \n',c_map)
-        exit()
         print('train_features: \n',train_features[-1])
         for element in train_features[-1]:
             print(f_map[element])
@@ -127,6 +127,8 @@ if __name__ == "__main__":
 
         l_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), dev_labels))
         l_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), test_labels), l_set)
+    #end else
+
 
 
     print('constructing dataset')
