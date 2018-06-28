@@ -1,8 +1,6 @@
 from __future__ import print_function
-import sys
-sys.path.append('/home/liu121/emnlp_baseline')
-from acl_hscrf.util.metrics import Metrics
-from acl_hscrf.util.evaluate_overlap import evaluate as overlap_eval
+from metrics import Metrics
+from evaluate_overlap import evaluate as overlap_eval
 
 import time
 import torch
