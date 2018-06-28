@@ -117,8 +117,6 @@ if __name__ == "__main__":
         print('train_features: \n',train_features[-1])
         for element in train_features[-1]:
             print(f_map[element])
-        #print('f_map: \n', f_map)
-        print('c_map: \n', c_map)
         print('========================')
         f_set = {v for v in f_map}
 
