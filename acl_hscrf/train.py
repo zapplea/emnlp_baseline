@@ -1,6 +1,5 @@
 from __future__ import print_function
-from metrics import Metrics
-from evaluate_overlap import evaluate as overlap_eval
+
 
 import time
 import torch
@@ -14,12 +13,14 @@ from tqdm import tqdm
 import itertools
 import functools
 import numpy as np
+import copy
 
 import model.utils as utils
 from model.evaluator import evaluator
 from model.model import ner_model
 from model.data_packer import Repack
-
+from metrics import Metrics
+from evaluate_overlap import evaluate as overlap_eval
 
 # seed = int(np.random.uniform(0,1)*10000000)
 seed = 5703958
@@ -95,6 +96,8 @@ if __name__ == "__main__":
         test_lines = f.readlines()
 
     dev_features, dev_labels = utils.read_corpus(dev_lines)
+    print(dev_features)
+    exit()
     test_features, test_labels = utils.read_corpus(test_lines)
 
     if args.load_check_point:
@@ -116,8 +119,7 @@ if __name__ == "__main__":
             utils.generate_corpus_char(lines, if_shrink_c_feature=True,
                                        c_thresholds=args.mini_count,
                                        if_shrink_w_feature=False)
-        print('f_map: \n',f_map)
-        exit()
+        dictionary = copy.deepcopy(f_map)
         f_set = {v for v in f_map}
 
         f_map = utils.shrink_features(f_map, train_features, args.mini_count)
@@ -225,14 +227,16 @@ if __name__ == "__main__":
         dev_f1_crf, dev_pre_crf, dev_rec_crf, dev_acc_crf, dev_f1_scrf, dev_pre_scrf, dev_rec_scrf, dev_acc_scrf, dev_f1_jnt, dev_pre_jnt, dev_rec_jnt, dev_acc_jnt = \
                 evaluator.calc_score(model, dev_dataset_loader)
 
-        pred_labels, true_labels=evaluator.labels_extractor()
-
-        evaluator.labels_clear()
-
         if dev_f1_jnt > best_dev_f1_jnt:
             early_stop_epochs = 0
             test_f1_crf, test_pre_crf, test_rec_crf, test_acc_crf, test_f1_scrf, test_pre_scrf, test_rec_scrf, test_acc_scrf, test_f1_jnt, test_pre_jnt, test_rec_jnt, test_acc_jnt = \
                         evaluator.calc_score(model, test_dataset_loader)
+
+            pred_labels, true_labels = evaluator.labels_extractor()
+            mt = Metrics(args.conll_eval, dictionary)
+
+            evaluator.labels_clear()
+
             best_test_f1_crf = test_f1_crf
             best_test_f1_scrf = test_f1_scrf
 
