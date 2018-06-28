@@ -75,9 +75,8 @@ if __name__ == "__main__":
     with codecs.open(args.train_file, 'r', 'utf-8') as f:
         lines = f.readlines()
     CRF_l_map, SCRF_l_map=utils.get_crf_scrf_label(lines)
-    print(CRF_l_map)
-    print(SCRF_l_map)
-    exit()
+    #print(CRF_l_map)
+    #print(SCRF_l_map)
 
     with codecs.open(args.dev_file, 'r', 'utf-8') as f:
         dev_lines = f.readlines()
@@ -101,14 +100,15 @@ if __name__ == "__main__":
             sys.exit()
     else:
         print('constructing coding table')
-
+        # train features are words; f_map is {word : id}
         train_features, train_labels, f_map, _, c_map = \
             utils.generate_corpus_char(lines, if_shrink_c_feature=True,
                                        c_thresholds=args.mini_count,
                                        if_shrink_w_feature=False)
         print('========================')
         print('train_labels: \n',train_labels[-1])
-        # train features are words; f_map is {word : id}
+        print('c_map: \n',c_map)
+        exit()
         print('train_features: \n',train_features[-1])
         for element in train_features[-1]:
             print(f_map[element])
