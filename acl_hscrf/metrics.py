@@ -30,6 +30,8 @@ class Metrics:
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
                 type_txt = type_txt.replace('B-','')
+                type_txt = type_txt.replace('S-','')
+                type_txt = type_txt.replace('E-','')
                 tlabel_txt.append(type_txt)
                 cur_length += 1
                 if cur_length >= true_length:
