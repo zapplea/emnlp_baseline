@@ -151,8 +151,11 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
                     # Calculate per class metrics
                     precision =  get_precision(tp, fp)
+                    print('precision: ',precision)
                     recall = get_recall(tp, fn)
+                    print('recall: ',recall)
                     f1 = get_f1(precision, recall)
+                    print('f1: ', f1)
 
                     # Store per class metrics
                     precision_per_class[label] = precision
@@ -161,7 +164,6 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
 
                 else:
-                    print('false: ',label)
                     precision_per_class[label] = 0
                     recall_per_class[label] = 0
                     f1_per_class[label] = 0
