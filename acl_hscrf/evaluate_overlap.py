@@ -127,10 +127,6 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
                     # Make note of the currently predicted label
                     prev_pred_label = pred_label
-            print('tp: ',true_positive)
-            print('fp: ',false_positive)
-            print('fn: ',false_negative)
-            print('all_labels_set', all_labels_set)
             # Evaluation Metrics
             precision_per_class = dict()
             recall_per_class = dict()
@@ -142,13 +138,9 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
             for label in all_labels_set:
                 if label in true_positive:
-                    print('label: ',label)
                     tp = float(true_positive[label])
                     fp = float(false_positive[label] if label in false_positive else 0)
                     fn = float(false_negative[label] if label in false_negative else 0)
-                    print('tp: ',tp)
-                    print('fp: ',fp)
-                    print('fn: ',fn)
                     # Increment overall counters
                     total_tp += tp
                     total_fp += fp
@@ -156,12 +148,8 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
                     # Calculate per class metrics
                     precision =  get_precision(tp, fp)
-                    print('precision: ',precision)
                     recall = get_recall(tp, fn)
-                    print('recall: ',recall)
                     f1 = get_f1(precision, recall)
-                    print('f1: ', f1)
-                    print('====================')
                     # Store per class metrics
                     precision_per_class[label] = precision
                     recall_per_class[label] = recall
