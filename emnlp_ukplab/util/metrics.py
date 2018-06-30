@@ -44,6 +44,7 @@ class Metrics:
                     print('label: ',id2label)
                 type_txt = id2label[id]
                 type_txt = type_txt.replace('I-', '')
+                type_txt = type_txt.replace('B-', '')
                 plabel_txt.append(type_txt)
                 cur_length += 1
                 if cur_length >= true_length:
