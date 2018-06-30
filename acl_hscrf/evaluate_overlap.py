@@ -79,6 +79,7 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
                     true_label = tokens[1].replace('B-', '').replace('I-', '')
                     pred_label = tokens[2].replace('B-', '').replace('I-', '')
 
+
                     # If previous chunk ended
                     if chunk_label != true_label:
 
@@ -217,3 +218,17 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 #
 #     else:
 #         print('Error: Not a file or folder ( %s )' % file_path)
+if __name__ == "__main__":
+    path='/datastore/liu121/nosqldb2/acl_hscrf/conll/conll_eval.txt'
+    eval_result = evaluate(path)
+    print('========\n')
+    print(eval_result["per_f1"] + '\n')
+    print(eval_result["per_pre"] + '\n')
+    print(eval_result["per_recall"] + '\n')
+    print(eval_result["micro_f1"] + '\n')
+    print(eval_result["micro_pre"] + '\n')
+    print(eval_result["micro_recall"] + '\n')
+    print(eval_result["macro_f1"] + '\n')
+    print(eval_result["macro_pre"] + '\n')
+    print(eval_result["macro_recall"] + '\n')
+    print('========\n')
