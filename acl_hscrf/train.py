@@ -76,6 +76,7 @@ if __name__ == "__main__":
     k_shot=['1.0','2.0','4.0','8.0','16.0']
 
     for k in k_shot:
+        print('================== k_shot: '+k+' ==================')
         nn_config['train_filePath']=nn_config['train_filePath']%(args.mod,args.mod,k)
         nn_config['test_filePath'] = nn_config['test_filePath'] % (args.mod, args.mod, k)
         nn_config['dev_filePath'] = nn_config['dev_filePath'] % (args.mod, args.mod, k)
