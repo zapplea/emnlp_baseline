@@ -233,7 +233,7 @@ if __name__ == "__main__":
             labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
             for mod in ['Crf','Scrf','Joint']:
                 # crf result
-                I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2SCRF)
+                I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2CRF)
                 mt.conll_eval_file(I)
                 eval_result = overlap_eval(args.conll_fp)
                 print('==================== ' + mod + '====================')
