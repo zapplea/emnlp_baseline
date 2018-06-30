@@ -124,7 +124,10 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
                     # Make note of the currently predicted label
                     prev_pred_label = pred_label
-
+            print('tp: ',true_positive)
+            print('fp: ',false_positive)
+            print('fn: ',false_negative)
+            exit()
             # Evaluation Metrics
             precision_per_class = dict()
             recall_per_class = dict()
