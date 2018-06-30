@@ -131,7 +131,7 @@ if __name__ == "__main__":
             dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), dev_features), f_set)
             dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), test_features), dt_f_set)
 
-            f_map, embedding_tensor, in_doc_words = utils.load_embedding(args.emb_file, ' ', f_map, dt_f_set, args.unk, args.word_embedding_dim, shrink_to_corpus=args.shrink_embedding,emb_filePath=nn_config['emb_filePath'])
+            f_map, embedding_tensor, in_doc_words = utils.load_embedding(args.emb_file, ' ', f_map, dt_f_set, args.unk, args.word_embedding_dim, shrink_to_corpus=args.shrink_embedding)
 
             # print('in_doc_words: \n', in_doc_words)
 
