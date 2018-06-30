@@ -128,7 +128,6 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
             print('fp: ',false_positive)
             print('fn: ',false_negative)
             print('all_labels_set', all_labels_set)
-            exit()
             # Evaluation Metrics
             precision_per_class = dict()
             recall_per_class = dict()
@@ -140,6 +139,7 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
             for label in all_labels_set:
                 if label in true_positive:
+                    print('true: ',label)
                     tp = true_positive[label]
                     fp = false_positive[label] if label in false_positive else 0
                     fn = false_negative[label] if label in false_negative else 0
@@ -161,6 +161,7 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
 
 
                 else:
+                    print('false: ',label)
                     precision_per_class[label] = 0
                     recall_per_class[label] = 0
                     f1_per_class[label] = 0
