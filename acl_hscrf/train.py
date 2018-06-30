@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument('--char_lstm', action='store_true', help='use lstm for characters embedding or not')
     parser.add_argument('--allowspan', type=int, default=6, help='allowed max segment length')
     parser.add_argument('--grconv', action='store_true', help='use grconv')
-    parser.add_argument('--conll_fp',type=str)
+    parser.add_argument('--conll_fp',type=str,default='/datastore/liu121/nosqldb2/acl_hscrf/conll')
 
     # TODO: check how to use UNK in this program
     args = parser.parse_args()
@@ -229,7 +229,7 @@ if __name__ == "__main__":
 
             true_labels, crf_pred_labels, scrf_pred_labels, joint_pred_labels = evaluator.labels_extractor()
 
-            mt = Metrics(args.conll_eval, f_map)
+            mt = Metrics(args.conll_fp, f_map)
             labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
             for mod in ['Crf','Scrf','Joint']:
                 # crf result
