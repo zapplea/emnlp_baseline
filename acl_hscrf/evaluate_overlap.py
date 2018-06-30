@@ -143,9 +143,9 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
             for label in all_labels_set:
                 if label in true_positive:
                     print('label: ',label)
-                    tp = true_positive[label]
-                    fp = false_positive[label] if label in false_positive else 0
-                    fn = false_negative[label] if label in false_negative else 0
+                    tp = float(true_positive[label])
+                    fp = float(false_positive[label] if label in false_positive else 0)
+                    fn = float(false_negative[label] if label in false_negative else 0)
                     print('tp: ',tp)
                     print('fp: ',fp)
                     print('fn: ',fn)
