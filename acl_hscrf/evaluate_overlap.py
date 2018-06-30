@@ -20,6 +20,7 @@ from nerd.util.file_util import FileUtil
 
 
 def get_precision(_tp, _fp):
+    print('get_precision: ',_tp / (_tp + _fp))
     return _tp / (_tp + _fp) if _tp > 0 else 0
 
 def get_recall(_tp, _fn):
