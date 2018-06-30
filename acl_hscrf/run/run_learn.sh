@@ -15,4 +15,4 @@ module load cuda/8.0.61
 module load pytorch/0.2.0p3-py27
 echo "loaded"
 
-python ../train.py --emb_file
+python ../train.py
