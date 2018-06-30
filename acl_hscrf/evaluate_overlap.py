@@ -127,6 +127,7 @@ def evaluate(_file_path, _delimeter='\t', other_label='O'):
             print('tp: ',true_positive)
             print('fp: ',false_positive)
             print('fn: ',false_negative)
+            print('all_labels_set', all_labels_set)
             exit()
             # Evaluation Metrics
             precision_per_class = dict()
