@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument('--char_lstm', action='store_true', help='use lstm for characters embedding or not')
     parser.add_argument('--allowspan', type=int, default=6, help='allowed max segment length')
     parser.add_argument('--grconv', action='store_true', help='use grconv')
-    parser.add_argument('--conll_fp',type=str,default='/datastore/liu121/nosqldb2/acl_hscrf/conll')
+    parser.add_argument('--conll_fp',type=str,default='/datastore/liu121/nosqldb2/acl_hscrf/conll/conll_eval.txt')
 
     # TODO: check how to use UNK in this program
     args = parser.parse_args()
