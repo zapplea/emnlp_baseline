@@ -213,7 +213,11 @@ class DataSplit:
             sample[key]=[]
             if is_train:
                 for i in range(kwargs['k']):
-                    sample[key].append(ids[i])
+                    if i>=len(ids):
+                        index = random.randint(0,len(ids)-1)
+                        sample[key].append(ids[index])
+                    else:
+                        sample[key].append(ids[i])
             else:
                 for i in range(len(ids)):
                     sample[key].append(ids[i])
