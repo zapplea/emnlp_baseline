@@ -403,28 +403,28 @@ class BiLSTM:
             start_time = time.time() 
             for modelName in self.evaluateModelNames:
                 logging.info("-- %s --" % (modelName))
-                # dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
+                dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
                 self.evaluate(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
                 
-                # if dev_score > max_dev_score[modelName]:
-                #     max_dev_score[modelName] = dev_score
-                #     max_test_score[modelName] = test_score
-                #     no_improvement_since = 0
-                #
-                #     #Save the model
-                #     if self.modelSavePath != None:
-                #         self.saveModel(modelName, epoch, dev_score, test_score)
-                # else:
-                #     no_improvement_since += 1
+                if dev_score > max_dev_score[modelName]:
+                    max_dev_score[modelName] = dev_score
+                    max_test_score[modelName] = test_score
+                    no_improvement_since = 0
+
+                    #Save the model
+                    if self.modelSavePath != None:
+                        self.saveModel(modelName, epoch, dev_score, test_score)
+                else:
+                    no_improvement_since += 1
                     
                     
-                # if self.resultsSavePath != None:
-                #     self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score, max_dev_score[modelName], max_test_score[modelName]])))
-                #     self.resultsSavePath.write("\n")
-                #     self.resultsSavePath.flush()
-                #
-                # logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
-                # logging.info("")
+                if self.resultsSavePath != None:
+                    self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score, max_dev_score[modelName], max_test_score[modelName]])))
+                    self.resultsSavePath.write("\n")
+                    self.resultsSavePath.flush()
+
+                logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
+                logging.info("")
                 
             logging.info("%.2f sec for evaluation" % (time.time() - start_time))
             
@@ -488,8 +488,8 @@ class BiLSTM:
         return predLabels
 
     def evaluate(self,modelName,devMatrix,testMatrix):
-        print('===============devMatrix===============')
-        self.evaluateScore(modelName,devMatrix)
+        # print('===============devMatrix===============')
+        # self.evaluateScore(modelName,devMatrix)
         print('===============testMatrix===============')
         self.evaluateScore(modelName,testMatrix)
 
