@@ -30,6 +30,7 @@ if __name__=="__main__":
     configs = {'bbn_kn':{'conll_filePath':'/datastore/liu121/nosqldb2/bbn_kn/data_test_draw'},
                'cadec':{'conll_filePath':'/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw'},
                'nvd':{'conll_filePath':'/datastore/liu121/nosqldb2/nvd/nvd_test_draw'}}
-    for config in configs:
-        lm = LenMention(config)
+    for key in configs:
+        print(key)
+        lm = LenMention(configs[key])
         lm.stat()
