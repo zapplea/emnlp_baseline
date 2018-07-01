@@ -87,6 +87,8 @@ class DataSplit:
         type_txt = ''
         for i in range(len(tree)):
             node = tree[i]
+            if node.type=='I-WORK_OF_ART:BOOK':
+                print(node.type)
             parent = node.parent
             # the first node
             # if parent=='__empty__':
@@ -193,6 +195,8 @@ class DataSplit:
             mct = self.visit_tree(tree)
             for element in mct:
                 type_txt = element['type']
+                if type_txt == 'I-WORK_OF_ART:BOOK':
+                    print(type_txt)
                 mention_start = element['mention_start']
                 mention_end = element['mention_end']+1
                 if type_txt not in t2sentenceID:
@@ -203,10 +207,8 @@ class DataSplit:
 
     def split(self,t2sentenceID,is_train,**kwargs):
         # sample = {type:k[sentence id]}
-        print(t2sentenceID.keys())
         sample={}
         for key in t2sentenceID:
-            print(key)
             ids = t2sentenceID[key]
             random.shuffle(ids)
             sample[key]=[]
