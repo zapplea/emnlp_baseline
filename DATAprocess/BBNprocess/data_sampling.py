@@ -88,6 +88,7 @@ class DataSplit:
         for i in range(len(tree)):
             node = tree[i]
             if node.type=='I-WORK_OF_ART:BOOK':
+                print('in visit tree')
                 print(node.type)
             parent = node.parent
             # the first node
@@ -196,6 +197,7 @@ class DataSplit:
             for element in mct:
                 type_txt = element['type']
                 if type_txt == 'I-WORK_OF_ART:BOOK':
+                    print('in mct gen')
                     print(type_txt)
                 mention_start = element['mention_start']
                 mention_end = element['mention_end']+1
