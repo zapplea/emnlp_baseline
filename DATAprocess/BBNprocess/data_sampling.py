@@ -232,8 +232,6 @@ if __name__ == "__main__":
         data = BBNDataReader.readFile(filePath=data_config['Conll_filePath'])
         ds = DataSplit(data_config)
         t2sentenceID = ds.mct_gen(data)
-        print(t2sentenceID.keys())
-        exit()
         samples={}
 
         for i in range(data_config['iteration']):
