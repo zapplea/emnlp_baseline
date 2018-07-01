@@ -113,10 +113,10 @@ class DataSplit:
                     else:
                         rcontxt.append('#PAD#')
                         rcontxt.append('#PAD#')
-                    if len(mention)<=5:
-                        mct.append(
-                            {'mention': ' '.join(mention), 'lcontxt': ' '.join(lcontxt), 'rcontxt': ' '.join(rcontxt),
-                             'type': type_txt, 'mention_tag': mention_tag,'mention_start':mention_pos[0],'mention_end':mention_pos[-1]})
+                    # if len(mention)<=5:
+                    mct.append(
+                        {'mention': ' '.join(mention), 'lcontxt': ' '.join(lcontxt), 'rcontxt': ' '.join(rcontxt),
+                         'type': type_txt, 'mention_tag': mention_tag,'mention_start':mention_pos[0],'mention_end':mention_pos[-1]})
                 mention = []
                 mention_tag = []
                 mention_pos = []
