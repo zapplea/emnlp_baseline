@@ -27,10 +27,10 @@ class LenMention:
         print('frequency: \n',freq)
 
 if __name__=="__main__":
-    configs = {'bbn_kn':{'conll_filePath':'/datastore/liu121/nosqldb2/bbn_kn/data_test_draw'},
+    configs = {'bbn_kn':{'conll_filePath':'/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt'},
                'cadec':{'conll_filePath':'/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw'},
                'nvd':{'conll_filePath':'/datastore/liu121/nosqldb2/nvd/nvd_test_draw'}}
     for key in configs:
-        print(key)
+        print('================== ',key,' ==================')
         lm = LenMention(configs[key])
         lm.stat()
