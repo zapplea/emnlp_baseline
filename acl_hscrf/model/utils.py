@@ -318,7 +318,7 @@ def iob2(tags):
     return True
 
 
-def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_len, shrink_to_train=False, shrink_to_corpus=False,emb_filePath = '/datastore/liu121/nosqldb2/acl_hscrf/pkl/table.pkl'):
+def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_len, shrink_to_train=False, shrink_to_corpus=False,embsave_filePath = '/datastore/liu121/nosqldb2/acl_hscrf/pkl/table.pkl'):
     """
     load embedding, indoc words would be listed before outdoc words
 
@@ -335,7 +335,7 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
 
     """
 
-    if not os.path.isfile(emb_filePath):
+    if not os.path.isfile(embsave_filePath):
         print('create embedding')
         feature_set = set([key.lower() for key in feature_map])
         full_feature_set = set([key.lower() for key in full_feature_set])
@@ -389,11 +389,11 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         if  not shrink_to_corpus:
             for word in outdoc_word_array:
                 word_dict[word] = len(word_dict)
-        with open(emb_filePath,'wb') as f:
+        with open(embsave_filePath,'wb') as f:
             pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
     else:
         print('load embedding')
-        with open(emb_filePath,'rb') as f:
+        with open(embsave_filePath,'rb') as f:
             data = pickle.load(f)
             word_dict=data['word_dict']
             embedding_tensor=data['embedding_tensor']

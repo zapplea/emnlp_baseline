@@ -72,7 +72,7 @@ if __name__ == "__main__":
                'dev_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/dev.txt',
                'report_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/report/report_%s%s',
                'conll_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/conll/conll_%s%s',
-               'emb_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/pkl/table'+args.mod}
+               'embsave_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/pkl/table'+args.mod}
     k_shot=['1.0','2.0','4.0','8.0','16.0']
 
     for k in k_shot:
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), dev_features), f_set)
             dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), test_features), dt_f_set)
 
-            f_map, embedding_tensor, in_doc_words = utils.load_embedding(args.emb_file, ' ', f_map, dt_f_set, args.unk, args.word_embedding_dim, shrink_to_corpus=args.shrink_embedding)
+            f_map, embedding_tensor, in_doc_words = utils.load_embedding(args.emb_file, ' ', f_map, dt_f_set, args.unk, args.word_embedding_dim, shrink_to_corpus=args.shrink_embedding,embsave_filePath=nn_config['embsave_filePath'])
 
             # print('in_doc_words: \n', in_doc_words)
 
