@@ -247,4 +247,4 @@ if __name__ == "__main__":
         json_filePath = data_config['json_filePath']
         with open(json_filePath,'w+') as f:
             json.dump(samples,f,indent=4,sort_keys=False)
-
+        print('finish')
