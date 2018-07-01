@@ -221,13 +221,13 @@ if __name__ == "__main__":
             data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration':5,
-                           'json_filePath':'/datastore/liu121/nosqldb2/bbn_kn/draw.json',
+                           'json_filePath':'/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
                            'max_len':100}
         else:
             data_config = {'Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval.txt',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration': 5,
-                           'json_filePath': '/datastore/liu121/nosqldb2/bbn_data_split/eval.json',
+                           'json_filePath': '/datastore/liu121/nosqldb2/bbn_kn/eval.json',
                            'max_len':100}
         data = BBNDataReader.readFile(filePath=data_config['Conll_filePath'])
         ds = DataSplit(data_config)

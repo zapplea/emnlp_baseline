@@ -68,7 +68,7 @@ class DataGenerator:
                     for instance in t2indexes[key]:
                         id = instance[0]
                         if id >= len(data):
-                            # print(affix,' ',str(id))
+                            print(affix,' ',str(id))
                             continue
                         instance = data[id]
                         sample[affix].append(instance)
