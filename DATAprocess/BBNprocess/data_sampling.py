@@ -203,8 +203,10 @@ class DataSplit:
 
     def split(self,t2sentenceID,is_train,**kwargs):
         # sample = {type:k[sentence id]}
+        print(t2sentenceID.keys())
         sample={}
         for key in t2sentenceID:
+            print(key)
             ids = t2sentenceID[key]
             random.shuffle(ids)
             sample[key]=[]
@@ -238,6 +240,8 @@ if __name__ == "__main__":
 
         for i in range(data_config['iteration']):
             for j in [1,2,4,8,16]:
+                print('=================================')
+                print(str(j),'.',str(i))
                 sample = ds.split(t2sentenceID,True,k=j)
                 if str(j) not in samples:
                     samples[str(j)]={str(i):sample}
