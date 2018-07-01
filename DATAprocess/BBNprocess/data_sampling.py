@@ -218,13 +218,13 @@ if __name__ == "__main__":
     for flag in [True]:
         is_draw = flag
         if is_draw:
-            data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/bbn_data/data_test_draw',
+            data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration':5,
-                           'json_filePath':'/datastore/liu121/nosqldb2/bbn_data_split/draw.json',
+                           'json_filePath':'/datastore/liu121/nosqldb2/bbn_kn/draw.json',
                            'max_len':100}
         else:
-            data_config = {'Conll_filePath': '/datastore/liu121/nosqldb2/bbn_data/data_test_eval',
+            data_config = {'Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval.txt',
                            'table_filePath': '/datastore/liu121/nosqldb2/bbn_data/table.pkl',
                            'iteration': 5,
                            'json_filePath': '/datastore/liu121/nosqldb2/bbn_data_split/eval.json',
