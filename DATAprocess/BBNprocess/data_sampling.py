@@ -218,6 +218,9 @@ class DataSplit:
                     sample[key].append(ids[i])
         return sample
 
+    def check(self):
+        pass
+
 if __name__ == "__main__":
     for flag in [True]:
         is_draw = flag
