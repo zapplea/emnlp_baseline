@@ -148,8 +148,8 @@ if __name__ == "__main__":
 
         dataset_loader = [torch.utils.data.DataLoader(tup, args.batch_size, shuffle=True, drop_last=False) for tup in dataset]
         dataset_loader_crf = [torch.utils.data.DataLoader(tup, 3, shuffle=True, drop_last=False) for tup in dataset_onlycrf] if dataset_onlycrf else None
-        dev_dataset_loader = [torch.utils.data.DataLoader(tup, 10, shuffle=False, drop_last=False) for tup in dev_dataset]
-        test_dataset_loader = [torch.utils.data.DataLoader(tup, 10, shuffle=False, drop_last=False) for tup in test_dataset]
+        dev_dataset_loader = [torch.utils.data.DataLoader(tup, 3, shuffle=False, drop_last=False) for tup in dev_dataset]
+        test_dataset_loader = [torch.utils.data.DataLoader(tup, 3, shuffle=False, drop_last=False) for tup in test_dataset]
 
         print('building model')
         model = ner_model(args.word_embedding_dim, args.word_hidden_dim, args.word_lstm_layers, len(f_map),
