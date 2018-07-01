@@ -32,8 +32,8 @@ class DataGenerator:
         for i in range(data_len):
             text = data.text[i]
             labels = data.labels[i]
-            if len(text) > self.data_config['max_len']:
-                continue
+            # if len(text) > self.data_config['max_len']:
+            #     continue
             y_ = []
             for i in range(len(labels)):
                 if 'I-' in labels[i]:
@@ -68,7 +68,7 @@ class DataGenerator:
                     for instance in t2indexes[key]:
                         id = instance[0]
                         if id >= len(data):
-                            print(affix,' ',str(id))
+                            print('error: ',affix,' ',str(id))
                             continue
                         instance = data[id]
                         sample[affix].append(instance)
