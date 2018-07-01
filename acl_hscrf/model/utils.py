@@ -444,6 +444,8 @@ def construct_bucket_mean_vb_wc(word_features, input_label, label_dict, SCRF_lab
     """
 
     SCRFtags = CRFtag_to_SCRFtag(input_label)
+    print('input_label: \n',input_label)
+    print('label_dict: \n',label_dict)
     labels = encode(input_label, label_dict)
     SCRFlabels = encode_SCRF(SCRFtags, SCRF_label_dict)
 

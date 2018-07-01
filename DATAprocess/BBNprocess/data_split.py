@@ -215,7 +215,7 @@ class DataSplit:
         return sample
 
 if __name__ == "__main__":
-    for flag in [True,False]:
+    for flag in [True]:
         is_draw = flag
         if is_draw:
             data_config = {'Conll_filePath':'/datastore/liu121/nosqldb2/bbn_data/data_test_draw',
@@ -232,6 +232,8 @@ if __name__ == "__main__":
         data = BBNDataReader.readFile(filePath=data_config['Conll_filePath'])
         ds = DataSplit(data_config)
         t2sentenceID = ds.mct_gen(data)
+        print(t2sentenceID.keys())
+        exit()
         samples={}
 
         for i in range(data_config['iteration']):
