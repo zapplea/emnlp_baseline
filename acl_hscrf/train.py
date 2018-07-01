@@ -72,7 +72,7 @@ if __name__ == "__main__":
                'dev_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/dev.txt',
                'report_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/report/report_%s%s',
                'conll_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/conll/conll_%s%s',
-               'embsave_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/pkl/table'+args.mod}
+               'embsave_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/pkl/table_'+args.mod}
     k_shot=['1.0','2.0','4.0','8.0','16.0']
 
     for k in k_shot:
