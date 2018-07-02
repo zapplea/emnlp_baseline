@@ -748,8 +748,13 @@ def crf_to_scrf(decoded_crf, r_l_map, scrf_l_map):
                 break
             sentencecrf.append(tag)
         input_label.append(sentencecrf)
+    print('input_label: \n',input_label)
     SCRFtags = CRFtag_to_SCRFtag(input_label)
+    print('SCRFtags: \n', SCRFtags)
+    print('scrf_l_map: \n',scrf_l_map)
     SCRFlabels = encode_SCRF(SCRFtags, scrf_l_map)
+    print('SCRFlabels: \n',SCRFlabels)
+    print('##########################')
     maxl_1 = max([j[1] for i in SCRFlabels for j in i]) + 2
     scrfdata = []
     masks = []

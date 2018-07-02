@@ -187,7 +187,7 @@ if __name__ == "__main__":
         evaluator = evaluator(packer, CRF_l_map, SCRF_l_map)
 
         for epoch_idx, args.start_epoch in enumerate(epoch_list):
-
+            print('=================================================')
             epoch_loss = 0
             model.train()
             if dataset_loader_crf:
