@@ -434,6 +434,9 @@ def CRFtag_to_SCRFtag(inputs):
             if tag[0] == u'E':
                 tags.append((beg, i, oldtag, tag[2:]))
                 oldtag = tag[2:]
+            if tag[0] == u'I':
+                tags.append((beg, i, oldtag, tag[2:]))
+                oldtag = tag[2:]
         alltags.append(tags)
     return alltags
 
