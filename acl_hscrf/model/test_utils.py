@@ -46,8 +46,9 @@ class Test:
         print('\ntest_read_corpus:\n')
         lines = self.loadcorpus()
         features, labels = utils.read_corpus(lines)
-        print('features:\n',features)
-        print('labels:\n',labels)
+        for i in range(3):
+            print('features_%s:\n'% str(i),features[i])
+            print('labels_%s:\n'% str(i),labels[i])
 
     def test_generate_corpus_char(self):
         print('\ngenerate_corpus_char:\n')
