@@ -270,7 +270,8 @@ def read_corpus(lines):
 
     return features, labels
 
-# TODO: understand its mechanism
+# convert [O, I-LOC, I-LOC, I-LOC, O]
+# to      [O, B-LOC, E-LOC, E-LOC, O]
 def iob_iobes(tags):
     """
     IOB -> IOBES
@@ -296,7 +297,8 @@ def iob_iobes(tags):
             raise Exception('Invalid IOB format!')
     return new_tags
 
-
+# convert [O, I-LOC, I-LOC, I-LOC, O]
+# to      [O, B-LOC, I-LOC, I-LOC, O]
 def iob2(tags):
     """
     generate Begin type
@@ -434,9 +436,9 @@ def CRFtag_to_SCRFtag(inputs):
             if tag[0] == u'E':
                 tags.append((beg, i, oldtag, tag[2:]))
                 oldtag = tag[2:]
-            if tag[0] == u'I':
-                tags.append((beg, i, oldtag, tag[2:]))
-                oldtag = tag[2:]
+            # if tag[0] == u'I':
+            #     tags.append((beg, i, oldtag, tag[2:]))
+            #     oldtag = tag[2:]
         alltags.append(tags)
     return alltags
 

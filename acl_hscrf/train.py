@@ -121,10 +121,9 @@ if __name__ == "__main__":
         else:
             print('constructing coding table')
             # train features are words; f_map is {word : id}; c_map: character map
-            train_features, train_labels, f_map, _, c_map = \
-                utils.generate_corpus_char(lines, if_shrink_c_feature=True,
-                                           c_thresholds=args.mini_count,
-                                           if_shrink_w_feature=False)
+            train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True,
+                                                                                       c_thresholds=args.mini_count,
+                                                                                       if_shrink_w_feature=False)
             f_set = {v for v in f_map}
 
             f_map = utils.shrink_features(f_map, train_features, args.mini_count)
