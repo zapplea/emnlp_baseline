@@ -8,12 +8,12 @@ class Test:
 
     def test_iob2(self):
         print('\niob2:\n')
-        tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O']
+        tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O','I-PER']
         utils.iob2(tags)
         print(tags)
 
     def test_iob_iobes(self):
-        tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O']
+        tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O', 'I-PER']
         result = utils.iob_iobes(tags)
         print(result)
 

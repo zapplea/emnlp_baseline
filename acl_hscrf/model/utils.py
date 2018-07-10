@@ -270,8 +270,8 @@ def read_corpus(lines):
 
     return features, labels
 
-# convert [O, I-LOC, I-LOC, I-LOC, O]
-# to      [O, B-LOC, E-LOC, E-LOC, O]
+# convert [O, I-LOC, I-LOC, I-LOC, O, I-PER, I-ORG]
+# to      [O, B-LOC, E-LOC, E-LOC, O, S-PER, S-ORG]
 def iob_iobes(tags):
     """
     IOB -> IOBES
