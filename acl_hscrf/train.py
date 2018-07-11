@@ -240,7 +240,9 @@ if __name__ == "__main__":
 
                 mt = Metrics(nn_config['conll_filePath'], f_map)
                 labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
-                f1_score = {'Crf':test_f1_crf,'Scrf':test_f1_scrf,'Joint':test_f1_jnt}
+                eval_score = {'Crf':{'f1':test_f1_crf,'pre':test_pre_crf,'rec':test_rec_crf},
+                              'Scrf':{'f1':test_f1_scrf,'pre':test_pre_scrf,'rec':test_rec_scrf},
+                              'Joint':{test_f1_jnt}}
                 f=open(nn_config['report_filePath'],'a+')
                 for mod in ['Crf','Scrf','Joint']:
                     # crf result
