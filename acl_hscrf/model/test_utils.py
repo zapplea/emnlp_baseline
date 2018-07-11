@@ -80,8 +80,12 @@ class Test:
 
         print 'original feature map: '
         print 'len: ', len(f_map)
+        print f_map
         print 'shrinked feature_map: '
         print 'len: ', len(feature_map)
+        # for key in feature_map:
+        #     if key in f_map:
+        #         print(key)
 
 
     def main(self):
