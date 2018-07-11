@@ -64,14 +64,11 @@ class Test:
 
 
     def test_generate_corpus_char(self):
-        print('\ngenerate_corpus_char:\n')
+        print '\ngenerate_corpus_char:\n'
         lines = self.loadcorpus()
         train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True, c_thresholds=5, if_shrink_w_feature=False)
-        for i in range(1):
-            print 'train_features_%s: '% str(i),train_features[i]
-            print 'train_labels_%s:'% str(i),train_labels[i]
-
-        print 'f_map:'
+        print 'char_map:', c_map
+    
 
     def main(self):
         self.test_iob2()
@@ -79,6 +76,7 @@ class Test:
         self.test_get_crf_scrf_label()
         self.test_read_corpus()
         self.test_generate_corpus()
+        self.test_generate_corpus_char()
 
 if __name__ =="__main__":
     # TODO: need to verify what the labels used to test, with B-, S-?
