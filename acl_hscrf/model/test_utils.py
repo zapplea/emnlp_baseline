@@ -117,7 +117,7 @@ class Test:
     def main(self):
         # self.test_iob2()
         # self.test_iob_iobes()
-        # self.test_get_crf_scrf_label()
+        self.test_get_crf_scrf_label()
         # self.test_read_corpus()
         # self.test_generate_corpus()
         # self.test_generate_corpus_char()
