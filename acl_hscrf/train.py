@@ -127,6 +127,7 @@ if __name__ == "__main__":
             f_set = {v for v in f_map}
 
             f_map = utils.shrink_features(f_map, train_features, args.mini_count)
+            # union the f_set with dev_features and test_features.
             dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), dev_features), f_set)
             dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), test_features), dt_f_set)
 
