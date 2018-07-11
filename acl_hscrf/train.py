@@ -244,7 +244,7 @@ if __name__ == "__main__":
                 f=open(nn_config['report_filePath'],'a+')
                 for mod in ['Crf','Scrf','Joint']:
                     # crf result
-                    I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2SCRF)
+                    I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2Type['CRF'])
                     mt.conll_eval_file(I)
                     eval_result = overlap_eval(nn_config['conll_filePath'])
                     f.write('==================== ' + mod + '====================\n')
