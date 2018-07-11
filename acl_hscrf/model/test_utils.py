@@ -13,10 +13,10 @@ class Test:
         print(tags)
 
     def test_iob_iobes(self):
-        print('\niob_iobes:\n')
+        print '\niob_iobes:\n'
         tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O', 'I-PER']
         result = utils.iob_iobes(tags)
-        print(result)
+        print result
 
     def loadcorpus(self):
         with codecs.open('/datastore/liu121/nosqldb2/acl_hscrf/data/bbn_kn/bbn_kn__1.0/train.txt', 'r', 'utf-8') as f:
@@ -24,7 +24,7 @@ class Test:
         return lines
 
     def test_get_crf_scrf_label(self):
-        print('\nget_crf_scrf_label:\n')
+        print '\nget_crf_scrf_label:\n'
         SCRF_l_map = {}
         SCRF_l_map['PER'] = 0
         SCRF_l_map['LOC'] = 1
@@ -40,16 +40,16 @@ class Test:
         CRF_l_map['<start>'] = len(CRF_l_map)
         CRF_l_map['<pad>'] = len(CRF_l_map)
         CRF_l_map['O'] = len(CRF_l_map)
-        print('CRF_l_map',CRF_l_map)
-        print('SCRF_l_map',SCRF_l_map)
+        print 'CRF_l_map',CRF_l_map
+        print 'SCRF_l_map',SCRF_l_map
 
     def test_read_corpus(self):
-        print('\ntest_read_corpus:\n')
+        print '\ntest_read_corpus:\n'
         lines = self.loadcorpus()
         features, labels = utils.read_corpus(lines)
         for i in range(3):
-            print('features_%s:\n'% str(i),features[i])
-            print('labels_%s:\n'% str(i),labels[i])
+            print 'features_%s:\n'% str(i),features[i]
+            print 'labels_%s:\n'% str(i),labels[i]
 
     def test_generate_corpus(self):
         print('\ngenerate_corpus:\n')
@@ -57,10 +57,10 @@ class Test:
         features, labels, feature_map, label_map = utils.generate_corpus(lines, if_shrink_feature=False,
                                                                    thresholds=1)
         for i in range(1):
-            print('features_%s: '% str(i),features[i])
-            print('labels_%s:'% str(i),labels[i])
-        print('feature_map:\n',feature_map)
-        print('label_map:\n',label_map)
+            print 'features_%s: '% str(i),features[i]
+            print 'labels_%s:'% str(i),labels[i]
+        print 'feature_map:\n',feature_map.keys()
+        print 'label_map:\n',label_map
 
 
     def test_generate_corpus_char(self):
@@ -68,10 +68,10 @@ class Test:
         lines = self.loadcorpus()
         train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True, c_thresholds=5, if_shrink_w_feature=False)
         for i in range(1):
-            print('train_features_%s: '% str(i),train_features[i])
-            print('train_labels_%s:'% str(i),train_labels[i])
+            print 'train_features_%s: '% str(i),train_features[i]
+            print 'train_labels_%s:'% str(i),train_labels[i]
 
-        print('f_map:')
+        print 'f_map:'
 
     def main(self):
         self.test_iob2()
