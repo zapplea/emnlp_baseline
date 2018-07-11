@@ -183,7 +183,6 @@ def generate_corpus_char(lines, if_shrink_c_feature=False, c_thresholds=1, if_sh
 def shrink_features(feature_map, features, thresholds):
     """
     filter un-common features by threshold
-
     """
 
     feature_count = {k: 0 for (k, v) in iter(feature_map.items())}
@@ -392,7 +391,7 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         for word in indoc_word_array:
             word_dict[word] = len(word_dict)
         in_doc_num = len(word_dict)
-        if  not shrink_to_corpus:
+        if not shrink_to_corpus:
             for word in outdoc_word_array:
                 word_dict[word] = len(word_dict)
         with open(embsave_filePath,'wb') as f:

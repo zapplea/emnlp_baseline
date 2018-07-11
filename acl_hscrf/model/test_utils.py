@@ -1,6 +1,6 @@
 import utils
 import codecs
-
+import functools
 
 class Test:
     def __init__(self):
@@ -83,9 +83,23 @@ class Test:
         print f_map
         print 'shrinked feature_map: '
         print 'len: ', len(feature_map)
-        # for key in feature_map:
-        #     if key in f_map:
-        #         print(key)
+
+    def test_load_embedding(self):
+        print '======================================='
+        print '\n\nload_embedding:'
+        print '======================================='
+        print '\n\ntest_shrink_features:'
+        lines = self.loadcorpus()
+        train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True,
+                                                                                   c_thresholds=5,
+                                                                                   if_shrink_w_feature=False)
+        f_set = {v for v in f_map}
+        print 'f_set: ', f_set
+        dt_f_set = functools.reduce(lambda x, y: x | y, map(lambda t: set(t), train_features), f_set)
+        print 'dt_f_set: ',dt_f_set
+        f_map = utils.shrink_features(f_map, train_features, 5)
+
+
 
 
     def main(self):
@@ -95,7 +109,8 @@ class Test:
         # self.test_read_corpus()
         # self.test_generate_corpus()
         # self.test_generate_corpus_char()
-        self.test_shrink_features()
+        # self.test_shrink_features()
+        self.test_load_embedding()
 
 if __name__ =="__main__":
     # TODO: need to verify what the labels used to test, with B-, S-?
