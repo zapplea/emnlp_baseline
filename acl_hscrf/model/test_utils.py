@@ -70,22 +70,28 @@ class Test:
         print 'char_map:', c_map
 
     def test_shrink_features(self):
+        print '======================================='
         print '\n\ntest_shrink_features:'
         lines = self.loadcorpus()
         train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True,
                                                                                    c_thresholds=5,
                                                                                    if_shrink_w_feature=False)
         feature_map = utils.shrink_features(f_map, train_features,5)
-        print 'feature_map: ',feature_map
+
+        print 'original feature map: '
+        print 'len: ', len(f_map)
+        print 'shrinked feature_map: '
+        print 'len: ', len(feature_map)
 
 
     def main(self):
-        self.test_iob2()
-        self.test_iob_iobes()
-        self.test_get_crf_scrf_label()
-        self.test_read_corpus()
-        self.test_generate_corpus()
-        self.test_generate_corpus_char()
+        # self.test_iob2()
+        # self.test_iob_iobes()
+        # self.test_get_crf_scrf_label()
+        # self.test_read_corpus()
+        # self.test_generate_corpus()
+        # self.test_generate_corpus_char()
+        self.test_shrink_features()
 
 if __name__ =="__main__":
     # TODO: need to verify what the labels used to test, with B-, S-?
