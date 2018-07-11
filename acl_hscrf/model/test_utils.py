@@ -59,7 +59,7 @@ class Test:
         for i in range(1):
             print 'features_%s: '% str(i),features[i]
             print 'labels_%s:'% str(i),labels[i]
-        print 'feature_map:\n',feature_map.keys()
+        print 'feature_map:\n',feature_map
         print 'label_map:\n',label_map
 
 

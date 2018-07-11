@@ -206,7 +206,11 @@ def generate_corpus(lines, if_shrink_feature=False, thresholds=1):
         lines : corpus
         if_shrink_feature: whether shrink word-dictionary
         threshold: threshold for shrinking word-dictionary
-        
+    return:
+        features: sentences
+        labels: labels of each sentence
+        feature_map: {word:id}
+        label_map: {label:id}
     """
     features = list()
     labels = list()
