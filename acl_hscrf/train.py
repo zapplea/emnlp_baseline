@@ -242,7 +242,7 @@ if __name__ == "__main__":
                 labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
                 eval_score = {'Crf':{'f1':test_f1_crf,'pre':test_pre_crf,'rec':test_rec_crf},
                               'Scrf':{'f1':test_f1_scrf,'pre':test_pre_scrf,'rec':test_rec_scrf},
-                              'Joint':{test_f1_jnt}}
+                              'Joint':{'f1':test_f1_jnt,'pre':test_pre_jnt,'rec':test_rec_jnt}}
                 f=open(nn_config['report_filePath'],'a+')
                 for mod in ['Crf','Scrf','Joint']:
                     # crf result
@@ -251,7 +251,9 @@ if __name__ == "__main__":
                     eval_result = overlap_eval(nn_config['conll_filePath'])
                     f.write('==================== ' + mod + '====================\n')
                     f.write('========\n')
-                    f.write('f1: '+str(f1_score[mod])+'\n')
+                    f.write('f1: '+str(eval_score[mod]['f1'])+'\n')
+                    f.write('recall: ' + str(eval_score[mod]['rec']) + '\n')
+                    f.write('precision: ' + str(eval_score[mod]['pre']) + '\n')
                     f.write(eval_result["per_f1"] + '\n')
                     f.write(eval_result["per_pre"] + '\n')
                     f.write(eval_result["per_recall"] + '\n')
