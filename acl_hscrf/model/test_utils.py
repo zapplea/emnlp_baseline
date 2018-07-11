@@ -13,6 +13,7 @@ class Test:
         print(tags)
 
     def test_iob_iobes(self):
+        print('\niob_iobes:\n')
         tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O', 'I-PER']
         result = utils.iob_iobes(tags)
         print(result)
@@ -50,16 +51,34 @@ class Test:
             print('features_%s:\n'% str(i),features[i])
             print('labels_%s:\n'% str(i),labels[i])
 
+    def test_generate_corpus(self):
+        print('\ngenerate_corpus:\n')
+        lines = self.loadcorpus()
+        features, labels, feature_map, label_map = utils.generate_corpus(lines, if_shrink_feature=False,
+                                                                   thresholds=1)
+        for i in range(1):
+            print('features_%s: '% str(i),features[i])
+            print('labels_%s:'% str(i),labels[i])
+        print('feature_map:\n',feature_map)
+        print('label_map:\n',label_map)
+
+
     def test_generate_corpus_char(self):
         print('\ngenerate_corpus_char:\n')
         lines = self.loadcorpus()
         train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True, c_thresholds=5, if_shrink_w_feature=False)
+        for i in range(1):
+            print('train_features_%s: '% str(i),train_features[i])
+            print('train_labels_%s:'% str(i),train_labels[i])
+
+        print('f_map:')
 
     def main(self):
         self.test_iob2()
         self.test_iob_iobes()
         self.test_get_crf_scrf_label()
         self.test_read_corpus()
+        self.test_generate_corpus()
 
 if __name__ =="__main__":
     # TODO: need to verify what the labels used to test, with B-, S-?
