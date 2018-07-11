@@ -14,5 +14,5 @@ module load cudnn/v6
 module load cuda/8.0.61
 module load pytorch/0.2.0p3-py27
 echo "loaded"
-
+rm /datastore/liu121/nosqldb2/acl_hscrf/report/report_$1*
 python ../train.py --mod $1

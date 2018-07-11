@@ -240,14 +240,16 @@ if __name__ == "__main__":
 
                 mt = Metrics(nn_config['conll_filePath'], f_map)
                 labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
+                f1_score = {'Crf':test_f1_crf,'Scrf':test_f1_scrf,'Joint':test_f1_jnt}
                 f=open(nn_config['report_filePath'],'a+')
                 for mod in ['Crf','Scrf','Joint']:
                     # crf result
-                    I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2CRF)
+                    I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2SCRF)
                     mt.conll_eval_file(I)
                     eval_result = overlap_eval(nn_config['conll_filePath'])
                     f.write('==================== ' + mod + '====================\n')
                     f.write('========\n')
+                    f.write('f1: '+str(f1_score[mod])+'\n')
                     f.write(eval_result["per_f1"] + '\n')
                     f.write(eval_result["per_pre"] + '\n')
                     f.write(eval_result["per_recall"] + '\n')
