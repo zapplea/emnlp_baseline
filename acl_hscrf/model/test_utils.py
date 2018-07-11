@@ -7,13 +7,13 @@ class Test:
         pass
 
     def test_iob2(self):
-        print('\niob2:\n')
+        print '\n\niob2:'
         tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O','I-PER']
         utils.iob2(tags)
         print(tags)
 
     def test_iob_iobes(self):
-        print '\niob_iobes:\n'
+        print '\n\niob_iobes:'
         tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O', 'I-PER']
         result = utils.iob_iobes(tags)
         print result
@@ -24,7 +24,7 @@ class Test:
         return lines
 
     def test_get_crf_scrf_label(self):
-        print '\nget_crf_scrf_label:\n'
+        print '\n\nget_crf_scrf_label:'
         SCRF_l_map = {}
         SCRF_l_map['PER'] = 0
         SCRF_l_map['LOC'] = 1
@@ -44,7 +44,7 @@ class Test:
         print 'SCRF_l_map',SCRF_l_map
 
     def test_read_corpus(self):
-        print '\ntest_read_corpus:\n'
+        print '\n\ntest_read_corpus:'
         lines = self.loadcorpus()
         features, labels = utils.read_corpus(lines)
         for i in range(3):
@@ -52,7 +52,7 @@ class Test:
             print 'labels_%s:\n'% str(i),labels[i]
 
     def test_generate_corpus(self):
-        print('\ngenerate_corpus:\n')
+        print('\n\ngenerate_corpus:')
         lines = self.loadcorpus()
         features, labels, feature_map, label_map = utils.generate_corpus(lines, if_shrink_feature=False,
                                                                    thresholds=1)
@@ -64,11 +64,20 @@ class Test:
 
 
     def test_generate_corpus_char(self):
-        print '\ngenerate_corpus_char:\n'
+        print '\n\ngenerate_corpus_char:'
         lines = self.loadcorpus()
         train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True, c_thresholds=5, if_shrink_w_feature=False)
         print 'char_map:', c_map
-    
+
+    def test_shrink_features(self):
+        print '\n\ntest_shrink_features:'
+        lines = self.loadcorpus()
+        train_features, train_labels, f_map, _, c_map = utils.generate_corpus_char(lines, if_shrink_c_feature=True,
+                                                                                   c_thresholds=5,
+                                                                                   if_shrink_w_feature=False)
+        feature_map = utils.shrink_features(f_map, train_features,5)
+        print 'feature_map: ',feature_map
+
 
     def main(self):
         self.test_iob2()
