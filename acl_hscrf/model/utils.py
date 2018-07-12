@@ -770,6 +770,9 @@ def crf_to_scrf(decoded_crf, r_l_map, scrf_l_map):
             sentencecrf.append(tag)
         input_label.append(sentencecrf)
     # print 'input_label: ',input_label
+    print '======================='
+    print 'input label: ',input_label
+    print '======================='
     input_label = calibrate_iobes(input_label)
     SCRFtags = CRFtag_to_SCRFtag(input_label)
     # print 'SCRFtags: ',SCRFtags
