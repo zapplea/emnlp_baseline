@@ -8,15 +8,17 @@ class Test:
 
     def test_iob2(self):
         print '\n\niob2:'
-        tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O','I-PER']
+        tags = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', u'B-ORGANIZATION:CORPORATION', u'I-ORGANIZATION:CORPORATION', u'I-ORGANIZATION:CORPORATION', u'E-ORGANIZATION:CORPORATION', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
+        print 'original:\n',tags
         utils.iob2(tags)
-        print(tags)
+        print 'new:\n',tags
 
     def test_iob_iobes(self):
         print '\n\niob_iobes:'
-        tags = ['O', 'O', 'I-LOC', 'I-LOC', 'O', 'O', 'I-PER', 'I-PER', 'I-PER', 'O', 'I-PER']
+        tags = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', u'B-ORGANIZATION:CORPORATION', u'I-ORGANIZATION:CORPORATION', u'I-ORGANIZATION:CORPORATION', u'E-ORGANIZATION:CORPORATION', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
+        print 'original:\n', tags
         result = utils.iob_iobes(tags)
-        print result
+        print 'new:\n',result
 
     def loadcorpus(self):
         with codecs.open('/datastore/liu121/nosqldb2/acl_hscrf/data/bbn_kn/bbn_kn__1.0/train.txt', 'r', 'utf-8') as f:
@@ -115,9 +117,9 @@ class Test:
 
 
     def main(self):
-        # self.test_iob2()
-        # self.test_iob_iobes()
-        self.test_get_crf_scrf_label()
+        self.test_iob2()
+        #self.test_iob_iobes()
+        # self.test_get_crf_scrf_label()
         # self.test_read_corpus()
         # self.test_generate_corpus()
         # self.test_generate_corpus_char()
