@@ -296,8 +296,8 @@ def iob_iobes(tags):
                 new_tags.append(tag)
             else:
                 new_tags.append(tag.replace('I-', 'E-'))
-        else:
-            raise Exception('Invalid IOB format!')
+        # else:
+        #     raise Exception('Invalid IOB format!')
     return new_tags
 
 # convert [O, I-LOC, I-LOC, I-LOC, O]
