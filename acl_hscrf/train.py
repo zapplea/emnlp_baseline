@@ -191,9 +191,10 @@ if __name__ == "__main__":
             epoch_loss = 0
             model.train()
             if dataset_loader_crf:
-                for f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features in tqdm(
-                    itertools.chain.from_iterable(dataset_loader_crf), mininterval=2,
-                    desc=' - Tot it %d (epoch %d)' % (tot_length, args.start_epoch), leave=False, file=sys.stderr):
+                # for f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features in tqdm(
+                #     itertools.chain.from_iterable(dataset_loader_crf), mininterval=2,
+                #     desc=' - Tot it %d (epoch %d)' % (tot_length, args.start_epoch), leave=False, file=sys.stderr):
+                for f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features in itertools.chain.from_iterable(dataset_loader_crf):
 
                     f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, SCRF_labels, mask_SCRF_labels, cnn_features = packer.repack(f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features, test=False)
 
@@ -292,12 +293,13 @@ if __name__ == "__main__":
             else:
                 early_stop_epochs += 1
 
+            print('epoch: %s'%str(epoch_idx))
             print('best_test_f1_crf is: %.4f' % (best_test_f1_crf))
             print('best_test_f1_scrf is: %.4f' % (best_test_f1_scrf))
             print('best_test_f1_jnt is: %.4f' % (best_test_f1_jnt))
-
             print('epoch: ' + str(args.start_epoch) + '\t in ' + str(args.epoch) + ' take: ' + str(
                 time.time() - start_time) + ' s')
+            print('==========================')
 
             sys.stdout.flush()
 
