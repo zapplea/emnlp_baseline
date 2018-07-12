@@ -118,14 +118,14 @@ class Test:
 
     def main(self):
         self.test_iob2()
-        #self.test_iob_iobes()
+        self.test_iob_iobes()
         # self.test_get_crf_scrf_label()
         # self.test_read_corpus()
         # self.test_generate_corpus()
         # self.test_generate_corpus_char()
         # self.test_shrink_features()
         # self.test_load_embedding()
-        self.test_CRFtag_to_SCRFtag()
+        # self.test_CRFtag_to_SCRFtag()
 
 if __name__ =="__main__":
     # TODO: need to verify what the labels used to test, with B-, S-?
