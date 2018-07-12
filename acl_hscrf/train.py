@@ -250,7 +250,7 @@ if __name__ == "__main__":
                     mt.conll_eval_file(I)
                     eval_result = overlap_eval(nn_config['conll_filePath'])
                     f.write('==================== ' + mod + '====================\n')
-                    f.write('========\n')
+                    f.write('epoch: '+str(epoch_idx)+'\n')
                     f.write('f1: '+str(eval_score[mod]['f1'])+'\n')
                     f.write('recall: ' + str(eval_score[mod]['rec']) + '\n')
                     f.write('precision: ' + str(eval_score[mod]['pre']) + '\n')
