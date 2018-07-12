@@ -83,7 +83,7 @@ if __name__ == "__main__":
         nn_config['dev_filePath'] = nn_config['dev_filePath'] % (args.mod, args.mod, k)
         nn_config['conll_filePath']=nn_config['conll_filePath']%(args.mod,k)
         nn_config['report_filePath']=nn_config['report_filePath']%(args.mod,k)
-        continue
+        
         if os.path.isfile(nn_config['report_filePath']):
             os.remove(nn_config['report_filePath'])
         #CRF_l_map, SCRF_l_map = utils.get_crf_scrf_label()
