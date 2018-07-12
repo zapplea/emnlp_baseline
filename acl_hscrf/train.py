@@ -67,15 +67,16 @@ if __name__ == "__main__":
     parser.add_argument('--mod',type=str)
     args = parser.parse_args()
 
-    nn_config={'train_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/train.txt',
-               'test_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/test.txt',
-               'dev_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/dev.txt',
-               'report_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/report/report_%s%s',
-               'conll_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/conll/conll_%s%s',
-               'embsave_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/pkl/table_'+args.mod}
+
     k_shot=['1.0','2.0','4.0','8.0','16.0']
 
     for k in k_shot:
+        nn_config = {'train_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/train.txt',
+                     'test_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/test.txt',
+                     'dev_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/dev.txt',
+                     'report_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/report/report_%s%s',
+                     'conll_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/conll/conll_%s%s',
+                     'embsave_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/pkl/table_' + args.mod}
         print('================== k_shot: '+k+' ==================')
         nn_config['train_filePath']=nn_config['train_filePath']%(args.mod,args.mod,k)
         nn_config['test_filePath'] = nn_config['test_filePath'] % (args.mod, args.mod, k)
