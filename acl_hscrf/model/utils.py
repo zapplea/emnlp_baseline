@@ -468,6 +468,7 @@ def check(word_features,input_label,label_dict):
                 print 'error label: \n',label
                 print 'sentence: \n',line
                 print 'labels: \n',labels
+                print 'label_dict: \n',label_dict
                 exit()
 
 
