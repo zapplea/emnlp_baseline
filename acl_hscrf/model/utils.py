@@ -497,7 +497,9 @@ def construct_bucket_mean_vb_wc(word_features, input_label, label_dict, SCRF_lab
     print 'len new_word_features: \n', len(new_word_features)
     char_features = encode2char_safe(new_word_features, char_dict)
     print 'len char features:\n',len(char_features)
+    print 'char_features:\n', char_features
     fea_len = [list(map(lambda t: len(t) + 1, f)) for f in char_features]
+    print 'fea_len:\n',fea_len
     forw_features = concatChar(char_features, char_dict)
     new_labels = list(map(lambda t: [label_dict['<start>']] + list(t), new_labels))
     thresholds = calc_threshold_mean(fea_len)
@@ -562,10 +564,10 @@ def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, 
         if buckets_len[idx] < tmp_concat_len:
             buckets_len[idx] = tmp_concat_len
 
-    print 'forw_features:\n', forw_features
-    print 'len features:\n', len(forw_features)
-    print 'thresholds: \n', thresholds
-    exit()
+    # print 'forw_features:\n', forw_features
+    # print 'len features:\n', len(forw_features)
+    # print 'thresholds: \n', thresholds
+    # exit()
     for f_f, f_l, w_f, i_l, s_l, c_f in zip(forw_features, fea_len, word_features, input_labels, SCRFlabels, char_features):
         # print '##############'
         # print 'f_f:\n',f_f
