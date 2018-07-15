@@ -82,7 +82,7 @@ class CRFDataset_WC(Dataset):
         print forw_tensor.size(0)
         print label_tensor.size(0)
         print '==================='
-        
+
         assert forw_tensor.size(0) == label_tensor.size(0)
         assert forw_tensor.size(0) == mask_tensor.size(0)
         assert forw_tensor.size(0) == forw_index.size(0)

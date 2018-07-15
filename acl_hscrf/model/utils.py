@@ -531,6 +531,18 @@ def accumulate(iterator):
         total += item
         yield total
 
+def check(word_features,input_labels,label_dict):
+    for i in range(len(word_features)):
+        line = word_features[i]
+        labels = input_labels[i]
+        for label in labels:
+            if label not in label_dict:
+                print 'error label:\n',label
+                print 'sentence:\n',line
+                print 'labels:\n',labels
+                exit()
+
+
 
 def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, SCRFlabels, char_features, thresholds, pad_word_feature, pad_char_feature, pad_label, label_size, SCRF_stop_tag):
     """
@@ -548,6 +560,14 @@ def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, 
         if buckets_len[idx] < tmp_concat_len:
             buckets_len[idx] = tmp_concat_len
     for f_f, f_l, w_f, i_l, s_l, c_f in zip(forw_features, fea_len, word_features, input_labels, SCRFlabels, char_features):
+        print '##############'
+        print f_f
+        print f_l
+        print w_f
+        print i_l
+        print s_l
+        print c_f
+        print '##############'
         cur_len = len(f_l)
         idx = 0
         cur_len_1 = cur_len + 1
