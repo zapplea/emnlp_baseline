@@ -459,19 +459,6 @@ def CRFtag_to_SCRFtag(inputs):
         alltags.append(tags)
     return alltags
 
-def check(word_features,input_label,label_dict):
-    for i in range(len(input_label)):
-        line = word_features[i]
-        labels = input_label[i]
-        for label in labels:
-            if label not in label_dict:
-                print 'error label: \n',label
-                print 'sentence: \n',line
-                print 'labels: \n',labels
-                print 'label_dict: \n',label_dict
-                exit()
-
-
 def construct_bucket_mean_vb_wc(word_features, input_label, label_dict, SCRF_label_dict, char_dict, word_dict, SCRF_stop_tag, ALLOW_SPANLEN=6, train_set=False):
     """
     Construct bucket by mean for viterbi decode, word-level and char-level
