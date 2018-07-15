@@ -611,19 +611,21 @@ def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, 
     bucket_dataset=[]
     count =0
     for bucket in buckets:
-        print count
-        count+=1
-        print bucket[0]
-        print bucket[1]
-        print bucket[2]
-        print bucket[3]
-        print bucket[4]
-        print bucket[5]
-        print bucket[6]
-        print bucket[7]
-        print bucket[8]
-        print bucket[9]
-        print bucket[10]
+        if bucket[0]==[]:
+            continue
+        # print count
+        # count+=1
+        # print bucket[0]
+        # print bucket[1]
+        # print bucket[2]
+        # print bucket[3]
+        # print bucket[4]
+        # print bucket[5]
+        # print bucket[6]
+        # print bucket[7]
+        # print bucket[8]
+        # print bucket[9]
+        # print bucket[10]
         bucket_dataset.append(CRFDataset_WC(torch.LongTensor(bucket[0]), torch.LongTensor(bucket[1]),
                                             torch.LongTensor(bucket[2]), torch.LongTensor(bucket[3]),
                                             torch.LongTensor(bucket[4]), torch.LongTensor(bucket[5]),
