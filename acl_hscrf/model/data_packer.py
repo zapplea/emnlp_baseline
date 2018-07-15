@@ -78,12 +78,6 @@ class CRFDataset_WC(Dataset):
 
     """
     def __init__(self, forw_tensor, forw_index, back_tensor, back_index, word_tensor, label_tensor, mask_tensor, len_tensor, SCRFlabels, mask_SCRFlabels, cnn_features):
-        print '==================='
-        print 'forw_tensor: \n',forw_tensor
-        print 'forw_tensor size: \n',forw_tensor.size(0)
-        # print 'label',label_tensor.size(0)
-        print '==================='
-
         assert forw_tensor.size(0) == label_tensor.size(0)
         assert forw_tensor.size(0) == mask_tensor.size(0)
         assert forw_tensor.size(0) == forw_index.size(0)

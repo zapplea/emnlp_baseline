@@ -144,7 +144,6 @@ if __name__ == "__main__":
 
 
         print('constructing dataset')
-        print('len train features:\n',len(train_features))
         dataset, dataset_onlycrf = utils.construct_bucket_mean_vb_wc(train_features, train_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], ALLOW_SPANLEN=args.allowspan, train_set=True)
         dev_dataset = utils.construct_bucket_mean_vb_wc(dev_features, dev_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)
         test_dataset = utils.construct_bucket_mean_vb_wc(test_features, test_labels, CRF_l_map, SCRF_l_map, c_map, f_map, SCRF_stop_tag=SCRF_l_map['<STOP>'], train_set=False)

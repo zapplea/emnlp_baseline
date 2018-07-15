@@ -493,13 +493,8 @@ def construct_bucket_mean_vb_wc(word_features, input_label, label_dict, SCRF_lab
         new_word_features = word_features
         new_labels = labels
         new_SCRFlabels = SCRFlabels
-    print 'len word features:\n',len(word_features)
-    print 'len new_word_features: \n', len(new_word_features)
     char_features = encode2char_safe(new_word_features, char_dict)
-    print 'len char features:\n',len(char_features)
-    print 'char_features:\n', char_features
     fea_len = [list(map(lambda t: len(t) + 1, f)) for f in char_features]
-    print 'fea_len:\n',fea_len
     forw_features = concatChar(char_features, char_dict)
     new_labels = list(map(lambda t: [label_dict['<start>']] + list(t), new_labels))
     thresholds = calc_threshold_mean(fea_len)
@@ -569,14 +564,6 @@ def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, 
     # print 'thresholds: \n', thresholds
     # exit()
     for f_f, f_l, w_f, i_l, s_l, c_f in zip(forw_features, fea_len, word_features, input_labels, SCRFlabels, char_features):
-        # print '##############'
-        # print 'f_f:\n',f_f
-        # print 'len f_f:\n',len(f_f)
-        # print 'f_l:\n',f_l
-        # print 'w_f:\n',w_f
-        # print 'i_l:\n',i_l
-        # print 's_l:\n',s_l
-        # print 'c_f:\n',c_f
 
         cur_len = len(f_l)
         idx = 0
@@ -599,9 +586,6 @@ def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, 
         buckets[idx][3].append([buckets_len[idx] - 1] + [buckets_len[idx] - 1 - tup for tup in padded_feature_len_cum[:-1]])
         buckets[idx][4].append(w_f + [pad_word_feature] * (thresholds[idx] - cur_len)) #word
         buckets[idx][5].append([i_l[ind] * label_size + i_l[ind + 1] for ind in range(0, cur_len)] + [i_l[cur_len] * label_size + pad_label] + [pad_label * label_size + pad_label] * (thresholds[idx] - cur_len_1))  # has additional start, label
-        # print buckets[idx][0]
-        # print torch.LongTensor(buckets[idx][0]).size(0)
-        # print '##############'
         buckets[idx][6].append([1] * cur_len_1 + [0] * (thresholds[idx] - cur_len_1))  # has additional start, mask
         buckets[idx][7].append([len(f_f) + thresholds[idx] - len(f_l), cur_len_1, cur_scrf_len_1, w_l])
         buckets[idx][8].append(s_l + [[s_l[-1][1]+1, s_l[-1][1]+1, s_l[-1][-1], SCRF_stop_tag]] + [[0, 0, 0, 0] for _ in range(thresholds[idx]-cur_scrf_len_1)])
@@ -613,19 +597,6 @@ def construct_bucket_vb_wc(word_features, forw_features, fea_len, input_labels, 
     for bucket in buckets:
         if bucket[0]==[]:
             continue
-        # print count
-        # count+=1
-        # print bucket[0]
-        # print bucket[1]
-        # print bucket[2]
-        # print bucket[3]
-        # print bucket[4]
-        # print bucket[5]
-        # print bucket[6]
-        # print bucket[7]
-        # print bucket[8]
-        # print bucket[9]
-        # print bucket[10]
         bucket_dataset.append(CRFDataset_WC(torch.LongTensor(bucket[0]), torch.LongTensor(bucket[1]),
                                             torch.LongTensor(bucket[2]), torch.LongTensor(bucket[3]),
                                             torch.LongTensor(bucket[4]), torch.LongTensor(bucket[5]),
