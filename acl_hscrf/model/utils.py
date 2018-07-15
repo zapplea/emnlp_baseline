@@ -493,8 +493,10 @@ def construct_bucket_mean_vb_wc(word_features, input_label, label_dict, SCRF_lab
         new_word_features = word_features
         new_labels = labels
         new_SCRFlabels = SCRFlabels
-
+    print 'len word features:\n',len(word_features)
+    print 'len new_word_features: \n', len(new_word_features)
     char_features = encode2char_safe(new_word_features, char_dict)
+    print 'len char features:\n',len(char_features)
     fea_len = [list(map(lambda t: len(t) + 1, f)) for f in char_features]
     forw_features = concatChar(char_features, char_dict)
     new_labels = list(map(lambda t: [label_dict['<start>']] + list(t), new_labels))
