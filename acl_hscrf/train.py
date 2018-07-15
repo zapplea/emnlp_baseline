@@ -92,8 +92,6 @@ if __name__ == "__main__":
         with codecs.open(nn_config['train_filePath'], 'r', 'utf-8') as f:
             lines = f.readlines()
         CRF_l_map, SCRF_l_map=utils.get_crf_scrf_label(lines)
-        print('crf_map: ',CRF_l_map)
-        exit()
         id2CRF={}
         id2SCRF={}
         for key in CRF_l_map:
