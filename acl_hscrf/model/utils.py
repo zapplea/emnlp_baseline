@@ -6,6 +6,7 @@ import torch
 import json
 import pickle
 import os
+import copy
 
 import torch.nn as nn
 import torch.nn.init
@@ -394,8 +395,8 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         if not shrink_to_corpus:
             for word in outdoc_word_array:
                 word_dict[word] = len(word_dict)
-        with open(embsave_filePath,'wb') as f:
-            pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
+        # with open(embsave_filePath,'wb') as f:
+        #     pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
     else:
         print('load embedding')
         with open(embsave_filePath,'rb') as f:
@@ -426,6 +427,7 @@ def calibrate_iobes(inputs):
     :param inputs: 
     :return: 
     """
+    inputs = copy.deepcopy(inputs)
     new_inputs=[]
     for input in inputs:
         result = iob_iobes(input)
