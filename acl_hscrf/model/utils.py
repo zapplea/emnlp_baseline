@@ -395,8 +395,9 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         if not shrink_to_corpus:
             for word in outdoc_word_array:
                 word_dict[word] = len(word_dict)
-        # with open(embsave_filePath,'wb') as f:
-        #     pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
+        if True:
+            with open(embsave_filePath,'wb') as f:
+                pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
     else:
         print('load embedding')
         with open(embsave_filePath,'rb') as f:
