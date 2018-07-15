@@ -395,7 +395,7 @@ def load_embedding(emb_file, delimiter, feature_map, full_feature_set, unk, emb_
         if not shrink_to_corpus:
             for word in outdoc_word_array:
                 word_dict[word] = len(word_dict)
-        if True:
+        if False:
             with open(embsave_filePath,'wb') as f:
                 pickle.dump({'word_dict':word_dict,'embedding_tensor':embedding_tensor,'in_doc_num':in_doc_num},f)
     else:
@@ -475,8 +475,6 @@ def construct_bucket_mean_vb_wc(word_features, input_label, label_dict, SCRF_lab
     """
     Construct bucket by mean for viterbi decode, word-level and char-level
     """
-    check(word_features,input_label,label_dict)
-    exit()
 
     SCRFtags = CRFtag_to_SCRFtag(input_label)
     labels = encode(input_label, label_dict)

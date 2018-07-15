@@ -107,6 +107,8 @@ if __name__ == "__main__":
 
         dev_features, dev_labels = utils.read_corpus(dev_lines)
         test_features, test_labels = utils.read_corpus(test_lines)
+        utils.check(test_features,test_labels,CRF_l_map)
+        exit()
 
         if args.load_check_point:
             if os.path.isfile(args.load_check_point):
