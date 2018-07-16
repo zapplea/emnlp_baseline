@@ -56,8 +56,8 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
         commentSymbol = dataset['commentSymbol']
         rootName = datasetName.split('__')[0]
         trainData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
-        devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
-        testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/train.txt' % (rootName,datasetName)
+        devData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/dev.txt' % (rootName,datasetName)
+        testData = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/%s/%s/test.txt' % (rootName,datasetName)
         paths = [trainData, devData, testData]
 
         logging.info(":: Transform "+datasetName+" dataset ::")
