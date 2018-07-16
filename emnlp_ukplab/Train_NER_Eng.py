@@ -40,18 +40,18 @@ args = parser.parse_args()
 
 seeds = {
     'bbn_kn':                                   #Name of the dataset
-        {'columns': {1:'tokens', 2:'NER_bbn'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
-         'label': 'NER_bbn',                      #Which column we like to predict
+        {'columns': {1:'tokens', 2:'NER_BIO'},    #CoNLL format for the input data. Column 1 contains tokens, column 2 contains NER information using BIO encoding
+         'label': 'NER_BIO',                      #Which column we like to predict
          'evaluate': True,                        #Should we evaluate on this task? Set true always for single task setups
          'commentSymbol': None},                   #Lines in the input data starting with this string will be skipped. Can be used to skip comments
     'cadec':
-        {'columns': {1:'tokens', 2:'NER_cadec'},
-         'label': 'NER_cadec',
+        {'columns': {1:'tokens', 2:'NER_BIO'},
+         'label': 'NER_BIO',
          'evaluate': True,
          'commentSymbol': None},
     'nvd':
-        {'columns': {1:'tokens', 2:'NER_nvd'},
-         'label': 'NER_nvd',
+        {'columns': {1:'tokens', 2:'NER_BIO'},
+         'label': 'NER_BIO',
          'evaluate': True,
          'commentSymbol': None}
 }
