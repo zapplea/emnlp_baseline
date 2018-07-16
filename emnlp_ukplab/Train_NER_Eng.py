@@ -36,7 +36,6 @@ logger.addHandler(ch)
 ######################################################
 parser = argparse.ArgumentParser()
 parser.add_argument('--mod',type=str)
-parser.add_argument('--shot',type=str)
 args = parser.parse_args()
 
 seeds = {
@@ -57,15 +56,15 @@ seeds = {
          'commentSymbol': None}
 }
 
-# seed=seeds[args.mod]
-#
-# k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
-# datasets={}
-# for k in k_shot:
-#     datasets[args.mod+'__'+k]=seed
+seed=seeds[args.mod]
 
+k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
 datasets={}
-datasets[args.mod+'__'+args.shot]=seeds[args.mod]
+for k in k_shot:
+    datasets[args.mod+'__'+k]=seed
+
+# datasets={}
+# datasets[args.mod+'__'+args.shot]=seeds[args.mod]
 
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
 embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
@@ -106,4 +105,22 @@ model = BiLSTM(params)
 model.setMappings(mappings, embeddings)
 model.setDataset(datasets, data)
 model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_[DevScore]_[TestScore]_[Epoch]_bbn.h5"
-model.fit(epochs=100)
+eval_result=model.fit(epochs=100)
+
+def report(eval_result, filePath):
+    with open(filePath, 'w+') as f:
+        for key in eval_result:
+            info = eval_result[key]
+            f.write('===================='+key+'====================')
+            f.write(info["per_f1"] + "\n")
+            f.write(info['per_pre'] + '\n')
+            f.write(info['per_recall'] + '\n')
+            f.write(info["micro_f1"] + '\n')
+            f.write(info["micro_pre"] + '\n')
+            f.write(info["micro_recall"] + '\n')
+            f.write(info["macro_f1"] + '\n')
+            f.write(info["macro_pre"] + '\n')
+            f.write(info["macro_recall"] + '\n')
+
+report(eval_result,'/datastore/liu121/nosqldb2/emnlp_ukplab/report.txt')
+

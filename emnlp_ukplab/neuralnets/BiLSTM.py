@@ -25,6 +25,7 @@ import time
 import os
 import random
 import logging
+import pickle
 
 from .keraslayers.ChainCRF import ChainCRF
 
@@ -379,7 +380,7 @@ class BiLSTM:
             self.resultsSavePath = open(resultsFilepath, 'w')
         else:
             self.resultsSavePath = None
-        
+
     def fit(self, epochs):
         if self.models is None:
             self.buildModel()
@@ -388,7 +389,8 @@ class BiLSTM:
         max_dev_score = {modelName:0 for modelName in self.models.keys()}
         max_test_score = {modelName:0 for modelName in self.models.keys()}
         no_improvement_since = 0
-        
+
+        best_eval_result = {}
         for epoch in range(epochs):      
             sys.stdout.flush()           
             logging.info("\n--------- Epoch %d -----------" % (epoch+1))
@@ -400,12 +402,17 @@ class BiLSTM:
             logging.info("%.2f sec for training (%.2f total)" % (time_diff, total_train_time))
             
             
-            start_time = time.time() 
+            start_time = time.time()
+
             for modelName in self.evaluateModelNames:
                 logging.info("-- %s --" % (modelName))
                 dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
-                self.evaluate(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
-                
+                eval_result = self.evaluate(modelName, self.data[modelName]['testMatrix'])
+                if modelName not in best_eval_result:
+                    best_eval_result[modelName]=eval_result
+                else:
+                    if best_eval_result[modelName]['micro_f1']<=eval_result['micro_f1']:
+                        best_eval_result[modelName]=eval_result
                 if dev_score > max_dev_score[modelName]:
                     max_dev_score[modelName] = dev_score
                     max_test_score[modelName] = test_score
@@ -431,7 +438,8 @@ class BiLSTM:
             # if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
             #     logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
             #     break
-            
+        return best_eval_result
+
             
     def tagSentences(self, sentences):
         # Pad characters
@@ -487,11 +495,12 @@ class BiLSTM:
         
         return predLabels
 
-    def evaluate(self,modelName,devMatrix,testMatrix):
+    def evaluate(self,modelName,testMatrix):
         # print('===============devMatrix===============')
         # self.evaluateScore(modelName,devMatrix)
-        print('===============testMatrix===============')
-        self.evaluateScore(modelName,testMatrix)
+        # print('===============testMatrix===============')
+        test_evalResult = self.evaluateScore(modelName,testMatrix)
+        return test_evalResult
 
     def evaluateScore(self, modelName, sentences):
         labelKey = self.labelKeys[modelName]
@@ -506,17 +515,18 @@ class BiLSTM:
         I = self.mt.word_id2txt(X_data, correctLabels, predLabels, idx2Label)
         self.mt.conll_eval_file(I)
         eval_result = overlap_eval(self.conll_filePath)
-        print('========\n')
-        print(eval_result["per_f1"] + '\n')
-        print(eval_result["per_pre"] + '\n')
-        print(eval_result["per_recall"] + '\n')
-        print(eval_result["micro_f1"] + '\n')
-        print(eval_result["micro_pre"] + '\n')
-        print(eval_result["micro_recall"] + '\n')
-        print(eval_result["macro_f1"] + '\n')
-        print(eval_result["macro_pre"] + '\n')
-        print(eval_result["macro_recall"] + '\n')
-        print('========\n')
+        # print('========\n')
+        # print(eval_result["per_f1"] + '\n')
+        # print(eval_result["per_pre"] + '\n')
+        # print(eval_result["per_recall"] + '\n')
+        # print(eval_result["micro_f1"] + '\n')
+        # print(eval_result["micro_pre"] + '\n')
+        # print(eval_result["micro_recall"] + '\n')
+        # print(eval_result["macro_f1"] + '\n')
+        # print(eval_result["macro_pre"] + '\n')
+        # print(eval_result["macro_recall"] + '\n')
+        # print('========\n')
+        return eval_result
 
    
     def computeScore(self, modelName, devMatrix, testMatrix):
