@@ -69,7 +69,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    k_shot=args.shot
+    k_shot=[args.shot]
 
     for k in k_shot:
         nn_config = {'train_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/train.txt',
