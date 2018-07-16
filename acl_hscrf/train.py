@@ -65,10 +65,11 @@ if __name__ == "__main__":
     parser.add_argument('--allowspan', type=int, default=6, help='allowed max segment length')
     parser.add_argument('--grconv', action='store_true', help='use grconv')
     parser.add_argument('--mod',type=str)
+    parser.add_argument('--shot',type=str)
     args = parser.parse_args()
 
 
-    k_shot=['1.1','2.0','4.0','8.0','16.0']
+    k_shot=args.shot
 
     for k in k_shot:
         nn_config = {'train_filePath': '/datastore/liu121/nosqldb2/acl_hscrf/data/%s/%s__%s/train.txt',
