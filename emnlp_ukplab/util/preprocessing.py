@@ -150,7 +150,6 @@ def readEmbeddings(embeddingsPath, datasetFiles, frequencyThresholdUnknownTokens
         if (len(
                 split) - 1) != embeddingsDimension:  # Assure that all lines in the embeddings file are of the same length
             print("ERROR: A line in the embeddings file had more or less  dimensions than expected. Skip token.")
-            print("line: ",line)
             print("len split: ",len(split))
             continue
 
