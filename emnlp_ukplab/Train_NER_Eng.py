@@ -36,6 +36,7 @@ logger.addHandler(ch)
 ######################################################
 parser = argparse.ArgumentParser()
 parser.add_argument('--mod',type=str)
+parser.add_argument('--shot',type=str)
 args = parser.parse_args()
 
 seeds = {
@@ -56,12 +57,15 @@ seeds = {
          'commentSymbol': None}
 }
 
-seed=seeds[args.mod]
+# seed=seeds[args.mod]
+#
+# k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
+# datasets={}
+# for k in k_shot:
+#     datasets[args.mod+'__'+k]=seed
 
-k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
 datasets={}
-for k in k_shot:
-    datasets[args.mod+'__'+k]=seed
+datasets[args.mod+'__'+args.shot]=seeds[args.mod]
 
 # :: Path on your computer to the word embeddings. Embeddings by Reimers et al. will be downloaded automatically ::
 embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'

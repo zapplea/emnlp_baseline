@@ -64,7 +64,7 @@ model = BiLSTM(params)
 model.setMappings(mappings, embeddings)
 model.setDataset(datasets, data)
 model.modelSavePath = "models/[ModelName]_[DevScore]_[TestScore]_[Epoch].h5"
-model.fit(epochs=25)
+model.fit(epochs=100)
 
 
 
