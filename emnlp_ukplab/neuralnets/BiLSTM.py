@@ -428,9 +428,9 @@ class BiLSTM:
                 
             logging.info("%.2f sec for evaluation" % (time.time() - start_time))
             
-            if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
-                logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
-                break
+            # if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
+            #     logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
+            #     break
             
             
     def tagSentences(self, sentences):
