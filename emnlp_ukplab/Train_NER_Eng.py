@@ -105,7 +105,7 @@ model = BiLSTM(params)
 model.setMappings(mappings, embeddings)
 model.setDataset(datasets, data)
 model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_[DevScore]_[TestScore]_[Epoch]_bbn.h5"
-eval_result=model.fit(epochs=3)
+eval_result=model.fit(epochs=100)
 
 def report(eval_result, filePath):
     with open(filePath, 'w+') as f:
@@ -122,5 +122,5 @@ def report(eval_result, filePath):
             f.write(info["macro_pre"] + '\n')
             f.write(info["macro_recall"] + '\n')
 
-report(eval_result,'/datastore/liu121/nosqldb2/emnlp_ukplab/report.txt')
+report(eval_result,'/datastore/liu121/nosqldb2/emnlp_ukplab/report/report.txt')
 
