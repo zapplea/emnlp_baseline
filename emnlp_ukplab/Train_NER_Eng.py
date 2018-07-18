@@ -58,7 +58,7 @@ seeds = {
 
 seed=seeds[args.mod]
 
-k_shot = ['1.0', '2.0', '4.0', '8.0', '16.0']
+k_shot = ['1.0', '2.0', '4.0']
 datasets={}
 for k in k_shot:
     datasets[args.mod+'__'+k]=seed
