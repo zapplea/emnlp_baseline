@@ -8,6 +8,7 @@ from sklearn.utils import check_array
 import pickle
 import random
 import json
+import re
 
 class DataGenerator:
     def __init__(self,data_config,table,dictionary):
@@ -125,17 +126,6 @@ class DataGenerator:
         random.shuffle(source_data)
         return source_data,source_labels_num,labels_dic
 
-    def check(self,data, label_dic):
-        print('check: \n')
-        ids=set()
-        for label in label_dic:
-            ids.add(label_dic[label])
-        for instance in data:
-            y=instance[1]
-            for label in y:
-                if label not in ids:
-                    print(str(label))
-
     def target_data_gnerator(self):
         target_draw_data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
         target_eval_data = self.conll_data_reader(self.data_config['target_test_Conll_filePath'])
@@ -143,10 +133,8 @@ class DataGenerator:
         labels_dic = {'O':0}
         labels_num=1
         target_train_data, labels_num, labels_dic = self.target_nn_data_generator(target_draw_data,labels_dic,labels_num)
-        #self.check(target_train_data,labels_dic)
         #print('target_train_data length:{}\n'.format(str(len(target_train_data))))
         target_test_data, labels_num, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
-        #self.check(target_test_data, labels_dic)
 
         return target_train_data,target_test_data,labels_num, labels_dic
 
@@ -276,16 +264,23 @@ class DataGenerator:
         # exit()
         self.write(data)
 
+# def table_vec_and_dic():
+#     vecfpath = '/datastore/liu121/nosqldb2/skipgram_v200_w5'
+#     word_embed = gensim.models.KeyedVectors.load_word2vec_format(vecfpath, binary=False, datatype=np.float32)
+#     embed_mat = word_embed.syn0
+#     vocabulary = word_embed.index2word
+#     embed_mat = check_array(embed_mat, dtype='float32', order='C')
+#     dictionary = {}
+#     for i in range(len(vocabulary)):
+#         dictionary[vocabulary[i]] = i
+#     return embed_mat,dictionary
+
 def table_vec_and_dic():
-    vecfpath = '/datastore/liu121/nosqldb2/skipgram_v200_w5'
-    word_embed = gensim.models.KeyedVectors.load_word2vec_format(vecfpath, binary=False, datatype=np.float32)
-    embed_mat = word_embed.syn0
-    vocabulary = word_embed.index2word
-    embed_mat = check_array(embed_mat, dtype='float32', order='C')
-    dictionary = {}
-    for i in range(len(vocabulary)):
-        dictionary[vocabulary[i]] = i
-    return embed_mat,dictionary
+    table_path = '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl'
+    with open(table_path,'rb') as f:
+        dictionary = pickle.load(f)
+        table = pickle.load(f)
+    return table,dictionary
 
 if __name__ == "__main__":
     data_configs =[
