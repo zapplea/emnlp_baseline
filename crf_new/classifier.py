@@ -193,7 +193,7 @@ class Classifier:
                                         tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(graph.get_tensor_by_name('bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
 
             # crf source
-            log_likelihood,viterbi_seq=self.crf_new(X,Y_,seq_len,graph)
+            log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
             loss = self.loss_crf_source(log_likelihood,graph)
             test_loss = self.test_loss_crf_source(log_likelihood,graph)
             train_op = self.optimize(loss,graph)
