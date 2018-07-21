@@ -42,10 +42,12 @@ class DataFeed:
         self.source_data = data_dic['source_data']
         # random.shuffle(self.source_data)
         self.source_NETypes_num = data_dic['source_NETypes_num']
+        self.source_id2label_dic=data_dic['source_id2label_dic']
+
         self.target_train_data = data_dic['target_train_data']
         self.target_test_data =data_dic['target_test_data']
         self.target_NETypes_num = data_dic['target_NETypes_num']
-        self.id2label_dic= data_dic['id2label_dic']
+        self.target_id2label_dic= data_dic['target_id2label_dic']
 
     def table_load(self):
         # vecfpath = self.data_config['table_filePath']
@@ -76,8 +78,11 @@ class DataFeed:
 
         return dataset
 
-    def id2label_generator(self):
-        return self.id2label_dic
+    def source_id2label_generator(self):
+        return self.source_id2label_dic
+
+    def target_id2label_generator(self):
+        return self.target_id2label_dic
 
 
 class DataFeedTest:

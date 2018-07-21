@@ -2,12 +2,16 @@ import tensorflow as tf
 from datetime import datetime
 import sklearn
 import numpy as np
-import math
+import copy
+
+from util.eval.evaluate_overlap import evaluate
 
 class Classifier:
-    def __init__(self, nn_config, datafeed):
+    def __init__(self, nn_config, datafeed,data_config,metrics):
         self.nn_config = nn_config
         self.df = datafeed
+        self.data_config = data_config
+        self.mt = metrics
 
     def X_input(self,graph):
         """
@@ -56,7 +60,7 @@ class Classifier:
         return X
 
 
-    def bilstm(self,X,seq_len,graph):
+    def obsolete_bilstm(self,X,seq_len,graph):
         """
         
         :param X: shape = (batch size, words num, feature dim)
@@ -70,6 +74,24 @@ class Classifier:
         # outputs.shape = (batch size, max time step, 2*lstm cell size)
         outputs = tf.concat(outputs,axis=2,name='bilstm_outputs')
         graph.add_to_collection('bilstm_outputs',outputs)
+        return outputs
+
+    def bilstm(self, X, seq_len, graph):
+        """
+
+        :param X: shape = (batch size, words num, feature dim)
+        :param mask: shape = (batch size, words num, feature dim)
+        :return: 
+        """
+        cell = tf.contrib.rnn.LSTMCell(self.nn_config['lstm_cell_size'])
+        cell = tf.contrib.rnn.DropoutWrapper(cell, output_keep_prob=self.nn_config['dropout'])
+        cell = tf.contrib.rnn.MultiRNNCell([cell] * self.nn_config['bilstm_num_layers'])
+        # outputs.shape = [(batch size, max time step, lstm cell size),(batch size, max time step, lstm cell size)]
+        outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell, cell_bw=cell, inputs=X,
+                                                     sequence_length=seq_len, dtype='float32')
+        # outputs.shape = (batch size, max time step, 2*lstm cell size)
+        outputs = tf.concat(outputs, axis=2, name='bilstm_outputs')
+        graph.add_to_collection('bilstm_outputs', outputs)
         return outputs
 
     # ###################
@@ -401,6 +423,22 @@ class Classifier:
                 saver = tf.train.import_meta_graph(self.nn_config['model'])
         return graph,saver
 
+    def reporter(self,report,best_score):
+        report.write('=========================\n')
+        report.write('epoch: ' + str(best_score['epoch']))
+        report.write('loss: %s' % str(best_score['loss']))
+        report.write(best_score["per_f1"] + '\n')
+        report.write(best_score["per_pre"] + '\n')
+        report.write(best_score["per_recall"] + '\n')
+        report.write(best_score["micro_f1"] + '\n')
+        report.write(best_score["micro_pre"] + '\n')
+        report.write(best_score["micro_recall"] + '\n')
+        report.write(best_score["macro_f1"] + '\n')
+        report.write(best_score["macro_pre"] + '\n')
+        report.write(best_score["macro_recall"] + '\n')
+        report.write('=========================\n')
+        report.flush()
+
     def train(self):
         graph,saver = self.classifier()
         with graph.device('/:gpu0'):
@@ -439,7 +477,6 @@ class Classifier:
                 init = tf.global_variables_initializer()
 
             report = open(self.nn_config['report'], 'a+')
-            report.write(self.nn_config['stage1']+'\n')
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
                 report.write('session\n')
@@ -447,7 +484,8 @@ class Classifier:
                     print('start training stage1')
                     sess.run(init, feed_dict={table: table_data})
                     report.write('=================crf_source=================\n')
-                    start = datetime.now()
+                    best_score={}
+                    early_stop_count=0
                     for i in range(self.nn_config['epoch_stage1']):
                         dataset = self.df.source_data_generator('train')
                         for X_data,Y_data in dataset:
@@ -456,19 +494,36 @@ class Classifier:
                         dataset = self.df.source_data_generator('test')
                         for X_data,Y_data in dataset:
                             pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
-                            f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
-                            end = datetime.now()
-                            time_cost = end-start
-                            report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i),str(time_cost),str(loss),str(f1_macro),str(f1_micro)))
-                            report.flush()
-                            start = end
-                    saver.save(sess,self.nn_config['model'])
+                            # f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
+                            source_id2label_dic=self.df.source_id2label_generator()
+                            true_labels = Y_data
+                            pred_labels = pred
+                            I = self.mt.word_id2txt(X_data, true_labels, pred_labels, source_id2label_dic)
+                            self.mt.conll_eval_file(I)
+                            eval_result = evaluate(self.data_config['conlleval_filePath'])
+                            eval_result['epoch']=i
+                            eval_result['loss']=loss
+                            if len(best_score)==0:
+                                best_score=copy.deepcopy(eval_result)
+                            else:
+                                if best_score['micro_f1']<eval_result['micro_f1']:
+                                    best_score=copy.deepcopy(eval_result)
+                                else:
+                                    early_stop_count+=1
+                        if early_stop_count>=self.nn_config['early_stop']:
+                            saver.save(sess, self.nn_config['model'])
+                            self.reporter(report,best_score)
+                            break
+                    if early_stop_count < self.nn_config['early_stop']:
+                        saver.save(sess, self.nn_config['model'])
+                        self.reporter(report, best_score)
                 else:
                     saver.restore(sess,self.nn_config['model_sess'])
                     report.write('=================multiclass=================\n')
                     report.flush()
                     print('start training stage2')
-                    start = datetime.now()
+                    best_score = {}
+                    early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage2']):
                         dataset= self.df.target_data_generator('train')
                         for X_data,Y_data in dataset:
@@ -477,19 +532,37 @@ class Classifier:
                         dataset = self.df.target_data_generator('test')
                         for X_data,Y_data in dataset:
                             pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
-                            f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
-                            end = datetime.now()
-                            time_cost = end - start
-                            report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i), str(time_cost), str(loss),str(f1_macro),str(f1_micro)))
-                            report.flush()
-                            start = end
+                            target_id2label_dic = self.df.target_id2label_generator()
+                            true_labels = Y_data
+                            pred_labels = pred
+                            I = self.mt.word_id2txt(X_data, true_labels, pred_labels, target_id2label_dic)
+                            self.mt.conll_eval_file(I)
+                            eval_result = evaluate(self.data_config['conlleval_filePath'])
+                            eval_result['epoch'] = i
+                            eval_result['loss'] = loss
+                            if len(best_score)==0:
+                                best_score=copy.deepcopy(eval_result)
+                            else:
+                                if best_score['micro_f1']<eval_result['micro_f1']:
+                                    best_score=copy.deepcopy(eval_result)
+                                else:
+                                    early_stop_count+=1
+                        if early_stop_count>=self.nn_config['early_stop']:
+                            # saver.save(sess, self.nn_config['model'])
+                            self.reporter(report, best_score)
+                            break
+                    if early_stop_count < self.nn_config['early_stop']:
+                        # saver.save(sess, self.nn_config['model'])
+                        self.reporter(report, best_score)
+
                     report.write('\n')
                     report.write('=================crf_target=================\n')
                     W_s_data = sess.run(W_s)
                     W_t_data = sess.run(W_t)
                     stage3_W_t.load(np.matmul(W_s_data,W_t_data))
-                    start = datetime.now()
                     print('start training stage3')
+                    best_score = {}
+                    early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage3']):
                         dataset = self.df.target_data_generator('train')
                         for X_data,Y_data in dataset:
@@ -497,65 +570,26 @@ class Classifier:
                         #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         dataset = self.df.target_data_generator('test')
                         for X_data,Y_data in dataset:
-                            pred,test_loss,train_loss= \
-                                sess.run([pred_crf_target,test_loss_crf_target,train_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
-                            f1_macro, f1_micro = self.f1(Y_data,pred,self.nn_config['target_NETypes_num'])
-                            end = datetime.now()
-                            time_cost = end - start
-                            report.write('epoch:{}, time_cost:{}, test_loss:{}, train_loss:{}, macro_f1:{}, micro_f1:{}, W_s:{}, W_t:{}\n'.
-                                         format(str(i), str(time_cost), str(test_loss),str(train_loss),str(f1_macro),str(f1_micro),str(W_s_data),str(W_t_data)))
-                            report.flush()
-                            start = end
-                        # if i%self.nn_config['mod'] == 0 and i!=0:
-                        #     X_data,Y_data = self.df.target_data_generator('test')
-                        #     length = X_data.shape[0]
-                        #     slides = []
-                        #     avg = 300
-                        #     for j in range(1, avg + 1):
-                        #         slides.append(j / avg)
-                        #     slice_pre = 0
-                        #     pred_labels = []
-                        #     losses = []
-                        #     for slide in slides:
-                        #         slice_cur = int(math.floor(slide * length))
-                        #         pred,loss=sess.run([pred_crf_target, test_loss_crf_target],
-                        #                             feed_dict={X: X_data[slice_pre:slice_cur],
-                        #                                 Y_: Y_data[
-                        #                                     slice_pre:slice_cur]})
-                        #         pred_labels.append(pred)
-                        #         losses.append(loss)
-                        #         slice_pre = slice_cur
-                        #     pred_labels = np.concatenate(pred_labels, axis=0)
-                        #     f1_macro, f1_micro = self.f1(Y_data,pred_labels,self.nn_config['target_NETypes_num'])
-                        #     end = datetime.now()
-                        #     time_cost = end - start
-                        #     print(
-                        #         'stage3:\nepoch:{}, time_cost:{}, test_loss:{}, train_loss:{} macro_f1:{}, micro_f1:{}\n'.format(
-                        #             str(i), str(time_cost), str(np.mean(losses)), str(train_loss), str(f1_macro),
-                        #             str(f1_micro)))
-                        #     print('norm:' + str(np.sum(sess.run(tf.get_collection('reg_crf_source'))) + np.sum(
-                        #         sess.run(tf.get_collection('reg_multiclass'))) + np.sum(
-                        #         sess.run(tf.get_collection('reg_crf_target')))) + '\n')
-                        #     report.flush()
-                        #     start = end
-
-                    # final test
-                    dataset = self.df.target_data_generator('test')
-                    for X_data,Y_data in dataset:
-                        length = X_data.shape[0]
-                        slides =[]
-                        avg=300
-                        for j in range(1,avg+1):
-                            slides.append(j/avg)
-                        slice_pre=0
-                        pred_labels=[]
-                        for slide in slides:
-                            slice_cur = int(math.floor(slide*length))
-                            pred_labels.append(sess.run(pred_crf_target,feed_dict={X:X_data[slice_pre:slice_cur],Y_:Y_data[slice_pre:slice_cur]}))
-                            slice_pre=slice_cur
-                        pred_labels = np.concatenate(pred_labels,axis=0)
-
-                        true_labels = Y_data
-                        report.close()
-                        print('finsh')
-                        return true_labels,pred_labels,X_data
+                            pred,loss= sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
+                            target_id2label_dic = self.df.target_id2label_generator()
+                            true_labels = Y_data
+                            pred_labels = pred
+                            I = self.mt.word_id2txt(X_data, true_labels, pred_labels, target_id2label_dic)
+                            self.mt.conll_eval_file(I)
+                            eval_result = evaluate(self.data_config['conlleval_filePath'])
+                            eval_result['epoch'] = i
+                            eval_result['loss'] = loss
+                            if len(best_score)==0:
+                                best_score=copy.deepcopy(eval_result)
+                            else:
+                                if best_score['micro_f1']<eval_result['micro_f1']:
+                                    best_score=copy.deepcopy(eval_result)
+                                else:
+                                    early_stop_count+=1
+                        if early_stop_count>=self.nn_config['early_stop']:
+                            # saver.save(sess, self.nn_config['model'])
+                            self.reporter(report, best_score)
+                            break
+                    if early_stop_count < self.nn_config['early_stop']:
+                        # saver.save(sess, self.nn_config['model'])
+                        self.reporter(report, best_score)

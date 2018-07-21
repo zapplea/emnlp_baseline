@@ -24,17 +24,9 @@ def main(nn_config,data_config):
     nn_config['target_NETypes_num']=df.target_NETypes_num
     print('source_NETypes_num: ',str(nn_config['source_NETypes_num']))
     print('target_NETypes_num: ',str(nn_config['target_NETypes_num']))
-    cl = Classifier(nn_config,df)
-    if nn_config['stage1'] == "True":
-        cl.train()
-    else:
-        mt = Metrics(data_config)
-        true_labels, pred_labels, X_data = cl.train()
-        id2label_dic = df.id2label_generator()
-        I = mt.word_id2txt(X_data,true_labels,pred_labels,id2label_dic)
-        print('output')
-        mt.conll_eval_file(I)
-        print('finish output')
+    mt = Metrics(data_config)
+    cl = Classifier(nn_config, df, data_config, mt)
+    cl.train()
 
 if __name__ == "__main__":
 
@@ -51,16 +43,22 @@ if __name__ == "__main__":
         nn_config = {'lstm_cell_size': 150,
                      'vocabulary_size': 2981402,
                      'feature_dim': 200,
-                     'lr': 0.000003,
-                     'reg_rate': 0.03,
                      'source_NETypes_num': None,
                      'target_NETypes_num': None,
                      'pad_index': 1,
                      'epoch_stage2':200,
-                     'epoch_stage3':100}
-        nn_config['stage1'] = args.stage1
-        nn_config['mod'] = 1
-        nn_config['epoch'] = 3
+                     'epoch_stage3':200,
+                     'stage1':args.stage1,
+                     'dropout':0.5,
+                     'bilstm_num_layers':1,
+                     'early_stop':5,
+                     }
+
+        lr = [0.003,]
+        reg_rate=[0.00003,]
+
+        nn_config['lr']=lr[args.num]
+        nn_config['reg_rate']=reg_rate[args.num]
 
         k_shot = [['1.0', '1.1', '1.2', '1.3', '1.4', ],
                   ['2.0', '2.1', '2.2', '2.3', '2.4', ],
@@ -73,7 +71,7 @@ if __name__ == "__main__":
         #           ['4.0',],
         #           ['8.0',],
         #           ['16.0',]]
-        k_groups = k_shot[args.num]
+        k_groups = ['1.0','2.0','4.0','8.0','16.0']
         for k in k_groups:
             # BBN
             if args.dn == "bbn_bbn_kn":
@@ -87,7 +85,6 @@ if __name__ == "__main__":
                 nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/model/model0/model0.ckpt'
                 nn_config['words_num'] = 100
             elif args.dn=="bbn_cadec":
-                # args.dn == "cadec"
                 data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
                                'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_cadec.pkl',
                                'k_instances': k,
@@ -168,19 +165,26 @@ if __name__ == "__main__":
 
     # train crf source model and store it
     if args.stage1 == 'True':
-        nn_configs = [
-            {'lstm_cell_size': 150,
-             'vocabulary_size': 2981402,
-             'feature_dim': 200,
-             'lr': 0.03,
-             'reg_rate': 0.00003,
-             'source_NETypes_num': None,
-             'target_NETypes_num': None,
-             'pad_index': 1,
-             'epoch_stage1':150,}
-        ]
-        nn_config = nn_configs[args.num]
-        nn_config['stage1'] = args.stage1
+        # fixed variables
+        nn_config ={'lstm_cell_size': 150,
+                     'vocabulary_size': 2981402,
+                     'feature_dim': 200,
+                     'source_NETypes_num': None,
+                     'target_NETypes_num': None,
+                     'pad_index': 1,
+                     'epoch_stage1':150,
+                     'dropout':0.5,
+                     'bilstm_num_layers':1,
+                     'stage1':args.stage1,
+                     'early_stop': 5,
+                    }
+        # flesible
+        lr = [0.003,]
+        reg_rate = [0.00003,]
+
+        nn_config['lr']=lr[args.num]
+        nn_config['reg_rate']=reg_rate[args.num]
+
         # BBN
         if args.dn == "bbn_bbn_kn":
             data_config = {'table_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/table.pkl',
