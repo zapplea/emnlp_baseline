@@ -507,15 +507,14 @@ class Classifier:
                                 best_score=copy.deepcopy(eval_result)
                             else:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
+                                    saver.save(sess, self.nn_config['model'])
                                     best_score=copy.deepcopy(eval_result)
                                 else:
                                     early_stop_count+=1
                         if early_stop_count>=self.nn_config['early_stop']:
-                            saver.save(sess, self.nn_config['model'])
                             self.reporter(report,best_score)
                             break
                     if early_stop_count < self.nn_config['early_stop']:
-                        saver.save(sess, self.nn_config['model'])
                         self.reporter(report, best_score)
                 else:
                     saver.restore(sess,self.nn_config['model_sess'])
@@ -548,11 +547,9 @@ class Classifier:
                                 else:
                                     early_stop_count+=1
                         if early_stop_count>=self.nn_config['early_stop']:
-                            # saver.save(sess, self.nn_config['model'])
                             self.reporter(report, best_score)
                             break
                     if early_stop_count < self.nn_config['early_stop']:
-                        # saver.save(sess, self.nn_config['model'])
                         self.reporter(report, best_score)
 
                     report.write('\n')
@@ -587,9 +584,7 @@ class Classifier:
                                 else:
                                     early_stop_count+=1
                         if early_stop_count>=self.nn_config['early_stop']:
-                            # saver.save(sess, self.nn_config['model'])
                             self.reporter(report, best_score)
                             break
                     if early_stop_count < self.nn_config['early_stop']:
-                        # saver.save(sess, self.nn_config['model'])
                         self.reporter(report, best_score)
