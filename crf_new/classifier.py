@@ -111,9 +111,9 @@ class Classifier:
                                                               stddev=1 / math.sqrt(2 * self.nn_config['source_NETypes_num'])),
                               dtype='float32')
         graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_s))
-        W_trans = tf.get_variable(name='W_trans_crf_source', initializer=tf.zeros(
-            shape=(self.nn_config['source_NETypes_num'], self.nn_config['source_NETypes_num']), dtype='float32'))
-        graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
+        # W_trans = tf.get_variable(name='W_trans_crf_source', initializer=tf.zeros(
+        #     shape=(self.nn_config['source_NETypes_num'], self.nn_config['source_NETypes_num']), dtype='float32'))
+        # graph.add_to_collection('reg_crf_source', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_trans))
         # X.shape = (batch size, max sentence len, 2*lstm cell size)
         # W_d.shape = (2*lstm cell size, source NETypes num)
         unary_scores_m = tf.tensordot(X, W_s, axes=[[2],[0]])  # + tf.tile(tf.expand_dims(b, axis=0), multiples=(self.batch_size, 1, 1))
