@@ -8,6 +8,9 @@ tag2label = {"O": 0,
              "B-ORG": 5, "I-ORG": 6
              }
 
+def tag2label_generator():
+    pass
+
 
 def read_corpus(corpus_path):
     """

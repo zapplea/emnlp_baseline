@@ -8,6 +8,7 @@ from sklearn.utils import check_array
 import pickle
 import random
 import json
+import re
 
 class DataGenerator:
     def __init__(self,data_config,table,dictionary):
@@ -18,6 +19,28 @@ class DataGenerator:
     def conll_data_reader(self,filePath):
         data = BBNDataReader.readFile(filePath=filePath)
         return data
+
+    def tokenConvert(self,inputstr): #string
+            txt=inputstr.lower()
+            if bool(re.search('.*\d.*',txt)):
+                txt=re.sub('\d',' ',txt)
+                chls=[]
+                count=0
+                for char in txt:
+                    if char==' ':
+                        count=count+1
+                    else:
+                        if count==0:
+                            chls.append(char)
+                        else:
+                            chls.append('NUM'+str(count)+char)
+                            count=0
+                if count>0:
+                    chls.append('NUM'+str(count))
+                txt=''
+                for s in chls:
+                    txt=txt+s
+            return txt
 
     def nn_data_generator(self,data,labels_dic):
         data_len=len(data.text)
@@ -33,6 +56,7 @@ class DataGenerator:
                 exit()
             x = []
             for word in text:
+                word = self.tokenConvert(word)
                 if word not in self.dictionary:
                     x.append(self.dictionary['#UNK#'])
                 else:
@@ -70,6 +94,7 @@ class DataGenerator:
                 exit()
             x = []
             for word in text:
+                word = self.tokenConvert(word)
                 if word not in self.dictionary:
                     x.append(self.dictionary['#UNK#'])
                 else:
