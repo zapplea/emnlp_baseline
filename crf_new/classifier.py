@@ -247,6 +247,7 @@ class Classifier:
                         self.mt.conll_eval_file(I)
                         eval_result = evaluate(self.data_config['conlleval_filePath'])
                         report.write('=========================\n')
+                        report.write('epoch: '+str(i))
                         report.write('loss: %s'% str(loss))
                         report.write(eval_result["per_f1"] + '\n')
                         report.write(eval_result["per_pre"] + '\n')

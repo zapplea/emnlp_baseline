@@ -65,9 +65,10 @@ class DataGen:
         word2id = {}
         for sent_, tag_ in data:
             for word in sent_:
-                if word.isdigit():
-                    word = '<NUM>'
-                elif ('\u0041' <= word <= '\u005a') or ('\u0061' <= word <= '\u007a'):
+                word = self.tokenConvert(word)
+                # if word.isdigit():
+                #     word = '<NUM>'
+                if ('\u0041' <= word <= '\u005a') or ('\u0061' <= word <= '\u007a'):
                     word = '<ENG>'
                 if word not in word2id:
                     word2id[word] = [len(word2id) + 1, 1]
