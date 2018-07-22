@@ -89,6 +89,17 @@ class Classifier:
         # outputs.shape = [(batch size, max time step, lstm cell size),(batch size, max time step, lstm cell size)]
         outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell, cell_bw=cell, inputs=X,
                                                      sequence_length=seq_len, dtype='float32')
+
+        for v in tf.all_variables():
+            if v.name.startwith('bilstm'):
+                print(v.name)
+        exit()
+        graph.add_to_collection('bilstm_reg',
+                                tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
+                                    graph.get_tensor_by_name('bilstm/bidirectional_rnn/fw/basic_lstm_cell/kernel:0')))
+        graph.add_to_collection('bilstm_reg',
+                                tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
+                                    graph.get_tensor_by_name('bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
         # outputs.shape = (batch size, max time step, 2*lstm cell size)
         outputs = tf.concat(outputs, axis=2, name='bilstm_outputs')
         graph.add_to_collection('bilstm_outputs', outputs)
@@ -378,10 +389,7 @@ class Classifier:
                 with tf.variable_scope('bilstm') as vs:
                     # X.shape = (batch size, max time step, 2*lstm cell size)
                     X = self.bilstm(X,seq_len,graph)
-                    graph.add_to_collection('bilstm_reg',
-                                            tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(graph.get_tensor_by_name('bilstm/bidirectional_rnn/fw/basic_lstm_cell/kernel:0')))
-                    graph.add_to_collection('bilstm_reg',
-                                            tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(graph.get_tensor_by_name('bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
+
 
                 # crf source
                 log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
