@@ -545,7 +545,6 @@ class Classifier:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
                                     saver.save(sess, self.nn_config['model'])
                                     best_score=copy.deepcopy(eval_result)
-                                    self.stdout(best_score)
                                 else:
                                     early_stop_count+=1
                         if early_stop_count>=self.nn_config['early_stop']:
