@@ -1,6 +1,5 @@
 import tensorflow as tf
 from datetime import datetime
-import sklearn
 import numpy as np
 import copy
 
@@ -365,27 +364,27 @@ class Classifier:
         accuracy = tf.truediv(correct_labels_num,total_labels_num)
         return accuracy
 
-    def f1(self,Y_,Y,labels_num):
-        """
-        
-        :param Y_: (batch size, max words num)
-        :param Y: (batch size, max words num
-        :return: 
-        """
-        Y = np.reshape(Y,newshape=(-1,)).astype('float32')
-        Y_ = np.reshape(Y_,newshape=(-1,)).astype('float32')
-        ls_y=[]
-        ls_y_=[]
-        for i in range(Y.shape[0]):
-            if Y_[i] !=0:
-                ls_y.append(Y[i])
-                ls_y_.append(Y_[i])
-        Y = np.array(ls_y,dtype='float32')
-        Y_ = np.array(ls_y_,dtype='float32')
-
-        f1_macro = sklearn.metrics.f1_score(Y_, Y, labels=list(range(1,labels_num)),average='macro')
-        f1_micro = sklearn.metrics.f1_score(Y_, Y, labels=list(range(1,labels_num)),average='micro')
-        return f1_macro,f1_micro
+    # def f1(self,Y_,Y,labels_num):
+    #     """
+    #
+    #     :param Y_: (batch size, max words num)
+    #     :param Y: (batch size, max words num
+    #     :return:
+    #     """
+    #     Y = np.reshape(Y,newshape=(-1,)).astype('float32')
+    #     Y_ = np.reshape(Y_,newshape=(-1,)).astype('float32')
+    #     ls_y=[]
+    #     ls_y_=[]
+    #     for i in range(Y.shape[0]):
+    #         if Y_[i] !=0:
+    #             ls_y.append(Y[i])
+    #             ls_y_.append(Y_[i])
+    #     Y = np.array(ls_y,dtype='float32')
+    #     Y_ = np.array(ls_y_,dtype='float32')
+    #
+    #     f1_macro = sklearn.metrics.f1_score(Y_, Y, labels=list(range(1,labels_num)),average='macro')
+    #     f1_micro = sklearn.metrics.f1_score(Y_, Y, labels=list(range(1,labels_num)),average='micro')
+    #     return f1_macro,f1_micro
 
     def classifier(self):
         graph = tf.Graph()
