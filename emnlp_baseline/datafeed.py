@@ -1,6 +1,4 @@
-import gensim
 import numpy as np
-from sklearn.utils import check_array
 import pickle
 import random
 
