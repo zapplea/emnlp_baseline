@@ -94,12 +94,17 @@ class Classifier:
             if v.name.startswith('bilstm'):
                 print(v.name)
         exit()
-        graph.add_to_collection('bilstm_reg',
-                                tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
-                                    graph.get_tensor_by_name('bilstm/bidirectional_rnn/fw/basic_lstm_cell/kernel:0')))
+        # graph.add_to_collection('bilstm_reg',
+        #                         tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
+        #                             graph.get_tensor_by_name('bilstm/bidirectional_rnn/fw/basic_lstm_cell/kernel:0')))
+        # graph.add_to_collection('bilstm_reg',
+        #                         tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
+        #                             graph.get_tensor_by_name('bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
+
         graph.add_to_collection('bilstm_reg',
                                 tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(
                                     graph.get_tensor_by_name('bilstm/bidirectional_rnn/bw/basic_lstm_cell/kernel:0')))
+
         # outputs.shape = (batch size, max time step, 2*lstm cell size)
         outputs = tf.concat(outputs, axis=2, name='bilstm_outputs')
         graph.add_to_collection('bilstm_outputs', outputs)
