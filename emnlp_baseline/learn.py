@@ -175,7 +175,7 @@ if __name__ == "__main__":
                      'source_NETypes_num': None,
                      'target_NETypes_num': None,
                      'pad_index': 1,
-                     'epoch_stage1':150,
+                     'epoch_stage1':5,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
                      'stage1':args.stage1,

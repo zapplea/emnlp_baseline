@@ -459,6 +459,21 @@ class Classifier:
         report.write('=========================\n')
         report.flush()
 
+    def stdout(self,best_score):
+        print('=========================\n')
+        print('epoch: ' + str(best_score['epoch']))
+        print('loss: %s' % str(best_score['loss']))
+        print(best_score["per_f1"] + '\n')
+        print(best_score["per_pre"] + '\n')
+        print(best_score["per_recall"] + '\n')
+        print(best_score["micro_f1"] + '\n')
+        print(best_score["micro_pre"] + '\n')
+        print(best_score["micro_recall"] + '\n')
+        print(best_score["macro_f1"] + '\n')
+        print(best_score["macro_pre"] + '\n')
+        print(best_score["macro_recall"] + '\n')
+        print('=========================\n')
+
     def train(self):
         graph,saver = self.classifier()
         with graph.device('/:gpu0'):
@@ -529,6 +544,7 @@ class Classifier:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
                                     saver.save(sess, self.nn_config['model'])
                                     best_score=copy.deepcopy(eval_result)
+                                    self.stdout(best_score)
                                 else:
                                     early_stop_count+=1
                         if early_stop_count>=self.nn_config['early_stop']:
