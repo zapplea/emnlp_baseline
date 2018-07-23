@@ -33,6 +33,11 @@ class Dataset:
         print(len(X))
         print(len(Y_))
         X=np.array(X,dtype='int32')
+        for instance in X:
+            if len(instance) != 100:
+                print(len(instance))
+                print(instance)
+                print('===========')
         Y_=np.array(Y_,dtype='int32')
         return X,Y_
 
