@@ -34,9 +34,9 @@ class Dataset:
         # print(len(Y_))
         # print(len(X[11147]))
         # print(X[11147])
-        # X=np.array(X[11144:],dtype='int32')
+        X=np.array(X,dtype='int32')
         # exit()
-        Y_=np.array(Y_,dtype='int32')
+        # Y_=np.array(Y_,dtype='int32')
         print('successfull')
         exit()
         return X,Y_
