@@ -32,12 +32,10 @@ class Dataset:
             Y_.append(instance[1])
         print(len(X))
         print(len(Y_))
-        X=np.array(X[11145:],dtype='int32')
-        for instance in X:
-            if len(instance) != 100:
-                print(len(instance))
-                print(instance)
-                print('===========')
+        print(len(X[11147]))
+        print(X[11147])
+        X=np.array(X[11146:],dtype='int32')
+        exit()
         Y_=np.array(Y_,dtype='int32')
         return X,Y_
 
