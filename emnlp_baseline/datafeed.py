@@ -73,10 +73,15 @@ class DataFeed:
     def target_data_generator(self,mode):
         if mode == 'train':
             dataset=Dataset(self.target_train_data[self.data_config['k_instances']],batch_size=self.data_config['batch_size'])
+            self.check(dataset)
         else:
             dataset = Dataset(self.target_test_data)
-
         return dataset
+
+    def check(self,dataset):
+        print('type of dataset: ',type(dataset))
+        
+        exit()
 
     def source_id2label_generator(self):
         return self.source_id2label_dic

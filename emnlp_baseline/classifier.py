@@ -540,7 +540,7 @@ class Classifier:
                             eval_result['loss']=loss
                             if len(best_score)==0:
                                 best_score=copy.deepcopy(eval_result)
-                                self.stdout(best_score)
+                                # self.stdout(best_score)
                             else:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
                                     saver.save(sess, self.nn_config['model'])
