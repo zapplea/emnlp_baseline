@@ -29,9 +29,9 @@ class Dataset:
         Y_=[]
         for instance in batch:
             X.append(instance[0])
-            # self.check(X)
             Y_.append(instance[1])
-            # self.check(Y_)
+        self.check(X)
+        self.check(Y_)
         return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
 
     def check(self,X):
