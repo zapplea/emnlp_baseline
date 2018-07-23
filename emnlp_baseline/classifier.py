@@ -91,7 +91,7 @@ class Classifier:
                                                      sequence_length=seq_len, dtype='float32')
 
         for v in tf.all_variables():
-            if v.name.startwith('bilstm'):
+            if v.name.startswith('bilstm'):
                 print(v.name)
         exit()
         graph.add_to_collection('bilstm_reg',
