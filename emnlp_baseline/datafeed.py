@@ -29,9 +29,9 @@ class Dataset:
         Y_=[]
         for instance in batch:
             X.append(instance[0])
-            self.check(X)
+            # self.check(X)
             Y_.append(instance[1])
-            self.check(Y_)
+            # self.check(Y_)
         return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
 
     def check(self,X):
@@ -80,18 +80,16 @@ class DataFeed:
     def target_data_generator(self,mode):
         if mode == 'train':
             dataset=Dataset(self.target_train_data[self.data_config['k_instances']],batch_size=self.data_config['batch_size'])
-            # self.check(self.target_train_data[self.data_config['k_instances']])
         else:
+            self.check(self.target_train_data[self.data_config['k_instances']])
             dataset = Dataset(self.target_test_data)
         return dataset
 
     def check(self,dataset):
         print('type of dataset: ',type(dataset))
         for txt,ty in dataset:
-            print('len txt: ',len(txt),' ; ','len ty: ',len(ty))
-            print(txt)
-            print(ty)
-            print('====================')
+            print(len(txt),':',len(ty))
+        print('====================')
         exit()
 
     def source_id2label_generator(self):
