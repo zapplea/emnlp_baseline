@@ -32,7 +32,9 @@ class Dataset:
             Y_.append(instance[1])
         print(len(X))
         print(len(Y_))
-        return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
+        X=np.array(X,dtype='int32')
+        Y_=np.array(Y_,dtype='int32')
+        return X,Y_
 
 class DataFeed:
     def __init__(self,data_config):
