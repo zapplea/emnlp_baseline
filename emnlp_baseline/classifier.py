@@ -402,7 +402,7 @@ class Classifier:
                 with tf.variable_scope('bilstm') as vs:
                     # X.shape = (batch size, max time step, 2*lstm cell size)
                     X = self.bilstm(X,seq_len,graph)
-                    
+
                 # crf source
                 log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
                 loss = self.loss_crf_source(log_likelihood,graph)

@@ -161,6 +161,9 @@ if __name__ == "__main__":
                 nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/model0/model0.ckpt.meta'
                 nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/model0/model0.ckpt'
                 nn_config['words_num'] = 100
+
+            data_config['conlleval_filePath'] = '/datastore/liu121/nosqldb2/emnlp_baseline/CoNLLEval/conlleval_%s%s_%s' % (args.dn, k, str(args.num))
+
             main(nn_config,data_config)
 
     # train crf source model and store it
@@ -244,7 +247,7 @@ if __name__ == "__main__":
             report = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/report/'
             model = '/datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/model/'
 
-
+        data_config['conlleval_filePath']='/datastore/liu121/nosqldb2/emnlp_baseline/CoNLLEval/conlleval_%s_%s'%(args.dn,str(args.num))
 
 
         model = model +'model'+str(args.num)
