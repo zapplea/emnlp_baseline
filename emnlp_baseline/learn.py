@@ -83,7 +83,7 @@ if __name__ == "__main__":
         for k in k_groups:
             data_config['k_instances']=k
             data_config['conlleval_filePath'] = '/datastore/liu121/nosqldb2/emnlp_baseline/CoNLLEval/conlleval_%s%s_%s' % (args.dn, k, str(args.num))
-            nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/%s/report/report_' + k %(args.dn)
+            nn_config['report'] = '/datastore/liu121/nosqldb2/emnlp_baseline/%s/report/report_%s'%(args.dn,k)
             nn_config['model'] = '/datastore/liu121/nosqldb2/emnlp_baseline/%s/model/model0/model0.ckpt.meta'%(args.dn)
             nn_config['model_sess'] = '/datastore/liu121/nosqldb2/emnlp_baseline/%s/model/model0/model0.ckpt'%(args.dn)
             # BBN
