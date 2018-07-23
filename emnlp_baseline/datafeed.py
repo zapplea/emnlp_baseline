@@ -32,9 +32,9 @@ class Dataset:
             Y_.append(instance[1])
         # print(len(X))
         # print(len(Y_))
-        for i in [1000,5005,10000]:
+        for i in [1000,2000,3000,4000]:
             print(i)
-            X_new=np.array(X[:i],dtype='int32')
+            X_new=np.array(X[i:5000],dtype='int32')
         # exit()
         # Y_=np.array(Y_,dtype='int32')
         print('successfull')
