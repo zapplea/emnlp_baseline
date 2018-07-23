@@ -37,6 +37,7 @@ class Dataset:
     def check(self,X):
         for instance in X:
             print(len(instance))
+        print('=============')
 
 class DataFeed:
     def __init__(self,data_config):
