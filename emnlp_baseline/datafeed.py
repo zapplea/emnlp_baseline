@@ -81,7 +81,7 @@ class DataFeed:
         if mode == 'train':
             dataset=Dataset(self.target_train_data[self.data_config['k_instances']],batch_size=self.data_config['batch_size'])
         else:
-            self.check(self.target_train_data[self.data_config['k_instances']])
+            #self.check(self.target_train_data[self.data_config['k_instances']])
             dataset = Dataset(self.target_test_data)
         return dataset
 

@@ -561,10 +561,12 @@ class Classifier:
                     early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage2']):
                         dataset= self.df.target_data_generator('train')
+                        print('train stage2')
                         for X_data,Y_data in dataset:
                             sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
                         #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
                         dataset = self.df.target_data_generator('test')
+                        print('test stage2')
                         for X_data,Y_data in dataset:
                             pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
                             target_id2label_dic = self.df.target_id2label_generator()
