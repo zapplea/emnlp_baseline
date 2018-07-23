@@ -11,8 +11,8 @@ if cur_user_name == "liu121":
 import argparse
 from pathlib import Path
 
-from crf_source.datafeed import DataFeed
-from crf_source.classifier import Classifier
+from crf_new.datafeed import DataFeed
+from crf_new.classifier import Classifier
 from emnlp_baseline.metrics import Metrics
 
 def main(nn_config,data_config):
