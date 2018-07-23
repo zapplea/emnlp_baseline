@@ -2,9 +2,6 @@ import sys
 sys.path.append('/home/liu121/dlnlp')
 from nerd.data.util.readers.BBNDataReader import BBNDataReader
 
-import gensim
-import numpy as np
-from sklearn.utils import check_array
 import pickle
 import random
 import json
