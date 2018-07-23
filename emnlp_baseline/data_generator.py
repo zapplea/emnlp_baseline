@@ -81,7 +81,7 @@ class DataGenerator:
             nn_data.append((x, y_))
         return nn_data,labels_num,labels_dic
 
-    def target_nn_data_generator(self,data,labels_dic,labels_num):
+    def target_nn_train_data_generator(self,data,labels_dic,labels_num):
         data_len=len(data.text)
         # train_data = [[text,labels], ...]
         nn_data = []
@@ -92,6 +92,42 @@ class DataGenerator:
             #     continue
             # if len(text)>self.data_config['max_len']:
             #     exit()
+            x = []
+            for word in text:
+                word = self.tokenConvert(word)
+                if word not in self.dictionary:
+                    x.append(self.dictionary['#UNK#'])
+                else:
+                    x.append(self.dictionary[word])
+            while len(x) < self.data_config['max_len']:
+                x.append(self.dictionary['#PAD#'])
+            y_ = []
+            for label in labels:
+                if label == 'OTHER':
+                    label='O'
+                if label not in labels_dic:
+                    labels_dic[label] = labels_num
+                    labels_num += 1
+                # y_.append(labels_dic[label])
+                y_.append(label)
+            while len(y_) < self.data_config['max_len']:
+                y_.append('O')
+            # print('labels: \n',labels_dic)
+            # print('x:\n',x)
+            # print('y_:\n',y_)
+            # exit()
+            nn_data.append((x, y_))
+        return nn_data,labels_num,labels_dic
+
+    def target_nn_eval_data_generator(self,data,labels_dic,labels_num):
+        data_len=len(data.text)
+        # train_data = [[text,labels], ...]
+        nn_data = []
+        for i in range(data_len):
+            text = data.text[i]
+            labels = data.labels[i]
+            if len(text)>self.data_config['max_len']:
+                continue
             x = []
             for word in text:
                 word = self.tokenConvert(word)
@@ -132,9 +168,9 @@ class DataGenerator:
 
         labels_dic = {'O':0}
         labels_num=1
-        target_train_data, labels_num, labels_dic = self.target_nn_data_generator(target_draw_data,labels_dic,labels_num)
+        target_train_data, labels_num, labels_dic = self.target_nn_train_data_generator(target_draw_data,labels_dic,labels_num)
         #print('target_train_data length:{}\n'.format(str(len(target_train_data))))
-        target_test_data, labels_num, labels_dic = self.target_nn_data_generator(target_eval_data,labels_dic,labels_num)
+        target_test_data, labels_num, labels_dic = self.target_nn_eval_data_generator(target_eval_data,labels_dic,labels_num)
 
         return target_train_data,target_test_data,labels_num, labels_dic
 
