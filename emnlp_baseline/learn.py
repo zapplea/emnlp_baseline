@@ -112,7 +112,7 @@ if __name__ == "__main__":
                      'source_NETypes_num': None,
                      'target_NETypes_num': None,
                      'pad_index': 1,
-                     'epoch_stage1':10,
+                     'epoch_stage1':3,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
                      'stage1':args.stage1,
