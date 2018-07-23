@@ -33,6 +33,7 @@ class Dataset:
         # print(len(X))
         # print(len(Y_))
         for i in [1000,5000,10000]:
+            print(i)
             X_new=np.array(X[:i],dtype='int32')
         # exit()
         # Y_=np.array(Y_,dtype='int32')
