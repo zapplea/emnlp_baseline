@@ -32,7 +32,7 @@ class Dataset:
             Y_.append(instance[1])
         # print(len(X))
         # print(len(Y_))
-        for i in [1500,1600,1700,1800,1900,2000]:
+        for i in [1100,1200,1300,1400,1500]:
             print(i)
             X_new=np.array(X[:i],dtype='int32')
         # exit()
