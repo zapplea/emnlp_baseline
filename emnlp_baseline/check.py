@@ -29,9 +29,14 @@ class Dataset:
             Y_.append(instance[1])
         # print(len(X))
         # print(len(Y_))
-        for i in [1045,1046,1047,1048,1050]:
-            print(i)
-            X_new=np.array(X[:i],dtype='int32')
+        print(len(X[1045]))
+        print(X[1045])
+        # for i in [1045,1046,1047,1048,1050]:
+        #     print(i)
+        #     X_new=np.array(X[:i],dtype='int32')
+        np.array(X[:1045])
+        np.array(X[1046:])
+
         # exit()
         # Y_=np.array(Y_,dtype='int32')
         print('successfull')
