@@ -29,8 +29,14 @@ class Dataset:
         Y_=[]
         for instance in batch:
             X.append(instance[0])
+            self.check(X)
             Y_.append(instance[1])
+            self.check(Y_)
         return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
+
+    def check(self,X):
+        for instance in X:
+            print(len(instance))
 
 class DataFeed:
     def __init__(self,data_config):
@@ -73,7 +79,7 @@ class DataFeed:
     def target_data_generator(self,mode):
         if mode == 'train':
             dataset=Dataset(self.target_train_data[self.data_config['k_instances']],batch_size=self.data_config['batch_size'])
-            self.check(self.target_train_data[self.data_config['k_instances']])
+            # self.check(self.target_train_data[self.data_config['k_instances']])
         else:
             dataset = Dataset(self.target_test_data)
         return dataset
