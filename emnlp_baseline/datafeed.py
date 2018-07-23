@@ -30,14 +30,9 @@ class Dataset:
         for instance in batch:
             X.append(instance[0])
             Y_.append(instance[1])
-        self.check(X)
-        self.check(Y_)
+        print(len(X))
+        print(len(Y_))
         return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
-
-    def check(self,X):
-        for instance in X:
-            print(len(instance))
-        print('=============')
 
 class DataFeed:
     def __init__(self,data_config):
