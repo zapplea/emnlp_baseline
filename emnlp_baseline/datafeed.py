@@ -80,7 +80,11 @@ class DataFeed:
 
     def check(self,dataset):
         print('type of dataset: ',type(dataset))
-
+        for txt,ty in dataset:
+            print('len txt: ',len(txt),' ; ','len ty: ',len(ty))
+            print(txt)
+            print(ty)
+            print('====================')
         exit()
 
     def source_id2label_generator(self):
