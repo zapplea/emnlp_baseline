@@ -27,16 +27,18 @@ class Dataset:
             raise StopIteration
         X=[]
         Y_=[]
-        for instance in batch:
-            X.append(instance[0])
-            Y_.append(instance[1])
-        print(len(X))
-        print(len(Y_))
-        print(len(X[11147]))
-        print(X[11147])
-        X=np.array(X[11144:],dtype='int32')
-        exit()
+        # for instance in batch:
+        #     X.append(instance[0])
+        #     Y_.append(instance[1])
+        # print(len(X))
+        # print(len(Y_))
+        # print(len(X[11147]))
+        # print(X[11147])
+        # X=np.array(X[11144:],dtype='int32')
+        # exit()
         Y_=np.array(Y_,dtype='int32')
+        print('successfull')
+        exit()
         return X,Y_
 
 class DataFeed:
