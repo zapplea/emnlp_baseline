@@ -27,9 +27,9 @@ class Dataset:
             raise StopIteration
         X=[]
         Y_=[]
-        # for instance in batch:
-        #     X.append(instance[0])
-        #     Y_.append(instance[1])
+        for instance in batch:
+            X.append(instance[0])
+            Y_.append(instance[1])
         # print(len(X))
         # print(len(Y_))
         # print(len(X[11147]))
