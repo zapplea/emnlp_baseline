@@ -37,6 +37,10 @@ if __name__ == "__main__":
     parser.add_argument('--dn',type=str)
     args = parser.parse_args()
 
+    epoch_stage1=3
+    epoch_stage2=3
+    epoch_stage3=3
+
     # Train the relation model and target crf model
     if args.stage1=='False1' or args.stage1=='False2' or args.stage1=='False0' or args.stage1=='False4' or args.stage1=='False5' or args.stage1=='False6':
 
@@ -46,8 +50,8 @@ if __name__ == "__main__":
                      'source_NETypes_num': None,
                      'target_NETypes_num': None,
                      'pad_index': 1,
-                     'epoch_stage2':3,
-                     'epoch_stage3':3,
+                     'epoch_stage2':epoch_stage2,
+                     'epoch_stage3':epoch_stage3,
                      'stage1':args.stage1,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
@@ -112,7 +116,7 @@ if __name__ == "__main__":
                      'source_NETypes_num': None,
                      'target_NETypes_num': None,
                      'pad_index': 1,
-                     'epoch_stage1':100,
+                     'epoch_stage1':epoch_stage1,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
                      'stage1':args.stage1,
