@@ -514,7 +514,8 @@ class Classifier:
                 print(stage3_W_t)
                 for v in tf.global_variables():
                     if v.name.startswith('stage3_W_t'):
-                        print(v)
+                        stage3_W_t=v
+                print(stage3_W_t)
                 print('====================')
                 init = tf.global_variables_initializer()
 
