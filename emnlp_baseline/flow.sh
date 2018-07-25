@@ -46,14 +46,14 @@ then
         echo "true"
 
         sbatch run_learn.sh 0 $stage1 "bbn_bbn_kn"
-#        sbatch run_learn.sh 0 $stage1 "bbn_cadec"
+        sbatch run_learn.sh 0 $stage1 "bbn_cadec"
 #        sbatch run_learn.sh 0 $stage1 "bbn_cadec_simple"
-#        sbatch run_learn.sh 0 $stage1 "bbn_nvd"
-#
-#        sbatch run_learn.sh 0 $stage1 "conll_bbn_kn"
-#        sbatch run_learn.sh 0 $stage1 "conll_cadec"
+        sbatch run_learn.sh 0 $stage1 "bbn_nvd"
+
+        sbatch run_learn.sh 0 $stage1 "conll_bbn_kn"
+        sbatch run_learn.sh 0 $stage1 "conll_cadec"
 #        sbatch run_learn.sh 0 $stage1 "conll_cadec_simple"
-#        sbatch run_learn.sh 0 $stage1 "conll_nvd"
+        sbatch run_learn.sh 0 $stage1 "conll_nvd"
 
     elif [ $stage1 = "False1" ]
     then
