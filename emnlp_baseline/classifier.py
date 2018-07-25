@@ -508,12 +508,6 @@ class Classifier:
                 W_s = graph.get_tensor_by_name('W_s:0')
                 W_t = graph.get_tensor_by_name('W_t:0')
                 stage3_W_t = graph.get_collection('stage3_W_t')[0]
-                with tf.Session(graph=graph,config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-                    sess.run(tf.global_variables_initializer())
-                    stage3_W_t.load(np.ones(300,42))
-                    print(sess.run(stage3_W_t))
-                print(stage3_W_t)
-                exit()
                 print('====================')
                 init = tf.global_variables_initializer()
 
@@ -524,6 +518,12 @@ class Classifier:
                 if self.nn_config['stage1'] == 'True':
                     print('start training stage1')
                     sess.run(init, feed_dict={table: table_data})
+
+                    print(stage3_W_t)
+                    stage3_W_t.load(np.ones(300, 42))
+                    print(sess.run(stage3_W_t))
+                    exit()
+
                     report.write('=================crf_source=================\n')
                     best_score={}
                     early_stop_count=0
