@@ -508,6 +508,7 @@ class Classifier:
                 W_s = graph.get_tensor_by_name('W_s:0')
                 W_t = graph.get_tensor_by_name('W_t:0')
                 stage3_W_t = graph.get_collection('stage3_W_t')[0]
+                print(stage3_W_t)
                 print('====================')
                 init = tf.global_variables_initializer()
 
@@ -553,6 +554,7 @@ class Classifier:
                     if early_stop_count < self.nn_config['early_stop']:
                         self.reporter(report, best_score)
                 else:
+                    print(stage3_W_t)
                     saver.restore(sess,self.nn_config['model_sess'])
                     report.write('=================multiclass=================\n')
                     report.flush()
