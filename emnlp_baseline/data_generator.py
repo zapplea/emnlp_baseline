@@ -317,15 +317,6 @@ def table_vec_and_dic():
 
 if __name__ == "__main__":
     data_configs =[
-                   # {'max_len':822,#275
-                   #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_unk.pkl',
-                   #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_unk/data_train',
-                   #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_unk/data_test_draw',
-                   #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_unk/data_test_eval',
-                   #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_unk/draw_unk.json',
-                   #  'groups_num':5,
-                   #  'instances_num':[1,2,4,8,16]},
-
                     {'max_len': 100,  # bbn_bbn_kn
                      'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_bbn_kn.pkl',
                      'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
@@ -334,32 +325,32 @@ if __name__ == "__main__":
                      'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
                      'groups_num': 5,
                      'instances_num': [1, 2, 4, 8, 16]},
-                    # {'max_len': 100,  # conll_bbn_kn
-                    #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_bbn_kn.pkl',
-                    #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
-                    #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
-                    #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval.txt',
-                    #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
-                    #  'groups_num': 5,
-                    #  'instances_num': [1, 2, 4, 8, 16]},
-                    #
-                    #
-                    # {'max_len': 200,  # 315 bbn_cadec
-                    #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_cadec.pkl',
-                    #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
-                    #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
-                    #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
-                    #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
-                    #  'groups_num': 5,
-                    #  'instances_num': [1, 2, 4, 8, 16]},
-                    # {'max_len': 200,  # conll_cadec
-                    #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_cadec.pkl',
-                    #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
-                    #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
-                    #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
-                    #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
-                    #  'groups_num': 5,
-                    #  'instances_num': [1, 2, 4, 8, 16]},
+                    {'max_len': 100,  # conll_bbn_kn
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_bbn_kn.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_eval.txt',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
+
+
+                    {'max_len': 200,  # 315 bbn_cadec
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_cadec.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
+                    {'max_len': 200,  # conll_cadec
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_cadec.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_eval',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
                     #
                     #
                     # {'max_len': 200,  # bbn_cadec_simple
@@ -378,23 +369,23 @@ if __name__ == "__main__":
                     #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec_simple/test_draw_cadec_cache_config.json',
                     #  'groups_num': 5,
                     #  'instances_num': [1, 2, 4, 8, 16]},
-                    #
-                    # {'max_len': 100,  #bbn_nvd
-                    #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_nvd.pkl',
-                    #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
-                    #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_draw',
-                    #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_eval',
-                    #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/nvd/draw.json',
-                    #  'groups_num': 5,
-                    #  'instances_num': [1, 2, 4, 8, 16]},
-                    # {'max_len': 100,  #conll_nvd
-                    #  'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_nvd.pkl',
-                    #  'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
-                    #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_draw',
-                    #  'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_eval',
-                    #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/nvd/draw.json',
-                    #  'groups_num': 5,
-                    #  'instances_num': [1, 2, 4, 8, 16]},
+
+                    {'max_len': 100,  #bbn_nvd
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_bbn_nvd.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_train.txt',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_draw',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_eval',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/nvd/draw.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
+                    {'max_len': 100,  #conll_nvd
+                     'pkl_filePath': '/datastore/liu121/nosqldb2/emnlp_baseline/data/data_conll_nvd.pkl',
+                     'source_Conll_filePath': '/datastore/liu121/nosqldb2/conll2003/conll_train',
+                     'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_draw',
+                     'target_test_Conll_filePath': '/datastore/liu121/nosqldb2/nvd/nvd_test_eval',
+                     'target_train_jsonPath': '/datastore/liu121/nosqldb2/nvd/draw.json',
+                     'groups_num': 5,
+                     'instances_num': [1, 2, 4, 8, 16]},
                    ]
     table,dictionary = table_vec_and_dic()
     for data_config in data_configs:

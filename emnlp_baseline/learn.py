@@ -37,9 +37,9 @@ if __name__ == "__main__":
     parser.add_argument('--dn',type=str)
     args = parser.parse_args()
 
-    epoch_stage1=3
-    epoch_stage2=3
-    epoch_stage3=3
+    epoch_stage1=100
+    epoch_stage2=100
+    epoch_stage3=100
 
     # Train the relation model and target crf model
     if args.stage1=='False1' or args.stage1=='False2' or args.stage1=='False0' or args.stage1=='False4' or args.stage1=='False5' or args.stage1=='False6':
