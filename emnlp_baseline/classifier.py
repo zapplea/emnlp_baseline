@@ -309,7 +309,9 @@ class Classifier:
                               initializer=tf.zeros(
                                   shape=(2 * self.nn_config['lstm_cell_size'], self.nn_config['target_NETypes_num']),
                                   dtype='float32'))
+        print('add to collection')
         graph.add_to_collection('stage3_W_t',W_t)
+        print(graph.get_collection('stage3_W_t'))
         graph.add_to_collection('reg_crf_target', tf.contrib.layers.l2_regularizer(self.nn_config['reg_rate'])(W_t))
         W_trans = tf.get_variable(name='W_trans_crf_target',
                                   initializer=tf.zeros(shape=(self.nn_config['target_NETypes_num'],
