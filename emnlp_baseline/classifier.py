@@ -518,12 +518,6 @@ class Classifier:
                 if self.nn_config['stage1'] == 'True':
                     print('start training stage1')
                     sess.run(init, feed_dict={table: table_data})
-
-                    print(stage3_W_t)
-                    stage3_W_t.load(np.ones((300, 42),dtype='float32'))
-                    print(sess.run(stage3_W_t))
-                    exit()
-
                     report.write('=================crf_source=================\n')
                     best_score={}
                     early_stop_count=0
@@ -565,42 +559,46 @@ class Classifier:
                     print('start training stage2')
                     best_score = {}
                     early_stop_count = 0
-                    for i in range(self.nn_config['epoch_stage2']):
-                        # dataset= self.df.target_data_generator('train')
-                        # print('train stage2')
-                        # for X_data,Y_data in dataset:
-                        #     sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
-                        #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
-                        dataset = self.df.target_data_generator('test')
-                        print('test stage2')
-                        for X_data,Y_data in dataset:
-                            pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
-                            target_id2label_dic = self.df.target_id2label_generator()
-                            true_labels = Y_data
-                            pred_labels = pred
-                            I = self.mt.word_id2txt(X_data, true_labels, pred_labels, target_id2label_dic)
-                            self.mt.conll_eval_file(I)
-                            eval_result = evaluate(self.data_config['conlleval_filePath'])
-                            eval_result['epoch'] = i
-                            eval_result['loss'] = loss
-                            if len(best_score)==0:
-                                best_score=copy.deepcopy(eval_result)
-                            else:
-                                if best_score['micro_f1']<eval_result['micro_f1']:
-                                    best_score=copy.deepcopy(eval_result)
-                                else:
-                                    early_stop_count+=1
-                        if early_stop_count>=self.nn_config['early_stop']:
-                            self.reporter(report, best_score)
-                            break
-                    if early_stop_count < self.nn_config['early_stop']:
-                        self.reporter(report, best_score)
+                    # for i in range(self.nn_config['epoch_stage2']):
+                    #     # dataset= self.df.target_data_generator('train')
+                    #     # print('train stage2')
+                    #     # for X_data,Y_data in dataset:
+                    #     #     sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
+                    #     #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
+                    #     dataset = self.df.target_data_generator('test')
+                    #     print('test stage2')
+                    #     for X_data,Y_data in dataset:
+                    #         pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
+                    #         target_id2label_dic = self.df.target_id2label_generator()
+                    #         true_labels = Y_data
+                    #         pred_labels = pred
+                    #         I = self.mt.word_id2txt(X_data, true_labels, pred_labels, target_id2label_dic)
+                    #         self.mt.conll_eval_file(I)
+                    #         eval_result = evaluate(self.data_config['conlleval_filePath'])
+                    #         eval_result['epoch'] = i
+                    #         eval_result['loss'] = loss
+                    #         if len(best_score)==0:
+                    #             best_score=copy.deepcopy(eval_result)
+                    #         else:
+                    #             if best_score['micro_f1']<eval_result['micro_f1']:
+                    #                 best_score=copy.deepcopy(eval_result)
+                    #             else:
+                    #                 early_stop_count+=1
+                    #     if early_stop_count>=self.nn_config['early_stop']:
+                    #         self.reporter(report, best_score)
+                    #         break
+                    # if early_stop_count < self.nn_config['early_stop']:
+                    #     self.reporter(report, best_score)
 
                     report.write('\n')
                     report.write('=================crf_target=================\n')
                     W_s_data = sess.run(W_s)
                     W_t_data = sess.run(W_t)
+                    print(stage3_W_t)
+                    stage3_W_t.load(np.ones((300, 42), dtype='float32'))
+                    print(sess.run(stage3_W_t))
                     stage3_W_t.load(np.matmul(W_s_data,W_t_data))
+                    exit()
                     print('start training stage3')
                     best_score = {}
                     early_stop_count = 0
