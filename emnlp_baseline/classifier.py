@@ -543,6 +543,7 @@ class Classifier:
                             eval_result['epoch']=i
                             eval_result['loss']=loss
                             if len(best_score)==0:
+                                saver.save(sess, self.nn_config['model'])
                                 best_score=copy.deepcopy(eval_result)
                                 # self.stdout(best_score)
                             else:
@@ -563,7 +564,9 @@ class Classifier:
                     print('start training stage2')
                     best_score = {}
                     early_stop_count = 0
+                    print('+++++++++++++++++++++++++')
                     for i in range(self.nn_config['epoch_stage2']):
+                        print('---------------------')
                         dataset= self.df.target_data_generator('train')
                         print('train stage2')
                         for X_data,Y_data in dataset:
