@@ -510,13 +510,9 @@ class Classifier:
 
                 W_s = graph.get_tensor_by_name('W_s:0')
                 W_t = graph.get_tensor_by_name('W_t:0')
-                stage3_W_t = graph.get_tensor_by_name('stage3_W_t:0')
-                print(stage3_W_t)
                 for v in tf.global_variables():
                     if v.name.startswith('stage3_W_t'):
                         stage3_W_t=v
-                print(stage3_W_t)
-                print('====================')
                 init = tf.global_variables_initializer()
 
             report = open(self.nn_config['report'], 'a+')
@@ -561,10 +557,6 @@ class Classifier:
                     if early_stop_count < self.nn_config['early_stop']:
                         self.reporter(report, best_score)
                 else:
-                    print('v.name.startswith:')
-                    for v in tf.global_variables():
-                        print(v)
-                    print(stage3_W_t)
                     saver.restore(sess,self.nn_config['model_sess'])
                     report.write('=================multiclass=================\n')
                     report.flush()
@@ -606,11 +598,7 @@ class Classifier:
                     report.write('=================crf_target=================\n')
                     W_s_data = sess.run(W_s)
                     W_t_data = sess.run(W_t)
-                    print(stage3_W_t)
-                    stage3_W_t.load(np.ones((300, 42), dtype='float32'))
-                    print(sess.run(stage3_W_t))
                     stage3_W_t.load(np.matmul(W_s_data,W_t_data))
-                    exit()
                     print('start training stage3')
                     best_score = {}
                     early_stop_count = 0
