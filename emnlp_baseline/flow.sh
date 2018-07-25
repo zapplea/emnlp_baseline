@@ -14,28 +14,6 @@ then
         rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/*
         rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/*
         rm -r /datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/*
-    elif [ $stage1 = "False1" ]
-    then
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_bbn_kn/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_cadec/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_nvd/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_bbn_cadec_simple/*
-
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_bbn_kn/report/report_*\.*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec/report/report_*\.*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_cadec_simple/report/report_*\.*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/bbn_nvd/report/report_*\.*
-    elif [ $stage1 = "False2" ]
-    then
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_bbn_kn/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_cadec/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_nvd/*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conlleval_conll_cadec_simple/*
-
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_bbn_kn/report/report_*\.*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec/report/report_*\.*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_cadec_simple/report/report_*\.*
-        rm /datastore/liu121/nosqldb2/emnlp_baseline/conll_nvd/report/report_*\.*
     fi
 fi
 
