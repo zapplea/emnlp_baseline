@@ -69,11 +69,11 @@ then
 #        sbatch run_learn.sh 3 $stage1 "bbn_cadec"
 ##        sbatch run_learn.sh 4 $stage1 "bbn_cadec"
 
-        sbatch run_learn.sh 0 $stage1 "bbn_nvd"
-#        sbatch run_learn.sh 1 $stage1 "bbn_nvd"
-        sbatch run_learn.sh 2 $stage1 "bbn_nvd"
-        sbatch run_learn.sh 3 $stage1 "bbn_nvd"
-#        sbatch run_learn.sh 4 $stage1 "bbn_nvd"
+#        sbatch run_learn.sh 0 $stage1 "bbn_nvd"
+##        sbatch run_learn.sh 1 $stage1 "bbn_nvd"
+#        sbatch run_learn.sh 2 $stage1 "bbn_nvd"
+#        sbatch run_learn.sh 3 $stage1 "bbn_nvd"
+##        sbatch run_learn.sh 4 $stage1 "bbn_nvd"
 
 #        sbatch run_learn.sh 0 $stage1 "bbn_cadec_simple"
 ##        sbatch run_learn.sh 1 $stage1 "bbn_cadec_simple"
