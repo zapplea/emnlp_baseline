@@ -512,6 +512,9 @@ class Classifier:
                 W_t = graph.get_tensor_by_name('W_t:0')
                 stage3_W_t = graph.get_collection('stage3_W_t')[0]
                 print(stage3_W_t)
+                for v in tf.global_variables():
+                    if v.name.startswith('stage3_W_t'):
+                        print(v)
                 print('====================')
                 init = tf.global_variables_initializer()
 
