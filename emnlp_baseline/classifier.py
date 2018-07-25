@@ -507,6 +507,7 @@ class Classifier:
 
                 W_s = graph.get_tensor_by_name('W_s:0')
                 W_t = graph.get_tensor_by_name('W_t:0')
+                print(graph.get_collection('stage3_W_t'))
                 stage3_W_t = graph.get_collection('stage3_W_t')[0]
                 print('====================')
                 print(type(stage3_W_t))
