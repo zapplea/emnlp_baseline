@@ -560,10 +560,9 @@ class Classifier:
                     if early_stop_count < self.nn_config['early_stop']:
                         self.reporter(report, best_score)
                 else:
+                    print('v.name.startswith:')
                     for v in tf.global_variables():
-                        if v.name.startswith('stage3_W_t'):
-                            print(v)
-                            print('v.name.startswith')
+                        print(v)
                     print(stage3_W_t)
                     saver.restore(sess,self.nn_config['model_sess'])
                     report.write('=================multiclass=================\n')
