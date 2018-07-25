@@ -520,7 +520,7 @@ class Classifier:
                     sess.run(init, feed_dict={table: table_data})
 
                     print(stage3_W_t)
-                    stage3_W_t.load(np.ones(300, 42))
+                    stage3_W_t.load(np.ones((300, 42),dtype='float32'))
                     print(sess.run(stage3_W_t))
                     exit()
 
