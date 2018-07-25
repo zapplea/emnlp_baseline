@@ -28,16 +28,7 @@ class Dataset:
         for instance in batch:
             X.append(instance[0])
             Y_.append(instance[1])
-        # print(len(X))
-        # print(len(Y_))
-        for i in [1000,1050,1080,1100]:
-            print(i)
-            X_new=np.array(X[:i],dtype='int32')
-        # exit()
-        # Y_=np.array(Y_,dtype='int32')
-        print('successfull')
-        exit()
-        return X,Y_
+        return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
 
 class DataFeed:
     def __init__(self,data_config):
