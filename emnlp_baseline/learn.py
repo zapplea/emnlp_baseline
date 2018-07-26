@@ -55,7 +55,7 @@ if __name__ == "__main__":
                      'stage1':args.stage1,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
-                     'early_stop':201,
+                     'early_stop':100,
                      }
 
         lr = [0.003,]
