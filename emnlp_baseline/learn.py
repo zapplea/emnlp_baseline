@@ -38,8 +38,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     epoch_stage1=100
-    epoch_stage2=100
-    epoch_stage3=100
+    epoch_stage2=200
+    epoch_stage3=200
 
     # Train the relation model and target crf model
     if args.stage1=='False1' or args.stage1=='False2' or args.stage1=='False0' or args.stage1=='False4' or args.stage1=='False5' or args.stage1=='False6':
@@ -55,7 +55,7 @@ if __name__ == "__main__":
                      'stage1':args.stage1,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
-                     'early_stop':50,
+                     'early_stop':201,
                      }
 
         lr = [0.003,]
