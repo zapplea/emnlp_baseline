@@ -123,5 +123,5 @@ def report(eval_result, filePath):
             f.write(info["macro_pre"] + '\n')
             f.write(info["macro_recall"] + '\n')
 
-report(eval_result,'/datastore/liu121/nosqldb2/emnlp_ukplab/report/report.txt')
+report(eval_result,'/datastore/liu121/nosqldb2/emnlp_ukplab/report/report_%s.txt'%args.mod)
 
