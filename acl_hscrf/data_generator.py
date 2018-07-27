@@ -5,6 +5,7 @@ from nerd.data.util.readers.BBNDataReader import BBNDataReader
 from pathlib import Path
 import json
 import random
+import re
 
 class DataGenerator:
     def __init__(self, data_config):
@@ -80,6 +81,28 @@ class DataGenerator:
 
         return nn_data[-self.data_config['dev_nums']:]
 
+    def tokenConvert(self,inputstr): #string
+            txt=inputstr.lower()
+            if bool(re.search('.*\d.*',txt)):
+                txt=re.sub('\d',' ',txt)
+                chls=[]
+                count=0
+                for char in txt:
+                    if char==' ':
+                        count=count+1
+                    else:
+                        if count==0:
+                            chls.append(char)
+                        else:
+                            chls.append('NUM'+str(count)+char)
+                            count=0
+                if count>0:
+                    chls.append('NUM'+str(count))
+                txt=''
+                for s in chls:
+                    txt=txt+s
+            return txt
+
     def write(self, sample,dev_data,eval_data):
         name = self.data_config['conll_filePath'].split('/')[-2]
         for key in sample:
@@ -91,6 +114,11 @@ class DataGenerator:
             with open(root+'train.txt', 'w') as f:
                 for instance in data:
                     text = instance[0]
+                    new_text = []
+                    for word in text:
+                        new_word = self.tokenConvert(word)
+                        new_text.append(new_word)
+                    text = new_text
                     label = instance[1]
                     for i in range(len(text)):
                         f.write(text[i]+' '+label[i]+'\n')
@@ -100,6 +128,11 @@ class DataGenerator:
             with open(root + 'dev.txt', 'w') as f:
                 for instance in dev_data:
                     text = instance[0]
+                    new_text = []
+                    for word in text:
+                        new_word = self.tokenConvert(word)
+                        new_text.append(new_word)
+                    text = new_text
                     label = instance[1]
                     for i in range(len(text)):
                         f.write(text[i]+' '+label[i]+'\n')
@@ -109,6 +142,11 @@ class DataGenerator:
             with open(root + 'test.txt', 'w') as f:
                 for instance in eval_data:
                     text = instance[0]
+                    new_text = []
+                    for word in text:
+                        new_word = self.tokenConvert(word)
+                        new_text.append(new_word)
+                    text = new_text
                     label = instance[1]
                     for i in range(len(text)):
                         f.write(text[i]+' '+label[i]+'\n')
