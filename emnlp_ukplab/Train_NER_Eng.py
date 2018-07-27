@@ -112,6 +112,7 @@ def report(eval_result, filePath):
         for key in eval_result:
             info = eval_result[key]
             f.write('===================='+key+'====================')
+            f.write(info['epoch']+'\n')
             f.write(info["per_f1"] + "\n")
             f.write(info['per_pre'] + '\n')
             f.write(info['per_recall'] + '\n')

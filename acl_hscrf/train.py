@@ -29,6 +29,21 @@ torch.cuda.manual_seed(seed)
 np.random.seed(seed)
 print('seed: ', seed)
 
+def report(eval_score, filePath):
+    with open(filePath, 'w+') as f:
+        for key in eval_score:
+            info = eval_score[key]
+            f.write('===================='+key+'====================')
+            f.write(info['epoch']+'\n')
+            f.write(info["per_f1"] + "\n")
+            f.write(info['per_pre'] + '\n')
+            f.write(info['per_recall'] + '\n')
+            f.write(info["micro_f1"] + '\n')
+            f.write(info["micro_pre"] + '\n')
+            f.write(info["micro_recall"] + '\n')
+            f.write(info["macro_f1"] + '\n')
+            f.write(info["macro_pre"] + '\n')
+            f.write(info["macro_recall"] + '\n')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Learning with LM-LSTM-CRF together with Language Model')
@@ -188,7 +203,7 @@ if __name__ == "__main__":
         epoch_list = range(args.start_epoch, args.start_epoch + args.epoch)
 
         evaluator = evaluator(packer, CRF_l_map, SCRF_l_map)
-
+        best_eval_score={}
         for epoch_idx, args.start_epoch in enumerate(epoch_list):
             print('=================================================')
             epoch_loss = 0
@@ -247,27 +262,27 @@ if __name__ == "__main__":
                 eval_score = {'Crf':{'f1':test_f1_crf,'pre':test_pre_crf,'rec':test_rec_crf},
                               'Scrf':{'f1':test_f1_scrf,'pre':test_pre_scrf,'rec':test_rec_scrf},
                               'Joint':{'f1':test_f1_jnt,'pre':test_pre_jnt,'rec':test_rec_jnt}}
-                f=open(nn_config['report_filePath'],'a+')
+
                 for mod in ['Crf','Scrf','Joint']:
                     # crf result
                     I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2Type['CRF'])
                     mt.conll_eval_file(I)
                     eval_result = overlap_eval(nn_config['conll_filePath'])
-                    f.write('==================== ' + mod + '====================\n')
-                    f.write('epoch: '+str(epoch_idx)+'\n')
-                    f.write('f1: '+str(eval_score[mod]['f1'])+'\n')
-                    f.write('recall: ' + str(eval_score[mod]['rec']) + '\n')
-                    f.write('precision: ' + str(eval_score[mod]['pre']) + '\n')
-                    f.write(eval_result["per_f1"] + '\n')
-                    f.write(eval_result["per_pre"] + '\n')
-                    f.write(eval_result["per_recall"] + '\n')
-                    f.write(eval_result["micro_f1"] + '\n')
-                    f.write(eval_result["micro_pre"] + '\n')
-                    f.write(eval_result["micro_recall"] + '\n')
-                    f.write(eval_result["macro_f1"] + '\n')
-                    f.write(eval_result["macro_pre"] + '\n')
-                    f.write(eval_result["macro_recall"] + '\n')
-                    f.write('========\n')
+                    eval_score[mod]['per_f1']=eval_result['per_f1']
+                    eval_score[mod]['per_pre'] = eval_result['per_pre']
+                    eval_score[mod]['per_recall'] = eval_result['per_recall']
+                    eval_score[mod]['micro_f1'] = eval_result['micro_f1']
+                    eval_score[mod]['micro_pre'] = eval_result['micro_pre']
+                    eval_score[mod]['micro_recall'] = eval_result['micro_recall']
+                    eval_score[mod]['macro_f1'] = eval_result['macro_f1']
+                    eval_score[mod]['macro_pre'] = eval_result['macro_pre']
+                    eval_score[mod]['macro_recall'] = eval_result['macro_recall']
+
+                if len(best_eval_score)==0:
+                    best_eval_score=eval_score
+                else:
+                    if best_eval_score['Joint']['micro_f1']>=eval_score['Joint']['micro_f1']:
+                        best_eval_score=eval_result
 
                 evaluator.labels_clear()
 
@@ -308,3 +323,4 @@ if __name__ == "__main__":
 
             if early_stop_epochs >= args.early_stop and epoch_idx > args.least_epoch:
                 break
+        report(best_eval_score,nn_config['report_filePath'])

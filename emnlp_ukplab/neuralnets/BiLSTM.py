@@ -408,6 +408,7 @@ class BiLSTM:
                 logging.info("-- %s --" % (modelName))
                 dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
                 eval_result = self.evaluate(modelName, self.data[modelName]['testMatrix'])
+                eval_result['epoch']='epoch: %s'%str(epoch)
                 if modelName not in best_eval_result:
                     best_eval_result[modelName]=eval_result
                 else:
