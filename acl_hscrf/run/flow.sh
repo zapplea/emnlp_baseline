@@ -17,8 +17,8 @@ then
 elif [ $1 = "cadec" ]
 then
     sbatch run_learn.sh cadec "1.1"
-#    sbatch run_learn.sh cadec "2.0"
-#    sbatch run_learn.sh cadec "4.0"
-#    sbatch run_learn.sh cadec "8.0"
-#    sbatch run_learn.sh cadec "16.0"
+    sbatch run_learn.sh cadec "2.0"
+    sbatch run_learn.sh cadec "4.0"
+    sbatch run_learn.sh cadec "8.0"
+    sbatch run_learn.sh cadec "16.0"
 fi
