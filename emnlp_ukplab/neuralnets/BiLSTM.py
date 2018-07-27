@@ -421,7 +421,8 @@ class BiLSTM:
 
                     #Save the model
                     if self.modelSavePath != None:
-                        self.saveModel(modelName, epoch, dev_score, test_score)
+                        # self.saveModel(modelName, epoch, dev_score, test_score)
+                        pass
                 else:
                     no_improvement_since += 1
                     
