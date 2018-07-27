@@ -633,7 +633,7 @@ class BiLSTM:
         if self.modelSavePath == None:
             raise ValueError('modelSavePath not specified.')
 
-        savePath = self.modelSavePath.replace("[DevScore]", "%.4f" % dev_score).replace("[TestScore]", "%.4f" % test_score).replace("[Epoch]", str(0)).replace("[ModelName]", modelName)
+        savePath = self.modelSavePath.replace("[ModelName]", modelName)
 
         directory = os.path.dirname(savePath)
         if not os.path.exists(directory):

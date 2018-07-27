@@ -58,7 +58,7 @@ seeds = {
 
 seed=seeds[args.mod]
 
-k_shot = ['1.0', '2.0', '4.0']
+k_shot = ['1.0', '2.0', '4.0','8.0','16.0']
 datasets={}
 for k in k_shot:
     datasets[args.mod+'__'+k]=seed
@@ -104,7 +104,7 @@ print('#######################'+args.mod+' #######################')
 model = BiLSTM(params)
 model.setMappings(mappings, embeddings)
 model.setDataset(datasets, data)
-model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_[DevScore]_[TestScore]_[Epoch]_bbn.h5"
+model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_bbn.h5"
 eval_result=model.fit(epochs=100)
 
 def report(eval_result, filePath):
