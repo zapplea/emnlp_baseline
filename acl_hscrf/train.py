@@ -268,7 +268,7 @@ if __name__ == "__main__":
                     I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2Type['CRF'])
                     mt.conll_eval_file(I)
                     eval_result = overlap_eval(nn_config['conll_filePath'])
-                    eval_result[mod]['epoch']=epoch_idx
+                    eval_score[mod]['epoch']=epoch_idx
                     eval_score[mod]['per_f1']=eval_result['per_f1']
                     eval_score[mod]['per_pre'] = eval_result['per_pre']
                     eval_score[mod]['per_recall'] = eval_result['per_recall']
