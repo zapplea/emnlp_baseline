@@ -292,7 +292,7 @@ if __name__ == "__main__":
                 print('crf micro recall: ',best_eval_score['Crf']['micro_recall'])
                 print('scrf micro f1: ',best_eval_score['Scrf']['micro_f1'])
                 print('scrf micro precision: ', best_eval_score['Scrf']['micro_pre'])
-                print('scrf micro recall: ', best_eval_score['Scrf']['recall'])
+                print('scrf micro recall: ', best_eval_score['Scrf']['micro_recall'])
 
                 evaluator.labels_clear()
 
