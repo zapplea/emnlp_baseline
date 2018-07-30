@@ -86,7 +86,7 @@ if __name__ == "__main__":
          'epoch_stage1': 150, },
     ]
     nn_config = nn_configs[args.num]
-    nn_config['tfb_filePath'] = '/datastore/liu121/tfb/emnlp_baseline/crf_new/summ_'+args.num
+    nn_config['tfb_filePath'] = '/datastore/liu121/tfb/emnlp_baseline/crf_new/summ_'+str(args.num)
     nn_config['words_num'] = 100
     nn_config['dropout']=0.5
     nn_config['bilstm_num_layers']=1
