@@ -227,9 +227,10 @@ if __name__ == "__main__":
                     nn.utils.clip_grad_norm(model.parameters(), args.clip_grad)
                     optimizer.step()
 
-            for f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features in tqdm(
-                    itertools.chain.from_iterable(dataset_loader), mininterval=2,
-                    desc=' - Tot it %d (epoch %d)' % (tot_length, args.start_epoch), leave=False, file=sys.stderr):
+            # for f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features in tqdm(
+            #         itertools.chain.from_iterable(dataset_loader), mininterval=2,
+            #         desc=' - Tot it %d (epoch %d)' % (tot_length, args.start_epoch), leave=False, file=sys.stderr):
+            for f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features in itertools.chain.from_iterable(dataset_loader)
                 f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, SCRF_labels, mask_SCRF_labels, cnn_features = packer.repack(f_f, f_p, b_f, b_p, w_f, tg_v, mask_v, len_v, SCRF_labels, mask_SCRF_labels, cnn_features, test=False)
                 optimizer.zero_grad()
 
@@ -284,15 +285,15 @@ if __name__ == "__main__":
                 # else:
                 #     if best_eval_score['Joint']['micro_f1']>=eval_score['Joint']['micro_f1']:
                 best_eval_score=eval_score
-                print('joint micro f1: ',best_eval_score['Joint']['micro_f1'])
-                print('joint micro precision: ',best_eval_score['Joint']['micro_pre'])
-                print('joint micro recall: ',best_eval_score['Joint']['micro_recall'])
-                print('crf micro f1: ', best_eval_score['Crf']['micro_f1'])
-                print('crf micro precision: ', best_eval_score['Crf']['micro_pre'])
-                print('crf micro recall: ',best_eval_score['Crf']['micro_recall'])
-                print('scrf micro f1: ',best_eval_score['Scrf']['micro_f1'])
-                print('scrf micro precision: ', best_eval_score['Scrf']['micro_pre'])
-                print('scrf micro recall: ', best_eval_score['Scrf']['micro_recall'])
+                # print('joint micro f1: ',best_eval_score['Joint']['micro_f1'])
+                # print('joint micro precision: ',best_eval_score['Joint']['micro_pre'])
+                # print('joint micro recall: ',best_eval_score['Joint']['micro_recall'])
+                # print('crf micro f1: ', best_eval_score['Crf']['micro_f1'])
+                # print('crf micro precision: ', best_eval_score['Crf']['micro_pre'])
+                # print('crf micro recall: ',best_eval_score['Crf']['micro_recall'])
+                # print('scrf micro f1: ',best_eval_score['Scrf']['micro_f1'])
+                # print('scrf micro precision: ', best_eval_score['Scrf']['micro_pre'])
+                # print('scrf micro recall: ', best_eval_score['Scrf']['micro_recall'])
 
                 evaluator.labels_clear()
 
