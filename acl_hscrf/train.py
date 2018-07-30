@@ -302,21 +302,21 @@ if __name__ == "__main__":
                 best_dev_f1_jnt = dev_f1_jnt
                 best_test_f1_jnt = test_f1_jnt
 
-                try:
-                    utils.save_checkpoint({
-                            'epoch': args.start_epoch,
-                            'state_dict': model.state_dict(),
-                            'optimizer': optimizer.state_dict(),
-                            'f_map': f_map,
-                            'c_map': c_map,
-                            'SCRF_l_map': SCRF_l_map,
-                            'CRF_l_map': CRF_l_map,
-                            'in_doc_words': in_doc_words,
-                            'ALLOW_SPANLEN': args.allowspan
-                        }, {'args': vars(args)
-                            }, args.checkpoint + str(seed))
-                except Exception as inst:
-                        print(inst)
+                # try:
+                #     utils.save_checkpoint({
+                #             'epoch': args.start_epoch,
+                #             'state_dict': model.state_dict(),
+                #             'optimizer': optimizer.state_dict(),
+                #             'f_map': f_map,
+                #             'c_map': c_map,
+                #             'SCRF_l_map': SCRF_l_map,
+                #             'CRF_l_map': CRF_l_map,
+                #             'in_doc_words': in_doc_words,
+                #             'ALLOW_SPANLEN': args.allowspan
+                #         }, {'args': vars(args)
+                #             }, args.checkpoint + str(seed))
+                # except Exception as inst:
+                #         print(inst)
 
             else:
                 early_stop_epochs += 1
