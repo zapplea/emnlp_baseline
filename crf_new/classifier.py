@@ -230,9 +230,13 @@ class Classifier:
                 pred_crf_source = graph.get_collection('pred_crf_source')[0]
 
                 summ = graph.get_collection('summ')[0]
-                micro_f1=graph.get_tensor_by_name('micro_f1:0')
-                micro_pre = graph.get_tensor_by_name('micro_pre:0')
-                micro_rec = graph.get_tensor_by_name('micro_rec:0')
+                for v in tf.global_variables():
+                    if v.name.startswith('micro_f1'):
+                        micro_f1=v
+                    if v.name.startswith('micro_pre'):
+                        micro_pre = v
+                    if v.name.startswith('micro_rec'):
+                        micro_rec = v
                 writer = tf.summary.FileWriter(self.nn_config['tfb_filePath'])
 
                 init = tf.global_variables_initializer()
