@@ -200,10 +200,13 @@ class Classifier:
             log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
             loss = self.loss_crf_source(log_likelihood,graph)
             test_loss = self.test_loss_crf_source(log_likelihood,graph)
+            tf.summary.scalar('test_loss',test_loss)
             train_op = self.optimize(loss,graph)
             graph.add_to_collection('train_op_crf_source', train_op)
             saver = tf.train.Saver()
         return graph,saver
+
+
 
     def train(self):
         graph,saver = self.classifier()
