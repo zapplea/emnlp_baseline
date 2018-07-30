@@ -257,7 +257,7 @@ if __name__ == "__main__":
 
                 true_labels, crf_pred_labels, scrf_pred_labels, joint_pred_labels = evaluator.labels_extractor()
 
-                mt = Metrics(nn_config['conll_filePath'], f_map)
+                mt = Metrics(f_map)
                 labels={'Crf':crf_pred_labels,'Scrf':scrf_pred_labels,'Joint':joint_pred_labels}
                 eval_score = {'Crf':{'f1':test_f1_crf,'pre':test_pre_crf,'rec':test_rec_crf},
                               'Scrf':{'f1':test_f1_scrf,'pre':test_pre_scrf,'rec':test_rec_scrf},
@@ -266,8 +266,8 @@ if __name__ == "__main__":
                 for mod in ['Crf','Scrf','Joint']:
                     # crf result
                     I = mt.word_id2txt(true_labels,true_labels,labels[mod],id2Type['CRF'])
-                    mt.conll_eval_file(I)
-                    eval_result = overlap_eval(nn_config['conll_filePath'])
+                    mt.conll_eval_file(I,nn_config['conll_filePath']+'_'+mod)
+                    eval_result = overlap_eval(nn_config['conll_filePath']+'_'+mod)
                     eval_score[mod]['epoch']=str(epoch_idx)
                     eval_score[mod]['per_f1']=eval_result['per_f1']
                     eval_score[mod]['per_pre'] = eval_result['per_pre']
@@ -279,14 +279,20 @@ if __name__ == "__main__":
                     eval_score[mod]['macro_pre'] = eval_result['macro_pre']
                     eval_score[mod]['macro_recall'] = eval_result['macro_recall']
 
-                if len(best_eval_score)==0:
-                    best_eval_score=eval_score
-                else:
-                    if best_eval_score['Joint']['micro_f1']>=eval_score['Joint']['micro_f1']:
-                        best_eval_score=eval_score
+                # if len(best_eval_score)==0:
+                #     best_eval_score=eval_score
+                # else:
+                #     if best_eval_score['Joint']['micro_f1']>=eval_score['Joint']['micro_f1']:
+                best_eval_score=eval_score
                 print('joint micro f1: ',best_eval_score['Joint']['micro_f1'])
                 print('joint micro precision: ',best_eval_score['Joint']['micro_pre'])
                 print('joint micro recall: ',best_eval_score['Joint']['micro_recall'])
+                print('crf micro f1: ', best_eval_score['Crf']['micro_f1'])
+                print('crf micro precision: ', best_eval_score['Crf']['micro_pre'])
+                print('crf micro recall: ',best_eval_score['Crf']['micro_recall'])
+                print('scrf micro f1: ',best_eval_score['Scrf']['micro_f1'])
+                print('scrf micro precision: ', best_eval_score['Scrf']['micro_pre'])
+                print('scrf micro recall: ', best_eval_score['Scrf']['recall'])
 
                 evaluator.labels_clear()
 

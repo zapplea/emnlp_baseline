@@ -3,8 +3,7 @@ import sklearn
 import pickle
 
 class Metrics:
-    def __init__(self,conll_filePath,dictionary):
-        self.conll_filePath = conll_filePath
+    def __init__(self,dictionary):
         self.dictionary = dictionary
         self.id2word = {v: k for k, v in dictionary.items()}
 
@@ -57,8 +56,8 @@ class Metrics:
             I.append((plabel_txt, tlabel_txt, txt))
         return I
 
-    def conll_eval_file(self, I):
-        with open(self.conll_filePath, 'w+') as f:
+    def conll_eval_file(self, I,conll_filePath):
+        with open(conll_filePath, 'w+') as f:
             for t in I:
                 pred_labels_txt = t[0]
                 true_labels_txt = t[1]
