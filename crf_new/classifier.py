@@ -69,10 +69,6 @@ class Classifier:
         cell = tf.contrib.rnn.LSTMCell(self.nn_config['lstm_cell_size'])
         cell = tf.contrib.rnn.DropoutWrapper(cell, output_keep_prob=self.nn_config['dropout'])
         cell = tf.contrib.rnn.MultiRNNCell([cell] * self.nn_config['bilstm_num_layers'])
-        for v in tf.all_variables():
-            if v.name.startswith('bilstm'):
-                print(v.name)
-        exit()
 
         # outputs.shape = [(batch size, max time step, lstm cell size),(batch size, max time step, lstm cell size)]
         outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell,cell_bw=cell,inputs=X,sequence_length=seq_len,dtype='float32')
