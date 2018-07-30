@@ -66,12 +66,11 @@ class Classifier:
         :param mask: shape = (batch size, words num, feature dim)
         :return: 
         """
-        cell = tf.contrib.rnn.LSTMCell(self.nn_config['lstm_cell_size'])
-        cell = tf.contrib.rnn.DropoutWrapper(cell, output_keep_prob=self.nn_config['dropout'])
-        cell = tf.contrib.rnn.MultiRNNCell([cell] * self.nn_config['bilstm_num_layers'])
+        fw_cell = tf.nn.rnn_cell.BasicLSTMCell(self.nn_config['lstm_cell_size'])
+        bw_cell = tf.nn.rnn_cell.BasicLSTMCell(self.nn_config['lstm_cell_size'])
 
         # outputs.shape = [(batch size, max time step, lstm cell size),(batch size, max time step, lstm cell size)]
-        outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell,cell_bw=cell,inputs=X,sequence_length=seq_len,dtype='float32')
+        outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=fw_cell,cell_bw=bw_cell,inputs=X,sequence_length=seq_len,dtype='float32')
         # outputs.shape = (batch size, max time step, 2*lstm cell size)
         outputs = tf.concat(outputs,axis=2,name='bilstm_outputs')
         graph.add_to_collection('bilstm_outputs',outputs)
