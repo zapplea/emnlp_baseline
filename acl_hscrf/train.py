@@ -284,6 +284,9 @@ if __name__ == "__main__":
                 else:
                     if best_eval_score['Joint']['micro_f1']>=eval_score['Joint']['micro_f1']:
                         best_eval_score=eval_score
+                print('joint micro f1: ',best_eval_score['Joint']['micro_f1'])
+                print('joint micro precision: ',best_eval_score['Joint']['micro_pre'])
+                print('joint micro recall: ',best_eval_score['Joint']['micro_recall'])
 
                 evaluator.labels_clear()
 
