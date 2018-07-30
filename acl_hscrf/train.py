@@ -282,10 +282,8 @@ if __name__ == "__main__":
                 if len(best_eval_score)==0:
                     best_eval_score=eval_score
                 else:
-                    print('best eval score:\n',best_eval_score)
-                    print('eval score:\n',eval_score)
                     if best_eval_score['Joint']['micro_f1']>=eval_score['Joint']['micro_f1']:
-                        best_eval_score=eval_result
+                        best_eval_score=eval_score
 
                 evaluator.labels_clear()
 
