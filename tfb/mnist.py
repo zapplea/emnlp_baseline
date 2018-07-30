@@ -112,7 +112,7 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
 
   sess.run(tf.global_variables_initializer())
   writer = tf.summary.FileWriter(LOGDIR + hparam)
-  # writer.add_graph(sess.graph)
+  writer.add_graph(sess.graph)
 
   config = tf.contrib.tensorboard.plugins.projector.ProjectorConfig()
   embedding_config = config.embeddings.add()

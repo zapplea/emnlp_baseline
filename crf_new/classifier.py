@@ -3,7 +3,7 @@ from datetime import datetime
 import sklearn
 import numpy as np
 import math
-from util.eval.evaluate_overlap import evaluate
+from crf_new.evaluate_overlap import evaluate
 
 class Classifier:
     def __init__(self, nn_config, datafeed,data_config, metrics):
@@ -178,6 +178,14 @@ class Classifier:
         f1_micro = sklearn.metrics.f1_score(Y_, Y, labels=list(range(1,labels_num)),average='micro')
         return f1_macro,f1_micro
 
+    def tfb(self):
+        micro_f1 = tf.Variable(initial_value=tf.zeros(shape=(),dtype='float32'),name='micro_f1')
+        tf.summary.scalar('micro_f1',micro_f1)
+        micro_pre = tf.Variable(initial_value=tf.zeros(shape=(), dtype='float32'), name='micro_pre')
+        tf.summary.scalar('micro_pre',micro_pre)
+        micro_rec = tf.Variable(initial_value=tf.zeros(shape=(),dtype='float32'),name='micro_rec')
+        tf.summary.scalar('micro_rec',micro_rec)
+
     def classifier(self):
         graph = tf.Graph()
         with graph.as_default():
@@ -200,9 +208,12 @@ class Classifier:
             log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
             loss = self.loss_crf_source(log_likelihood,graph)
             test_loss = self.test_loss_crf_source(log_likelihood,graph)
-            tf.summary.scalar('test_loss',test_loss)
+            tf.summary.scalar('test_loss_crf_source',test_loss)
             train_op = self.optimize(loss,graph)
             graph.add_to_collection('train_op_crf_source', train_op)
+            self.tfb()
+            summ = tf.summary.merge_all()
+            graph.add_to_collection('summ',summ)
             saver = tf.train.Saver()
         return graph,saver
 
@@ -223,16 +234,23 @@ class Classifier:
                 test_loss_crf_source = graph.get_tensor_by_name('test_loss_crf_source:0')
                 pred_crf_source = graph.get_collection('pred_crf_source')[0]
 
+                summ = graph.get_collection('summ')[0]
+                micro_f1=graph.get_tensor_by_name('micro_f1:0')
+                micro_pre = graph.get_tensor_by_name('micro_pre:0')
+                micro_rec = graph.get_tensor_by_name('micro_rec:0')
+                writer = tf.summary.FileWriter(self.nn_config['tfb_filePath'])
+
                 init = tf.global_variables_initializer()
 
-            report = open(self.nn_config['report'], 'a+')
+            # report = open(self.nn_config['report'], 'a+')
             table_data = self.df.table_generator()
             with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-                report.write('session\n')
+                writer.add_graph(graph)
+                # report.write('session\n')
                 print('start training stage1')
                 sess.run(init, feed_dict={table: table_data})
-                report.write('=================crf_source=================\n')
-                report.flush()
+                # report.write('=================crf_source=================\n')
+                # report.flush()
                 start = datetime.now()
                 for i in range(self.nn_config['epoch_stage1']):
                     dataset = self.df.source_data_generator('train')
@@ -241,8 +259,9 @@ class Classifier:
 
                     dataset = self.df.source_data_generator('test')
                     for X_data,Y_data in dataset:
-                        pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
-                        f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
+                        pred,loss, summ_value = sess.run([pred_crf_source,test_loss_crf_source,summ],feed_dict={X:X_data,Y_:Y_data})
+                        # f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
+                        writer.add_summary(summ_value,i)
                         end = datetime.now()
                         time_cost = end-start
                         # report.write('epoch:{}, time_cost:{}, loss:{}, macro_f1:{}, micro_f1:{}\n'.format(str(i),str(time_cost),str(loss),str(f1_macro),str(f1_micro)))
@@ -253,22 +272,26 @@ class Classifier:
                         I = self.mt.word_id2txt(X_data, true_labels, pred_labels, id2label_dic)
                         self.mt.conll_eval_file(I)
                         eval_result = evaluate(self.data_config['conlleval_filePath'])
-                        report.write('=========================\n')
-                        report.write('epoch: '+str(i))
-                        report.write('loss: %s'% str(loss))
-                        report.write(eval_result["per_f1"] + '\n')
-                        report.write(eval_result["per_pre"] + '\n')
-                        report.write(eval_result["per_recall"] + '\n')
-                        report.write(eval_result["micro_f1"] + '\n')
-                        report.write(eval_result["micro_pre"] + '\n')
-                        report.write(eval_result["micro_recall"] + '\n')
-                        report.write(eval_result["macro_f1"] + '\n')
-                        report.write(eval_result["macro_pre"] + '\n')
-                        report.write(eval_result["macro_recall"] + '\n')
-                        report.write('=========================\n')
+                        # report.write('=========================\n')
+                        # report.write('epoch: '+str(i))
+                        # report.write('loss: %s'% str(loss))
+                        # report.write('per_f1: %s\n'%eval_result["per_f1"])
+                        # report.write('per pre: %s\n'%eval_result["per_pre"] + '\n')
+                        # report.write('per recall: %s\n'eval_result["per_recall"] + '\n')
+                        # report.write(eval_result["micro_f1"] + '\n')
+                        # report.write(eval_result["micro_pre"] + '\n')
+                        # report.write(eval_result["micro_recall"] + '\n')
+                        # report.write(eval_result["macro_f1"] + '\n')
+                        # report.write(eval_result["macro_pre"] + '\n')
+                        # report.write(eval_result["macro_recall"] + '\n')
+                        # report.write('=========================\n')
 
-                        report.flush()
+                        # report.flush()
+                        micro_f1.load(eval_result['micro_f1'])
+                        micro_pre.load(eval_result['micro_pre'])
+                        micro_rec.load(eval_result['micro_recall'])
                         start = end
+
                 saver.save(sess,self.nn_config['model'])
                 # final test
                 # dataset = self.df.source_data_generator('test')
