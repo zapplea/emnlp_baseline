@@ -17,8 +17,10 @@ import os.path
 import shutil
 import tensorflow as tf
 
-LOGDIR = "/datastore/liu121/mnist_tutorial/"
+LOGDIR = "/media/yibing/data1/mnist_tutorial"
 LABELS = os.path.join(os.getcwd(), "labels_1024.tsv")
+LABELS_1_5 = os.path.join(os.getcwd(),'labels_1_5.tsv')
+LABELS_6_10 = os.path.join(os.getcwd(),'labels_6_10.tsv')
 SPRITES = os.path.join(os.getcwd(), "sprite_1024.png")
 ### MNIST EMBEDDINGS ###
 mnist = tf.contrib.learn.datasets.mnist.read_data_sets(train_dir=LOGDIR + "data", one_hot=True)
@@ -104,8 +106,10 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
       summ = tf.summary.merge_all()
 
 
-      embedding = tf.Variable(tf.zeros([1024, embedding_size]), name="test_embedding")
-      assignment = embedding.assign(embedding_input)
+      embedding_1_5 = tf.Variable(tf.zeros([5, embedding_size]), name="test_embedding_1_5")
+      assignment_1_5 = embedding_1_5.assign(embedding_input)
+      embedding_6_10 = tf.Variable(tf.zeros([5, embedding_size]), name="test_embedding_6_10")
+      assignment_6_10 = embedding_6_10.assign(embedding_input)
       saver = tf.train.Saver()
 
 
@@ -113,15 +117,20 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
       writer.add_graph(graph)
 
       config = tf.contrib.tensorboard.plugins.projector.ProjectorConfig()
-      embedding_config = config.embeddings.add()
-      embedding_config.tensor_name = embedding.name
-      embedding_config.sprite.image_path = SPRITES
-      embedding_config.metadata_path = LABELS
+      embedding_config_1_5 = config.embeddings.add()
+      embedding_config_1_5.tensor_name = embedding_1_5.name
+      # embedding_config.sprite.image_path = SPRITES
+      embedding_config_1_5.metadata_path = LABELS_1_5
+
+      embedding_config_6_10 = config.embeddings.add()
+      embedding_config_6_10.tensor_name = embedding_6_10.name
+      embedding_config_6_10.metadata_path = LABELS_6_10
+
       init = tf.global_variables_initializer()
 
-  # Specify the width and height of a single thumbnail.
-  embedding_config.sprite.single_image_dim.extend([28, 28])
-  tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
+      # Specify the width and height of a single thumbnail.
+      # embedding_config.sprite.single_image_dim.extend([28, 28])
+      tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
   with graph.device('/gpu:0'):
     with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
      sess.run(init)
@@ -131,7 +140,8 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
          [train_accuracy, s] = sess.run([accuracy, summ], feed_dict={x: batch[0], y: batch[1]})
          writer.add_summary(s, i)
        if i % 500 == 0:
-         sess.run(assignment, feed_dict={x: mnist.test.images[:1024], y: mnist.test.labels[:1024]})
+         sess.run(assignment_1_5, feed_dict={x: mnist.test.images[:5], y: mnist.test.labels[:5]})
+         sess.run(assignment_6_10, feed_dict={x:mnist.test.images[5:10], y:mnist.test.labels[5:10]})
          saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
        sess.run(train_step, feed_dict={x: batch[0], y: batch[1]})
 
