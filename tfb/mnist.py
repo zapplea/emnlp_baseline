@@ -122,16 +122,16 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
   # Specify the width and height of a single thumbnail.
   embedding_config.sprite.single_image_dim.extend([28, 28])
   tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
-
-  for i in range(2001):
-    batch = mnist.train.next_batch(100)
-    if i % 5 == 0:
-      [train_accuracy, s] = sess.run([accuracy, summ], feed_dict={x: batch[0], y: batch[1]})
-      writer.add_summary(s, i)
-    if i % 500 == 0:
-      sess.run(assignment, feed_dict={x: mnist.test.images[:1024], y: mnist.test.labels[:1024]})
-      saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
-    sess.run(train_step, feed_dict={x: batch[0], y: batch[1]})
+  with tf.get_default_graph().device('/gpu:0'):
+    for i in range(2001):
+      batch = mnist.train.next_batch(100)
+      if i % 5 == 0:
+        [train_accuracy, s] = sess.run([accuracy, summ], feed_dict={x: batch[0], y: batch[1]})
+        writer.add_summary(s, i)
+      if i % 500 == 0:
+        sess.run(assignment, feed_dict={x: mnist.test.images[:1024], y: mnist.test.labels[:1024]})
+        saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
+      sess.run(train_step, feed_dict={x: batch[0], y: batch[1]})
 
 def make_hparam_string(learning_rate, use_two_fc, use_two_conv):
   conv_param = "conv=2" if use_two_conv else "conv=1"
@@ -140,11 +140,10 @@ def make_hparam_string(learning_rate, use_two_fc, use_two_conv):
 
 def main():
   # You can try adding some more learning rates
-  for learning_rate in [1E-3, 1E-4]:
-
+  for learning_rate in [1E-4]:
     # Include "False" as a value to try different model architectures
     for use_two_fc in [True]:
-      for use_two_conv in [False, True]:
+      for use_two_conv in [True]:
         # Construct a hyperparameter string for each one (example: "lr_1E-3,fc=2,conv=2")
         hparam = make_hparam_string(learning_rate, use_two_fc, use_two_conv)
         print('Starting run for %s' % hparam)

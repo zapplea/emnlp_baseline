@@ -479,7 +479,7 @@ class Classifier:
 
     def train(self):
         graph,saver = self.classifier()
-        with graph.device('/:gpu0'):
+        with graph.device('/gpu:0'):
             with graph.as_default():
                 X = graph.get_tensor_by_name('X:0')
                 Y_ = graph.get_tensor_by_name('Y_:0')
