@@ -59,79 +59,81 @@ def fc_layer(input, size_in, size_out, name="fc"):
 
 
 def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
-  tf.reset_default_graph()
-  sess = tf.Session()
+  graph = tf.Graph()
+  with graph.as_default():
+      # Setup placeholders, and reshape the data
+      x = tf.placeholder(tf.float32, shape=[None, 784], name="x")
+      x_image = tf.reshape(x, [-1, 28, 28, 1])
+      tf.summary.image('input', x_image, 3)
+      y = tf.placeholder(tf.float32, shape=[None, 10], name="labels")
 
-  # Setup placeholders, and reshape the data
-  x = tf.placeholder(tf.float32, shape=[None, 784], name="x")
-  x_image = tf.reshape(x, [-1, 28, 28, 1])
-  tf.summary.image('input', x_image, 3)
-  y = tf.placeholder(tf.float32, shape=[None, 10], name="labels")
+      if use_two_conv:
+        conv1 = conv_layer(x_image, 1, 32, "conv1")
+        conv_out = conv_layer(conv1, 32, 64, "conv2")
+      else:
+        conv_out = conv_layer(x_image, 1, 16, "conv")
 
-  if use_two_conv:
-    conv1 = conv_layer(x_image, 1, 32, "conv1")
-    conv_out = conv_layer(conv1, 32, 64, "conv2")
-  else:
-    conv_out = conv_layer(x_image, 1, 16, "conv")
-
-  flattened = tf.reshape(conv_out, [-1, 7 * 7 * 64])
-
-
-  if use_two_fc:
-    fc1 = fc_layer(flattened, 7 * 7 * 64, 1024, "fc1")
-    relu = tf.nn.relu(fc1)
-    embedding_input = relu
-    tf.summary.histogram("fc1/relu", relu)
-    embedding_size = 1024
-    logits = fc_layer(relu, 1024, 10, "fc2")
-  else:
-    embedding_input = flattened
-    embedding_size = 7*7*64
-    logits = fc_layer(flattened, 7*7*64, 10, "fc")
-
-  with tf.name_scope("xent"):
-    xent = tf.reduce_mean(
-        tf.nn.softmax_cross_entropy_with_logits(
-            logits=logits, labels=y), name="xent")
-    tf.summary.scalar("xent", xent)
-
-  with tf.name_scope("train"):
-    train_step = tf.train.AdamOptimizer(learning_rate).minimize(xent)
-
-  with tf.name_scope("accuracy"):
-    correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(y, 1))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    tf.summary.scalar("accuracy", accuracy)
-
-  summ = tf.summary.merge_all()
+      flattened = tf.reshape(conv_out, [-1, 7 * 7 * 64])
 
 
-  embedding = tf.Variable(tf.zeros([1024, embedding_size]), name="test_embedding")
-  assignment = embedding.assign(embedding_input)
-  saver = tf.train.Saver()
+      if use_two_fc:
+        fc1 = fc_layer(flattened, 7 * 7 * 64, 1024, "fc1")
+        relu = tf.nn.relu(fc1)
+        embedding_input = relu
+        tf.summary.histogram("fc1/relu", relu)
+        embedding_size = 1024
+        logits = fc_layer(relu, 1024, 10, "fc2")
+      else:
+        embedding_input = flattened
+        embedding_size = 7*7*64
+        logits = fc_layer(flattened, 7*7*64, 10, "fc")
 
-  sess.run(tf.global_variables_initializer())
-  writer = tf.summary.FileWriter(LOGDIR + hparam)
-  writer.add_graph(sess.graph)
+      with tf.name_scope("xent"):
+        xent = tf.reduce_mean(
+            tf.nn.softmax_cross_entropy_with_logits(
+                logits=logits, labels=y), name="xent")
+        tf.summary.scalar("xent", xent)
 
-  config = tf.contrib.tensorboard.plugins.projector.ProjectorConfig()
-  embedding_config = config.embeddings.add()
-  embedding_config.tensor_name = embedding.name
-  embedding_config.sprite.image_path = SPRITES
-  embedding_config.metadata_path = LABELS
+      with tf.name_scope("train"):
+        train_step = tf.train.AdamOptimizer(learning_rate).minimize(xent)
+
+      with tf.name_scope("accuracy"):
+        correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(y, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+        tf.summary.scalar("accuracy", accuracy)
+      summ = tf.summary.merge_all()
+
+
+      embedding = tf.Variable(tf.zeros([1024, embedding_size]), name="test_embedding")
+      assignment = embedding.assign(embedding_input)
+      saver = tf.train.Saver()
+
+
+      writer = tf.summary.FileWriter(LOGDIR)
+      writer.add_graph(graph)
+
+      config = tf.contrib.tensorboard.plugins.projector.ProjectorConfig()
+      embedding_config = config.embeddings.add()
+      embedding_config.tensor_name = embedding.name
+      embedding_config.sprite.image_path = SPRITES
+      embedding_config.metadata_path = LABELS
+      init = tf.global_variables_initializer()
+
   # Specify the width and height of a single thumbnail.
   embedding_config.sprite.single_image_dim.extend([28, 28])
   tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
-  with tf.get_default_graph().device('/gpu:0'):
-    for i in range(2001):
-      batch = mnist.train.next_batch(100)
-      if i % 5 == 0:
-        [train_accuracy, s] = sess.run([accuracy, summ], feed_dict={x: batch[0], y: batch[1]})
-        writer.add_summary(s, i)
-      if i % 500 == 0:
-        sess.run(assignment, feed_dict={x: mnist.test.images[:1024], y: mnist.test.labels[:1024]})
-        saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
-      sess.run(train_step, feed_dict={x: batch[0], y: batch[1]})
+  with graph.device('/gpu:0'):
+    with tf.Session() as sess:
+     sess.run(init)
+     for i in range(2001):
+       batch = mnist.train.next_batch(100)
+       if i % 5 == 0:
+         [train_accuracy, s] = sess.run([accuracy, summ], feed_dict={x: batch[0], y: batch[1]})
+         writer.add_summary(s, i)
+       if i % 500 == 0:
+         sess.run(assignment, feed_dict={x: mnist.test.images[:1024], y: mnist.test.labels[:1024]})
+         saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
+       sess.run(train_step, feed_dict={x: batch[0], y: batch[1]})
 
 def make_hparam_string(learning_rate, use_two_fc, use_two_conv):
   conv_param = "conv=2" if use_two_conv else "conv=1"
