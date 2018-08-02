@@ -17,7 +17,7 @@ import os.path
 import shutil
 import tensorflow as tf
 
-LOGDIR = "/media/yibing/data1/mnist_tutorial"
+LOGDIR = "/datastore/liu121/mnist_tutorial"
 LABELS = os.path.join(os.getcwd(), "labels_1024.tsv")
 LABELS_1_5 = os.path.join(os.getcwd(),'labels_1_5.tsv')
 LABELS_6_10 = os.path.join(os.getcwd(),'labels_6_10.tsv')
