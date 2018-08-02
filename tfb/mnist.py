@@ -123,7 +123,7 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
   embedding_config.sprite.single_image_dim.extend([28, 28])
   tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
   with graph.device('/gpu:0'):
-    with tf.Session() as sess:
+    with tf.Session(graph=graph, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
      sess.run(init)
      for i in range(2001):
        batch = mnist.train.next_batch(100)
