@@ -139,10 +139,10 @@ def mnist_model(learning_rate, use_two_fc, use_two_conv, hparam):
        if i % 5 == 0:
          [train_accuracy, s] = sess.run([accuracy, summ], feed_dict={x: batch[0], y: batch[1]})
          writer.add_summary(s, i)
-       if i % 500 == 0:
-         sess.run(assignment_1_5, feed_dict={x: mnist.test.images[:5], y: mnist.test.labels[:5]})
-         sess.run(assignment_6_10, feed_dict={x:mnist.test.images[5:10], y:mnist.test.labels[5:10]})
-         saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
+       # if i % 500 == 0:
+       #   sess.run(assignment_1_5, feed_dict={x: mnist.test.images[:5], y: mnist.test.labels[:5]})
+       #   sess.run(assignment_6_10, feed_dict={x:mnist.test.images[5:10], y:mnist.test.labels[5:10]})
+       #   saver.save(sess, os.path.join(LOGDIR, "model.ckpt"), i)
        sess.run(train_step, feed_dict={x: batch[0], y: batch[1]})
 
 def make_hparam_string(learning_rate, use_two_fc, use_two_conv):
