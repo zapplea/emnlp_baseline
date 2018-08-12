@@ -17,7 +17,7 @@ else: #Python 2.7 imports
     import cPickle as pkl
     from io import open
 
-def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50, reducePretrainedEmbeddings=False, valTransformations=None, padOneTokenSentence=True):
+def perpareDataset(embeddingsPath, datasets, k_shot, frequencyThresholdUnknownTokens=50, reducePretrainedEmbeddings=False, valTransformations=None, padOneTokenSentence=True):
     """
     Reads in the pre-trained embeddings (in text format) from embeddingsPath and prepares those to be used with the LSTM network.
     Unknown words in the trainDataPath-file are added, if they appear at least frequencyThresholdUnknownTokens times
@@ -38,7 +38,7 @@ def perpareDataset(embeddingsPath, datasets, frequencyThresholdUnknownTokens=50,
             pklName.append(name)
     pklName='_'.join(pklName)
 
-    outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/' + pklName + '.pkl'
+    outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/%s%s.pkl'%(pklName,str(k_shot))
     print('outputPath: ',outputPath)
 
     if os.path.isfile(outputPath):

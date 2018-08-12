@@ -36,6 +36,7 @@ logger.addHandler(ch)
 ######################################################
 parser = argparse.ArgumentParser()
 parser.add_argument('--mod',type=str)
+parser.add_argument('--k_shot',type=str)
 args = parser.parse_args()
 
 seeds = {
@@ -58,10 +59,16 @@ seeds = {
 
 seed=seeds[args.mod]
 
-k_shot = ['1.0']
+# k_shot = ['1.0']
 datasets={}
-for k in k_shot:
-    datasets[args.mod+'__'+k]=seed
+# for k in k_shot:
+#     datasets[args.mod+'__'+k]=seed
+
+if args.k_shot!='16.0' or args.k_shot!='1.0' or args.k_shot!='2.0' or args.k_shot!='4.0' or args.k_shot!='8.0':
+    print('k_shot doesn\'t exist')
+    exit()
+
+datasets[args.mod+'__'+args.k_shot]=seed
 
 # datasets={}
 # datasets[args.mod+'__'+args.shot]=seeds[args.mod]
@@ -70,7 +77,7 @@ for k in k_shot:
 embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
-pickleFile = perpareDataset(embeddingsPath, datasets)
+pickleFile = perpareDataset(embeddingsPath, datasets,)
 print('data prepare successful: %s' % pickleFile)
 ######################################################
 #
