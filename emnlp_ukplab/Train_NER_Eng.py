@@ -38,6 +38,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--mod',type=str)
 parser.add_argument('--k_shot',type=str)
 args = parser.parse_args()
+print('k_shot:')
+print(args.k_shot)
 
 seeds = {
     'bbn_kn':                                   #Name of the dataset
