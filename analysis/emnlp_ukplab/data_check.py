@@ -32,6 +32,8 @@ class Check:
         freq={}
         for label in labels:
             for type in label:
+                type = type.replace('B-','')
+                type = type.replace('I-','')
                 if type not in freq:
                     freq[type]=1
                 else:
