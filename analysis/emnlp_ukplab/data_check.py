@@ -42,7 +42,7 @@ class Check:
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--name',type=str,default='train')
-    parser.add_argument('--num', type=str, default='train')
+    parser.add_argument('--num', type=str, default='1.0')
     args=parser.parse_args()
     data_config = {'train_conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/bbn_kn__%s/%s.txt'%(args.num,args.name)}
     ch=Check(data_config)
