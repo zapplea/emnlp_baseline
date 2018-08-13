@@ -34,7 +34,8 @@ class Check:
                     freq[type]+=1
         for label in labels:
             print('===============')
-            print(label)
+            print('length of sentence: ',len(label))
+
         print('sentence numbers: ', str(len(doc)))
         print('freq:')
         print(freq)
