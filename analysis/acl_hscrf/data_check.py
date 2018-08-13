@@ -18,8 +18,8 @@ class Check:
                     doc.append(sentence)
                     labels.append(label)
                     continue
-                sentence.append(result[1])
-                label.append(result[2])
+                sentence.append(result[0])
+                label.append(result[1])
             return doc,labels
     def stat(self,doc,labels):
         freq={}
@@ -34,7 +34,7 @@ class Check:
         print(freq)
 
 if __name__=='__main__':
-    data_config = {'train_conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/bbn_kn__1.0/train.txt'}
+    data_config = {'train_conll_filePath':'/datastore/liu121/nosqldb2/acl_hscrf/data/bbn_kn/bbn_kn__1.0/train.txt'}
     ch=Check(data_config)
     doc,labels=ch.load()
     ch.stat(doc,labels)
