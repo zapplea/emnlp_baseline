@@ -9,6 +9,8 @@ class Check:
     def load(self):
         with open(self.data_config['train_conll_filePath'],'r') as f:
             lines = f.readlines()
+            print(lines)
+            exit()
             doc = []
             labels = []
             sentence=[]
