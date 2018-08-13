@@ -9,13 +9,16 @@ class Check:
     def load(self):
         with open(self.data_config['train_conll_filePath'],'r') as f:
             lines = f.readlines()
-            print(lines)
-            exit()
             doc = []
             labels = []
             sentence=[]
             label=[]
+            count=1
             for line in lines:
+                print('line num: ',count)
+                print(line)
+                count+=1
+
                 result = line.split(' ')
                 if result[0]=='\n':
                     doc.append(sentence)
