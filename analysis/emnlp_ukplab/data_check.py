@@ -35,6 +35,7 @@ class Check:
                     freq[type]=1
                 else:
                     freq[type]+=1
+        print('length of doc: ',len(doc))
         print('freq:')
         print(freq)
 
