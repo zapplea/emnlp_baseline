@@ -17,6 +17,7 @@ class Check:
                 if result[0]=='':
                     doc.append(sentence)
                     labels.append(label)
+                    continue
                 sentence.append(result[1])
                 label.append(result[2])
             return doc,labels
