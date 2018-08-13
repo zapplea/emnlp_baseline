@@ -252,6 +252,7 @@ if __name__ == "__main__":
                     samples[str(j)]={str(i):sample}
                 else:
                     samples[str(j)][str(i)]=sample
+
                 # print('{}, {}, {}'.format(str(j),str(i),str(len(sample))))
         json_filePath = data_config['json_filePath']
         with open(json_filePath,'w+') as f:
