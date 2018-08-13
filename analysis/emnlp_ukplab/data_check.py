@@ -26,8 +26,8 @@ class Check:
                     continue
                 sentence.append(result[1])
                 label.append(result[2])
+            print('lenght of doc: ',len(doc))
             exit()
-
         return doc,labels
 
     def stat(self,doc,labels):
