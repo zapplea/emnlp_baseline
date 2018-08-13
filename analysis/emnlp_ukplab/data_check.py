@@ -14,6 +14,7 @@ class Check:
             label=[]
             for line in lines:
                 result = line.split(' ')
+                print(result)
                 if result[0]=='':
                     doc.append(sentence)
                     labels.append(label)
