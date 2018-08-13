@@ -21,7 +21,9 @@ class Check:
                     continue
                 sentence.append(result[1])
                 label.append(result[2])
-            return doc,labels
+
+        return doc,labels
+
     def stat(self,doc,labels):
         freq={}
         for label in labels:
@@ -30,6 +32,9 @@ class Check:
                     freq[type]=1
                 else:
                     freq[type]+=1
+        for label in labels:
+            print('===============')
+            print(label)
         print('sentence numbers: ', str(len(doc)))
         print('freq:')
         print(freq)
