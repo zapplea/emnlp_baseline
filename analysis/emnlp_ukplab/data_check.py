@@ -35,6 +35,8 @@ class Check:
                     freq[type]=1
                 else:
                     freq[type]+=1
+        for key in freq:
+            print('key: %s freq: %s'%(str(key),str(freq[key])))
         print('length of doc: ',len(doc))
         print('freq:')
         print(freq)
