@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/home/liu121/emnlp_baseline')
 import argparse
+import operator
 
 class Check:
     def __init__(self, data_config):
@@ -35,11 +36,11 @@ class Check:
                     freq[type]=1
                 else:
                     freq[type]+=1
-        for key in freq:
-            print('key: %s freq: %s'%(str(key),str(freq[key])))
+        freq = sorted(freq.items(),key = operator.itemgetter(1))
+        for t in freq:
+            print(t)
+
         print('length of doc: ',len(doc))
-        print('freq:')
-        print(freq)
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
