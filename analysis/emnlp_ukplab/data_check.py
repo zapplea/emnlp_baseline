@@ -26,6 +26,7 @@ class Check:
                     continue
                 sentence.append(result[1])
                 label.append(result[2])
+            exit()
 
         return doc,labels
 
