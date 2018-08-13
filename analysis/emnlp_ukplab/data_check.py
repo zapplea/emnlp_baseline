@@ -15,19 +15,16 @@ class Check:
             label=[]
             count=1
             for line in lines:
-                print('line num: ',count)
-                print(line)
                 count+=1
-
                 result = line.split(' ')
                 if result[0]=='\n':
                     doc.append(sentence)
                     labels.append(label)
+                    sentence=[]
+                    label=[]
                     continue
                 sentence.append(result[1])
                 label.append(result[2])
-            print('lenght of doc: ',len(doc))
-            exit()
         return doc,labels
 
     def stat(self,doc,labels):
