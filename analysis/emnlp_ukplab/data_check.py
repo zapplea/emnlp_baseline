@@ -37,3 +37,4 @@ if __name__=='__main__':
     data_config = {'train_conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/bbn_kn__1.0/train.txt'}
     ch=Check(data_config)
     doc,labels=ch.load()
+    ch.stat(doc,labels)
