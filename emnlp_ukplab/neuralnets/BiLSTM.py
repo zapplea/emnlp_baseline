@@ -405,7 +405,7 @@ class BiLSTM:
             sys.stdout.flush()           
             logging.info("\n--------- Epoch %d -----------" % (epoch+1))
             
-            start_time = time.time() 
+            start_time = time.time()
             self.trainModel()
             time_diff = time.time() - start_time
             total_train_time += time_diff
@@ -422,31 +422,31 @@ class BiLSTM:
                                                       self.data_test[modelName]['testMatrix'])
             eval_result = self.evaluate(modelName, self.data_test[modelName]['testMatrix'])
             eval_result['epoch']='epoch: %s'%str(epoch)
-            if modelName not in best_eval_result:
-                best_eval_result[modelName]=eval_result
-            else:
-                if best_eval_result[modelName]['micro_f1']<=eval_result['micro_f1']:
-                    best_eval_result[modelName]=eval_result
-            if dev_score > max_dev_score[modelName]:
-                max_dev_score[modelName] = dev_score
-                max_test_score[modelName] = test_score
-                no_improvement_since = 0
+            # if modelName not in best_eval_result:
+            #     best_eval_result[modelName]=eval_result
+            # else:
+            #     if best_eval_result[modelName]['micro_f1']<=eval_result['micro_f1']:
+            #         best_eval_result[modelName]=eval_result
+            # if dev_score > max_dev_score[modelName]:
+            #     max_dev_score[modelName] = dev_score
+            #     max_test_score[modelName] = test_score
+            #     no_improvement_since = 0
+            #
+            #     #Save the model
+            #     if self.modelSavePath != None:
+            #         # self.saveModel(modelName, epoch, dev_score, test_score)
+            #         pass
+            # else:
+            #     no_improvement_since += 1
 
-                #Save the model
-                if self.modelSavePath != None:
-                    # self.saveModel(modelName, epoch, dev_score, test_score)
-                    pass
-            else:
-                no_improvement_since += 1
 
+            # if self.resultsSavePath != None:
+            #     self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score,
+            #                                                    max_dev_score[modelName], max_test_score[modelName]])))
+            #     self.resultsSavePath.write("\n")
+            #     self.resultsSavePath.flush()
 
-            if self.resultsSavePath != None:
-                self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score,
-                                                               max_dev_score[modelName], max_test_score[modelName]])))
-                self.resultsSavePath.write("\n")
-                self.resultsSavePath.flush()
-
-            logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
+            logging.info("Max: %.4f dev; %.4f test" % (dev_score, test_score))
             logging.info("")
 
         logging.info("%.2f sec for evaluation" % (time.time() - start_time))
