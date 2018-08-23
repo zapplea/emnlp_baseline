@@ -64,9 +64,9 @@ seed=seeds[args.mod]
 datasets={}
 # for k in k_shot:
 #     datasets[args.mod+'__'+k]=seed
-if args.k_shot!='16.0' and args.k_shot!='1.0' and args.k_shot!='2.0' and args.k_shot!='4.0' and args.k_shot!='8.0':
-    print('k_shot doesn\'t exist')
-    exit()
+# if args.k_shot!='16.0' and args.k_shot!='1.0' and args.k_shot!='2.0' and args.k_shot!='4.0' and args.k_shot!='8.0':
+#     print('k_shot doesn\'t exist')
+#     exit()
 
 datasets[args.mod+'__'+args.k_shot]=seed
 
