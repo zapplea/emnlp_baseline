@@ -38,18 +38,24 @@ def perpareDataset(embeddingsPath, datasets, k_shot, frequencyThresholdUnknownTo
             pklName.append(name)
     pklName='_'.join(pklName)
 
-    outputPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/%s%s.pkl'%(pklName,str(k_shot))
-    print('outputPath: ',outputPath)
+    outputPath_train = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/%s%s%s.pkl'%(pklName,str(k_shot), 'train')
+    outputPath_dev = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/%s%s%s.pkl' % (pklName, str(k_shot), 'dev')
+    outputPath_test = '/datastore/liu121/nosqldb2/emnlp_ukplab/data/pkl/%s%s%s.pkl' % (pklName, str(k_shot), 'test')
+    print('outputPath: ', outputPath_train)
+    print('outputdev: ', outputPath_dev)
+    print('outputtest: ', outputPath_test)
 
-    if os.path.isfile(outputPath):
-        logging.info("Using existent pickle file: %s" % outputPath)
-        return outputPath
+    if os.path.isfile(outputPath_train) and os.path.isfile(outputPath_dev) and os.path.isfile(outputPath_test):
+        logging.info("Using existent pickle file: %s, %s, and %s" % (outputPath_train, outputPath_dev, outputPath_test))
+        return outputPath_train, outputPath_dev, outputPath_test
 
     casing2Idx = getCasingVocab()
     embeddings, word2Idx = readEmbeddings(embeddingsPath, datasets, frequencyThresholdUnknownTokens, reducePretrainedEmbeddings)
     
     mappings = {'tokens': word2Idx, 'casing': casing2Idx}
-    pklObjects = {'embeddings': embeddings, 'mappings': mappings, 'datasets': datasets, 'data': {}}
+    pklObjects_train = {'embeddings': embeddings, 'mappings': mappings, 'datasets': datasets, 'data': {}}
+    pklObjects_dev = {'embeddings': embeddings, 'mappings': mappings, 'datasets': datasets, 'data': {}}
+    pklObjects_test = {'embeddings': embeddings, 'mappings': mappings, 'datasets': datasets, 'data': {}}
 
     for datasetName, dataset in datasets.items():
         datasetColumns = dataset['columns']
@@ -61,17 +67,27 @@ def perpareDataset(embeddingsPath, datasets, k_shot, frequencyThresholdUnknownTo
         paths = [trainData, devData, testData]
 
         logging.info(":: Transform "+datasetName+" dataset ::")
-        pklObjects['data'][datasetName]\
+        pklObjects_train['data'][datasetName], \
+        pklObjects_dev['data'][datasetName], \
+        pklObjects_test['data'][datasetName]\
             = createPklFiles(paths, mappings, datasetColumns, commentSymbol, valTransformations, padOneTokenSentence)
 
     
-    f = open(outputPath, 'wb')
-    pkl.dump(pklObjects, f, -1)
+    f = open(outputPath_train, 'wb')
+    pkl.dump(pklObjects_train, f, -1)
+    f.close()
+
+    f = open(outputPath_dev, 'wb')
+    pkl.dump(pklObjects_dev, f, -1)
+    f.close()
+
+    f = open(outputPath_test, 'wb')
+    pkl.dump(pklObjects_test, f, -1)
     f.close()
     
-    logging.info("DONE - Embeddings file saved: %s" % outputPath)
+    logging.info("DONE - Embeddings file saved: %s, %s, and %s" % (outputPath_train, outputPath_dev, outputPath_test))
     
-    return outputPath
+    return outputPath_train, outputPath_dev, outputPath_test
 
 
 def loadDatasetPickle(embeddingsPickle):
@@ -357,14 +373,17 @@ def createPklFiles(datasetFiles, mappings, cols, commentSymbol, valTransformatio
     testMatrix = createMatrices(testSentences, mappings, padOneTokenSentence)
 
     
-    data = {
-                'trainMatrix': trainMatrix,
-                'devMatrix': devMatrix,
-                'testMatrix': testMatrix
-            }        
-       
-    
-    return data
+    data_train = {
+                'trainMatrix': trainMatrix
+            }
+    data_dev = {
+        'devMatrix': devMatrix
+    }
+    data_test = {
+        'testMatrix': testMatrix
+    }
+
+    return data_train, data_dev, data_test
 
 def extendMappings(mappings, sentences):
     sentenceKeys = list(sentences[0].keys())

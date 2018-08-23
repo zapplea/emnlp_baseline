@@ -77,8 +77,8 @@ datasets[args.mod+'__'+args.k_shot]=seed
 embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
-pickleFile = perpareDataset(embeddingsPath, datasets,args.k_shot)
-print('data prepare successful: %s' % pickleFile)
+pickleFile_train, pickleFile_dev, pickleFile_test = perpareDataset(embeddingsPath, datasets,args.k_shot)
+print('data prepare successful: %s, %s, and %s' % pickleFile_train, pickleFile_dev, pickleFile_test)
 ######################################################
 #
 # The training of the network starts here
@@ -87,7 +87,10 @@ print('data prepare successful: %s' % pickleFile)
 
 
 #Load the embeddings and the dataset
-embeddings, mappings, data = loadDatasetPickle(pickleFile)
+embeddings, mappings, data_train = loadDatasetPickle(pickleFile_train)
+embeddings, mappings, data_dev = loadDatasetPickle(pickleFile_dev)
+embeddings, mappings, data_test = loadDatasetPickle(pickleFile_test)
+
 # print('mappings type: ',type(mappings))
 # for key in mappings:
 #     print(key)
@@ -110,7 +113,7 @@ params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25
 print('#######################'+args.mod+' #######################')
 model = BiLSTM(params)
 model.setMappings(mappings, embeddings)
-model.setDataset(datasets, data)
+model.setDataset(datasets, data_train, data_dev, data_test)
 model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_bbn.h5"
 eval_result=model.fit(epochs=100)
 

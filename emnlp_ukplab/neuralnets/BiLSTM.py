@@ -60,9 +60,11 @@ class BiLSTM:
         self.conll_filePath='/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll.txt'
         self.mt=Metrics(self.conll_filePath,mappings['tokens'])
 
-    def setDataset(self, datasets, data):
+    def setDataset(self, datasets, data_train, data_dev, data_test):
         self.datasets = datasets
-        self.data = data
+        self.data_train = data_train
+        self.data_dev = data_dev
+        self.data_test = data_test
 
         # Create some helping variables
         self.mainModelName = None
@@ -88,9 +90,9 @@ class BiLSTM:
                 self.evaluateModelNames.append(modelName)
             
             logging.info("--- %s ---" % modelName)
-            logging.info("%d train sentences" % len(self.data[modelName]['trainMatrix']))
-            logging.info("%d dev sentences" % len(self.data[modelName]['devMatrix']))
-            logging.info("%d test sentences" % len(self.data[modelName]['testMatrix']))
+            logging.info("%d train sentences" % len(self.data_train[modelName]['trainMatrix']))
+            logging.info("%d dev sentences" % len(self.data_dev[modelName]['devMatrix']))
+            logging.info("%d test sentences" % len(self.data_test[modelName]['testMatrix']))
             
         
         if len(self.evaluateModelNames) == 1:
@@ -123,8 +125,16 @@ class BiLSTM:
         if self.params['charEmbeddings'] not in [None, "None", "none", False, "False", "false"]:
             logging.info("Pad words to uniform length for characters embeddings")
             all_sentences = []
-            for dataset in self.data.values():
-                for data in [dataset['trainMatrix'], dataset['devMatrix'], dataset['testMatrix']]:
+            for dataset in self.data_train.values():
+                for data in [dataset['trainMatrix']]:
+                    for sentence in data:
+                        all_sentences.append(sentence)
+            for dataset in self.data_dev.values():
+                for data in [dataset['devMatrix']]:
+                    for sentence in data:
+                        all_sentences.append(sentence)
+            for dataset in self.data_test.values():
+                for data in [dataset['testMatrix']]:
                     for sentence in data:
                         all_sentences.append(sentence)
 
@@ -290,7 +300,7 @@ class BiLSTM:
             self.trainSentenceLengthRanges = {}
             self.trainMiniBatchRanges = {}            
             for modelName in self.modelNames:
-                trainData = self.data[modelName]['trainMatrix']
+                trainData = self.data_train[modelName]['trainMatrix']
                 trainData.sort(key=lambda x:len(x['tokens'])) #Sort train matrix by sentence length
                 trainRanges = []
                 oldSentLength = len(trainData[0]['tokens'])            
@@ -332,7 +342,7 @@ class BiLSTM:
         #Shuffle training data
         for modelName in modelNames:      
             #1. Shuffle sentences that have the same length
-            x = self.data[modelName]['trainMatrix']
+            x = self.data_train[modelName]['trainMatrix']
             for dataRange in self.trainSentenceLengthRanges[modelName]:
                 for i in reversed(range(dataRange[0]+1, dataRange[1])):
                     # pick an element in x[:i+1] with which to exchange x[i]
@@ -355,7 +365,7 @@ class BiLSTM:
             batches.clear()
             
             for modelName in modelNames:   
-                trainMatrix = self.data[modelName]['trainMatrix']
+                trainMatrix = self.data_train[modelName]['trainMatrix']
                 dataRange = self.trainMiniBatchRanges[modelName][idx % len(self.trainMiniBatchRanges[modelName])] 
                 labels = np.asarray([trainMatrix[idx][self.labelKeys[modelName]] for idx in range(dataRange[0], dataRange[1])])
                 labels = np.expand_dims(labels, -1)
@@ -404,38 +414,42 @@ class BiLSTM:
             
             start_time = time.time()
 
-            for modelName in self.evaluateModelNames:
-                logging.info("-- %s --" % (modelName))
-                dev_score, test_score = self.computeScore(modelName, self.data[modelName]['devMatrix'], self.data[modelName]['testMatrix'])
-                eval_result = self.evaluate(modelName, self.data[modelName]['testMatrix'])
-                eval_result['epoch']='epoch: %s'%str(epoch)
-                if modelName not in best_eval_result:
+
+        start_time = time.time()
+        for modelName in self.evaluateModelNames:
+            logging.info("-- %s --" % (modelName))
+            dev_score, test_score = self.computeScore(modelName, self.data_dev[modelName]['devMatrix'],
+                                                      self.data_test[modelName]['testMatrix'])
+            eval_result = self.evaluate(modelName, self.data_test[modelName]['testMatrix'])
+            eval_result['epoch']='epoch: %s'%str(epoch)
+            if modelName not in best_eval_result:
+                best_eval_result[modelName]=eval_result
+            else:
+                if best_eval_result[modelName]['micro_f1']<=eval_result['micro_f1']:
                     best_eval_result[modelName]=eval_result
-                else:
-                    if best_eval_result[modelName]['micro_f1']<=eval_result['micro_f1']:
-                        best_eval_result[modelName]=eval_result
-                if dev_score > max_dev_score[modelName]:
-                    max_dev_score[modelName] = dev_score
-                    max_test_score[modelName] = test_score
-                    no_improvement_since = 0
+            if dev_score > max_dev_score[modelName]:
+                max_dev_score[modelName] = dev_score
+                max_test_score[modelName] = test_score
+                no_improvement_since = 0
 
-                    #Save the model
-                    if self.modelSavePath != None:
-                        # self.saveModel(modelName, epoch, dev_score, test_score)
-                        pass
-                else:
-                    no_improvement_since += 1
-                    
-                    
-                if self.resultsSavePath != None:
-                    self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score, max_dev_score[modelName], max_test_score[modelName]])))
-                    self.resultsSavePath.write("\n")
-                    self.resultsSavePath.flush()
+                #Save the model
+                if self.modelSavePath != None:
+                    # self.saveModel(modelName, epoch, dev_score, test_score)
+                    pass
+            else:
+                no_improvement_since += 1
 
-                logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
-                logging.info("")
-                
-            logging.info("%.2f sec for evaluation" % (time.time() - start_time))
+
+            if self.resultsSavePath != None:
+                self.resultsSavePath.write("\t".join(map(str, [epoch + 1, modelName, dev_score, test_score,
+                                                               max_dev_score[modelName], max_test_score[modelName]])))
+                self.resultsSavePath.write("\n")
+                self.resultsSavePath.flush()
+
+            logging.info("Max: %.4f dev; %.4f test" % (max_dev_score[modelName], max_test_score[modelName]))
+            logging.info("")
+
+        logging.info("%.2f sec for evaluation" % (time.time() - start_time))
             
             # if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
             #     logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
@@ -619,12 +633,29 @@ class BiLSTM:
         """ Adds an identifier to every token, which identifies the task the token stems from """
         taskID = 0
         for modelName in self.modelNames:
-            dataset = self.data[modelName]
-            for dataName in ['trainMatrix', 'devMatrix', 'testMatrix']:            
+            dataset = self.data_train[modelName]
+            for dataName in ['trainMatrix']:
                 for sentenceIdx in range(len(dataset[dataName])):
                     dataset[dataName][sentenceIdx]['taskID'] = [taskID] * len(dataset[dataName][sentenceIdx]['tokens'])
             
             taskID += 1
+
+        taskID = 0
+        for modelName in self.modelNames:
+            dataset = self.data_dev[modelName]
+            for dataName in ['devMatrix']:
+                for sentenceIdx in range(len(dataset[dataName])):
+                    dataset[dataName][sentenceIdx]['taskID'] = [taskID] * len(dataset[dataName][sentenceIdx]['tokens'])
+            taskID += 1
+
+        taskID = 0
+        for modelName in self.modelNames:
+            dataset = self.data_test[modelName]
+            for dataName in ['testMatrix']:
+                for sentenceIdx in range(len(dataset[dataName])):
+                    dataset[dataName][sentenceIdx]['taskID'] = [taskID] * len(dataset[dataName][sentenceIdx]['tokens'])
+            taskID += 1
+
 
 
     def saveModel(self, modelName, epoch, dev_score, test_score):
