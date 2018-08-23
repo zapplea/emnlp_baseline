@@ -115,7 +115,7 @@ model = BiLSTM(params)
 model.setMappings(mappings, embeddings)
 model.setDataset(datasets, data_train, data_dev, data_test)
 model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_bbn.h5"
-eval_result=model.fit(epochs=30)
+eval_result=model.fit(epochs=100)
 
 def report(eval_result, filePath):
     with open(filePath, 'w+') as f:
