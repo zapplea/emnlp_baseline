@@ -78,7 +78,7 @@ embeddingsPath = '/datastore/liu121/nosqldb2/emnlp_ukplab/skipgram'
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
 pickleFile_train, pickleFile_dev, pickleFile_test = perpareDataset(embeddingsPath, datasets,args.k_shot)
-print('data prepare successful: %s, %s, and %s' % pickleFile_train, pickleFile_dev, pickleFile_test)
+print('data prepare successful: %s, %s, and %s' % (pickleFile_train, pickleFile_dev, pickleFile_test))
 ######################################################
 #
 # The training of the network starts here
