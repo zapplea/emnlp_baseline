@@ -100,6 +100,9 @@ class BiLSTM:
             self.mainModelName = self.evaluateModelNames[0]
              
         self.casing2Idx = self.mappings['casing']
+        print('=============')
+        print(self.casing2Idx)
+        exit()
 
         
     def buildModel(self):
@@ -286,6 +289,9 @@ class BiLSTM:
             for modelName in self.modelNames:         
                 nnLabels = batch[modelName][0]
                 nnInput = batch[modelName][1:]
+                print('=================')
+                print(type(nnInput))
+                exit()
                 self.models[modelName].train_on_batch(nnInput, nnLabels)  
                 
                                
