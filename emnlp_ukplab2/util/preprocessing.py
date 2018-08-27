@@ -353,7 +353,7 @@ def createPklFiles(datasetFiles, mappings, cols, commentSymbol, valTransformatio
     for c in " 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,-_()[]{}!?:;#'\"/\\%$`&=*+@^~|":
         charset[c] = len(charset)
     mappings['characters'] = charset
-    
+
     addCharInformation(trainSentences)
     addCasingInformation(trainSentences)
     
@@ -376,6 +376,9 @@ def createPklFiles(datasetFiles, mappings, cols, commentSymbol, valTransformatio
     data_train = {
                 'trainMatrix': trainMatrix
             }
+    print('================')
+    print(trainMatrix)
+    exit()
     data_dev = {
         'devMatrix': devMatrix
     }
