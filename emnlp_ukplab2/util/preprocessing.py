@@ -376,9 +376,6 @@ def createPklFiles(datasetFiles, mappings, cols, commentSymbol, valTransformatio
     data_train = {
                 'trainMatrix': trainMatrix
             }
-    print('================')
-    print(trainMatrix)
-    exit()
     data_dev = {
         'devMatrix': devMatrix
     }
