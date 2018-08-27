@@ -392,6 +392,19 @@ class BiLSTM:
         else:
             self.resultsSavePath = None
 
+    def report(self, eval_result,modelName):
+        print('====================' + modelName + '====================')
+        print(eval_result['epoch'] + '\n')
+        print(eval_result["per_f1"] + "\n")
+        print(eval_result['per_pre'] + '\n')
+        print(eval_result['per_recall'] + '\n')
+        print(eval_result["micro_f1"] + '\n')
+        print(eval_result["micro_pre"] + '\n')
+        print(eval_result["micro_recall"] + '\n')
+        print(eval_result["macro_f1"] + '\n')
+        print(eval_result["macro_pre"] + '\n')
+        print(eval_result["macro_recall"] + '\n')
+
     def fit(self, epochs):
         if self.models is None:
             self.buildModel()
@@ -425,20 +438,23 @@ class BiLSTM:
             eval_result['epoch']='epoch: %s'%str(epoch)
             # if modelName not in best_eval_result:
             #     best_eval_result[modelName]=eval_result
+            #     self.report(eval_result,modelName)
             # else:
             #     if best_eval_result[modelName]['micro_f1']<=eval_result['micro_f1']:
             #         best_eval_result[modelName]=eval_result
-            # if dev_score > max_dev_score[modelName]:
-            #     max_dev_score[modelName] = dev_score
-            #     max_test_score[modelName] = test_score
-            #     no_improvement_since = 0
-            #
-            #     #Save the model
-            #     if self.modelSavePath != None:
-            #         # self.saveModel(modelName, epoch, dev_score, test_score)
-            #         pass
-            # else:
-            #     no_improvement_since += 1
+            if dev_score > max_dev_score[modelName]:
+                max_dev_score[modelName] = dev_score
+                max_test_score[modelName] = test_score
+                no_improvement_since = 0
+
+                best_eval_result[modelName] = eval_result
+                self.report(eval_result, modelName)
+                #Save the model
+                # if self.modelSavePath != None:
+                    # self.saveModel(modelName, epoch, dev_score, test_score)
+                #    pass
+            else:
+                no_improvement_since += 1
 
 
             # if self.resultsSavePath != None:
@@ -450,11 +466,12 @@ class BiLSTM:
             logging.info("Max: %.4f dev; %.4f test" % (dev_score, test_score))
             logging.info("")
 
-        logging.info("%.2f sec for evaluation" % (time.time() - start_time))
+            logging.info("%.2f sec for evaluation" % (time.time() - start_time))
             
-            # if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
-            #     logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
-            #     break
+            if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
+                logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
+                break
+
         return best_eval_result
 
             
