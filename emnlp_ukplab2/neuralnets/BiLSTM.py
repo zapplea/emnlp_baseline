@@ -42,7 +42,7 @@ class BiLSTM:
 
         # Hyperparameters for the network
         defaultParams = {'dropout': (0.5,0.5), 'classifier': ['Softmax'], 'LSTM-Size': (100,), 'customClassifier': {},
-                         'optimizer': 'adam',
+                         'optimizer': 'SGD',
                          'charEmbeddings': None, 'charEmbeddingsSize': 30, 'charFilterSize': 30, 'charFilterLength': 3, 'charLSTMSize': 25, 'maxCharLength': 25,
                          'useTaskIdentifier': False, 'clipvalue': 0, 'clipnorm': 1,
                          'earlyStopping': 5, 'miniBatchSize': 32,
