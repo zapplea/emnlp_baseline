@@ -35,8 +35,8 @@ logger.addHandler(ch)
 #
 ######################################################
 parser = argparse.ArgumentParser()
-parser.add_argument('--mod',type=str)
-parser.add_argument('--k_shot',type=str)
+parser.add_argument('--mod',type=str,default='bbn_kn')
+parser.add_argument('--k_shot',type=str,default='1.0')
 args = parser.parse_args()
 print(args.mod+args.k_shot)
 
