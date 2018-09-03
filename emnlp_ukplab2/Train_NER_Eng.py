@@ -108,13 +108,14 @@ embeddings, mappings, data_test = loadDatasetPickle(pickleFile_test)
     # print('=========================')
 
 # Some network hyperparameters
-params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': False, 'maxCharLength': 50,
+params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50,
           'featureNames': ['tokens'],'earlyStopping':100,'wordEmbeddings_trainable':True}
 
 
 print('#######################'+args.mod+' #######################')
 model = BiLSTM(params)
-model.setMappings(mappings, embeddings)
+conll_filePath = '/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll_%s.txt'%(args.mod+'_'+args.k_shot)
+model.setMappings(mappings, embeddings,conll_filePath)
 model.setDataset(datasets, data_train, data_dev, data_test)
 model.modelSavePath = "/datastore/liu121/nosqldb2/emnlp_ukplab/models/[ModelName]_bbn.h5"
 eval_result=model.fit(epochs=100)

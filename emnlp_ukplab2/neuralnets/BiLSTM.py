@@ -54,11 +54,11 @@ class BiLSTM:
 
 
 
-    def setMappings(self, mappings, embeddings):
+    def setMappings(self, mappings, embeddings,conll_filePath):
         self.embeddings = embeddings
         self.mappings = mappings
 
-        self.conll_filePath='/datastore/liu121/nosqldb2/emnlp_ukplab/conll_eval/conll.txt'
+        self.conll_filePath=conll_filePath
         self.mt=Metrics(self.conll_filePath,mappings['tokens'])
 
     def setDataset(self, datasets, data_train, data_dev, data_test):
@@ -414,7 +414,7 @@ class BiLSTM:
         max_test_score = {modelName:0 for modelName in self.models.keys()}
         no_improvement_since = 0
 
-        best_eval_result = {}
+
         for epoch in range(epochs):      
             sys.stdout.flush()           
             logging.info("\n--------- Epoch %d -----------" % (epoch+1))
@@ -426,7 +426,7 @@ class BiLSTM:
             logging.info("%.2f sec for training (%.2f total)" % (time_diff, total_train_time))
             start_time=time.time()
 
-
+        best_eval_result = {}
         start_time = time.time()
         for modelName in self.evaluateModelNames:
             logging.info("-- %s --" % (modelName))
@@ -434,9 +434,10 @@ class BiLSTM:
                                                       self.data_test[modelName]['testMatrix'])
             eval_result = self.evaluate(modelName, self.data_test[modelName]['testMatrix'])
             eval_result['epoch']='epoch: %s'%str('final')
+            best_eval_result[modelName]=eval_result
 
-            self.report(eval_result, modelName)
-            print('test_score: %.4f' % test_score)
+            # self.report(eval_result, modelName)
+            # print('test_score: %.4f' % test_score)
             # if modelName not in best_eval_result:
             #     best_eval_result[modelName]=eval_result
             #     self.report(eval_result,modelName)
@@ -464,10 +465,10 @@ class BiLSTM:
             #     self.resultsSavePath.write("\n")
             #     self.resultsSavePath.flush()
 
-            logging.info("Max: %.4f dev; %.4f test" % (dev_score, test_score))
-            logging.info("")
-
-            logging.info("%.2f sec for evaluation" % (time.time() - start_time))
+            # logging.info("Max: %.4f dev; %.4f test" % (dev_score, test_score))
+            # logging.info("")
+            #
+            # logging.info("%.2f sec for evaluation" % (time.time() - start_time))
 
         # if self.params['earlyStopping']  > 0 and no_improvement_since >= self.params['earlyStopping']:
         #     logging.info("!!! Early stopping, no improvement after "+str(no_improvement_since)+" epochs !!!")
