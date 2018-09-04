@@ -109,7 +109,7 @@ embeddings, mappings, data_test = loadDatasetPickle(pickleFile_test)
 
 # Some network hyperparameters
 params = {'classifier': ['CRF'], 'LSTM-Size': [100, 100], 'dropout': (0.25, 0.25), 'charEmbeddings': 'CNN', 'maxCharLength': 50,
-          'featureNames': ['tokens'],'earlyStopping':100,'wordEmbeddings_trainable':True}
+          'featureNames': ['tokens','casing'],'earlyStopping':100,'wordEmbeddings_trainable':True}
 
 
 print('#######################'+args.mod+' #######################')
