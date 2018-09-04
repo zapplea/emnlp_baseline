@@ -163,21 +163,21 @@ class DataGenerator:
 if __name__ == "__main__":
     data_configs = [
 
-        # {'max_len': 100,  # bbn_kn
-        #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
-        #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
-        #  'groups_num': 5,
-        #  'instances_num': [1, 2, 4, 8, 16],
-        #  'conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/',
-        #  'target_eval_Conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn_eval'},
-        #
-        # {'max_len': 200,  # 315 cadec
-        #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
-        #  'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
-        #  'groups_num': 5,
-        #  'instances_num': [1, 2, 4, 8, 16],
-        #  'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec/',
-        #  'target_eval_Conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec_eval'},
+        {'max_len': 100,  # bbn_kn
+         'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/bbn_kn/data_test_draw.txt',
+         'target_train_jsonPath': '/datastore/liu121/nosqldb2/bbn_kn/draw_kn.json',
+         'groups_num': 5,
+         'instances_num': [1, 2, 4, 8, 16],
+         'conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn/',
+         'target_eval_Conll_filePath':'/datastore/liu121/nosqldb2/emnlp_ukplab/data/bbn_kn_eval'},
+
+        {'max_len': 200,  # 315 cadec
+         'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec/Conll/data_test_draw',
+         'target_train_jsonPath': '/datastore/liu121/nosqldb2/cadec/json/draw.json',
+         'groups_num': 5,
+         'instances_num': [1, 2, 4, 8, 16],
+         'conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec/',
+         'target_eval_Conll_filePath': '/datastore/liu121/nosqldb2/emnlp_ukplab/data/cadec_eval'},
 
         # {'max_len': 200,  # cadec_simple
         #  'target_train_Conll_filePath': '/datastore/liu121/nosqldb2/cadec_simple/cadec_draw.txt',
