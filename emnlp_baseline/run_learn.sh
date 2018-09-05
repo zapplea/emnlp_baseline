@@ -15,4 +15,4 @@ module load cuda/8.0.61
 module load tensorflow/1.5.0-py36-gpu
 echo "loaded"
 
-python learn.py --num $1 --stage1 $2 --dn $3
+python learn.py --num $1 --stage1 $2 --dn $3 --casing $4

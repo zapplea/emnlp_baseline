@@ -12,6 +12,8 @@ class Classifier:
         self.data_config = data_config
         self.mt = metrics
 
+
+
     def X_input(self,graph):
         """
         
@@ -116,6 +118,33 @@ class Classifier:
     #     outputs = tf.concat(outputs, axis=2, name='bilstm_outputs')
     #     graph.add_to_collection('bilstm_outputs', outputs)
     #     return outputs
+
+    def parameter_initializer(self,dtype='float32'):
+        stdv=1/tf.sqrt(tf.constant(self.nn_config['casingVecLen'],dtype=dtype))
+        init = tf.random_normal((self.nn_config['casingVocabLen'],self.nn_config['casingVecLen']),stddev=stdv,dtype=dtype)
+        return init
+
+    def casing_embedding(self):
+        """
+        return casing embedding table.
+        :return: 
+        """
+        embedding = tf.get_variable(name='casingEmb', initializer=self.parameter_initializer(), dtype='float32')
+        return embedding
+
+    def input(self):
+        """
+        the placeholder to input the casing_sentences
+        :return: 
+        """
+        casingX = tf.placeholder(name='caisngInput',shape=(None,self.nn_config['batch_size']),dtype='int32')
+        tf.add_to_collection('casingInput',casingX)
+        return casingX
+
+    def casing_lookup_table(self,):
+        table = self.casing_embedding()
+        casingX = self.input()
+        return tf.nn.embedding_lookup(table,casingX)
 
     # ###################
     #     source crf
@@ -402,6 +431,10 @@ class Classifier:
                 mask = self.lookup_mask(X_id,graph)
                 # X.shape = (batch size, words num, feature dim)
                 X = self.lookup_table(X_id,mask,graph)
+                # casing embedding
+                if self.nn_config['casingEmb']:
+                    casingX = self.casing_lookup_table()
+                    X = tf.concat([X, casingX],axis=1)
                 with tf.variable_scope('bilstm') as vs:
                     # X.shape = (batch size, max time step, 2*lstm cell size)
                     X = self.bilstm(X,seq_len,graph)
@@ -484,6 +517,8 @@ class Classifier:
                 X = graph.get_tensor_by_name('X:0')
                 Y_ = graph.get_tensor_by_name('Y_:0')
                 table = graph.get_tensor_by_name('table:0')
+                if self.nn_config['casingEmb']:
+                    casingX = graph.get_tensor_by_name('casingInput:0')
 
                 # crf source
                 train_op_crf_source = graph.get_collection('train_op_crf_source')[0]
@@ -527,12 +562,18 @@ class Classifier:
                     early_stop_count=0
                     for i in range(self.nn_config['epoch_stage1']):
                         dataset = self.df.source_data_generator('train')
-                        for X_data,Y_data in dataset:
-                            sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
+                        for X_data,Y_data, casingX_data in dataset:
+                            if self.nn_config['casingEmb']:
+                                sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                            else:
+                                sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
 
                         dataset = self.df.source_data_generator('test')
-                        for X_data,Y_data in dataset:
-                            pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
+                        for X_data,Y_data, casingX_data in dataset:
+                            if self.nn_config['casingEmb']:
+                                pred, loss = sess.run([pred_crf_source, test_loss_crf_source],feed_dict={X: X_data, Y_: Y_data, casingX:casingX_data})
+                            else:
+                                pred,loss = sess.run([pred_crf_source,test_loss_crf_source],feed_dict={X:X_data,Y_:Y_data})
                             # f1_macro,f1_micro = self.f1(Y_data,pred,self.nn_config['source_NETypes_num'])
                             source_id2label_dic=self.df.source_id2label_generator()
                             true_labels = Y_data
@@ -566,12 +607,19 @@ class Classifier:
                     early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage2']):
                         dataset= self.df.target_data_generator('train')
-                        for X_data,Y_data in dataset:
-                            sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
+                        for X_data,Y_data, casingX_data in dataset:
+                            if self.nn_config['casingEmb']:
+                                sess.run(train_op_multiclass, feed_dict={X: X_data, Y_: Y_data, casingX:casingX_data})
+                            else:
+                                sess.run(train_op_multiclass,feed_dict={X:X_data,Y_:Y_data})
                         #train_loss = sess.run(test_loss_multiclass, feed_dict={X: X_data, Y_: Y_data})
                         dataset = self.df.target_data_generator('test')
-                        for X_data,Y_data in dataset:
-                            pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
+                        for X_data,Y_data, casingX_data in dataset:
+                            if self.nn_config['casingEmb']:
+                                pred, loss = sess.run([pred_multiclass, test_loss_multiclass],
+                                                      feed_dict={X: X_data, Y_: Y_data, casingX:casingX_data})
+                            else:
+                                pred,loss= sess.run([pred_multiclass,test_loss_multiclass],feed_dict={X:X_data,Y_:Y_data})
                             target_id2label_dic = self.df.target_id2label_generator()
                             true_labels = Y_data
                             pred_labels = pred
@@ -603,12 +651,19 @@ class Classifier:
                     early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage3']):
                         dataset = self.df.target_data_generator('train')
-                        for X_data,Y_data in dataset:
-                            sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
+                        for X_data,Y_data, casingX_data in dataset:
+                            if self.nn_config['casingEmb']:
+                                sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                            else:
+                                sess.run(train_op_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         #train_loss = sess.run(test_loss_crf_target, feed_dict={X: X_data, Y_: Y_data})
                         dataset = self.df.target_data_generator('test')
-                        for X_data,Y_data in dataset:
-                            pred,loss= sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
+                        for X_data,Y_data, casingX_data in dataset:
+                            if self.nn_config['casingEmb']:
+                                pred, loss = sess.run([pred_crf_target, test_loss_crf_target],
+                                                      feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                            else:
+                                pred,loss= sess.run([pred_crf_target,test_loss_crf_target],feed_dict={X:X_data,Y_:Y_data})
                             target_id2label_dic = self.df.target_id2label_generator()
                             true_labels = Y_data
                             pred_labels = pred

@@ -25,10 +25,12 @@ class Dataset:
             raise StopIteration
         X=[]
         Y_=[]
+        casingX=[]
         for instance in batch:
             X.append(instance[0])
             Y_.append(instance[1])
-        return np.array(X,dtype='int32'),np.array(Y_,dtype='int32')
+            casingX.append(instance[2])
+        return np.array(X,dtype='int32'),np.array(Y_,dtype='int32'),np.array(casingX,dtype='int32')
 
 class DataFeed:
     def __init__(self,data_config):

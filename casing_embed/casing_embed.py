@@ -81,13 +81,12 @@ class CasingEmbeddingData:
         return casing
 
 class CassingEmbedding:
-    def __init__(self,casing_vocab,casingVecLen,maxSentenceLen):
+    def __init__(self,casing_vocab,casingVecLen,batchSize):
         """
         how to use?
         eg.
         with graph.as_default():
             cemb = CasingEmbedding(casing_vocab,casingVecLen,maxSentenceLen)
-            casingInput = cemb.input()
             cemb.lookup_table()
         # then in the training process
         casingX = graph.get_collection('casingInput')[0]
@@ -99,7 +98,7 @@ class CassingEmbedding:
         """
         self.casingVocab = casing_vocab
         self.casingVecLen=casingVecLen
-        self.maxSentenceLen=maxSentenceLen
+        self.batchSize=batchSize
 
     def parameter_initializer(self,dtype='float32'):
         stdv=1/tf.sqrt(tf.constant(self.casingVecLen,dtype=dtype))
@@ -119,7 +118,7 @@ class CassingEmbedding:
         the placeholder to input the casing_sentences
         :return: 
         """
-        casingX = tf.placeholder(name='caisngInput',shape=(None,self.maxSentenceLen),dtype='int32')
+        casingX = tf.placeholder(name='caisngInput',shape=(None,self.batchSize),dtype='int32')
         tf.add_to_collection('casingInput',casingX)
         return casingX
 

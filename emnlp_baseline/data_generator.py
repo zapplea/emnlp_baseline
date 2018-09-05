@@ -2,6 +2,9 @@ import sys
 sys.path.append('/home/liu121/dlnlp')
 from nerd.data.util.readers.BBNDataReader import BBNDataReader
 
+sys.path.append('/home/liu121/emnlp_baseline')
+from casing_embed.casing_embed import CasingEmbeddingData
+
 import pickle
 import random
 import json
@@ -12,6 +15,7 @@ class DataGenerator:
         self.data_config = data_config
         self.table= table
         self.dictionary = dictionary
+        self.ced = CasingEmbeddingData()
 
     def conll_data_reader(self,filePath):
         data = BBNDataReader.readFile(filePath=filePath)
@@ -39,6 +43,13 @@ class DataGenerator:
                     txt=txt+s
             return txt
 
+    def casing_idList_generator(self,sentence):
+        while len(sentence)< self.data_config['max_len']:
+            sentence.append('#PAD#')
+        casingText = self.ced.casingSentence(sentence)
+        casingIdList = self.ced.casingSentence2idList(casingText)
+        return casingIdList
+
     def source_nn_data_generator(self,data,labels_dic):
         data_len=len(data.text)
         # train_data = [[text,labels], ...]
@@ -46,6 +57,7 @@ class DataGenerator:
         labels_num = 1
         for i in range(data_len):
             text = data.text[i]
+            casingIdList = self.casing_idList_generator(text)
             labels = data.labels[i]
             if len(text)>self.data_config['max_len']:
                 continue
@@ -75,7 +87,7 @@ class DataGenerator:
             # print('x:\n',x)
             # print('y_:\n',y_)
             # exit()
-            nn_data.append((x, y_))
+            nn_data.append((x, y_, casingIdList))
         return nn_data,labels_num,labels_dic
 
     def target_nn_train_data_generator(self,data,labels_dic,labels_num):
@@ -84,6 +96,7 @@ class DataGenerator:
         nn_data = []
         for i in range(data_len):
             text = data.text[i]
+            casingIdList = self.casing_idList_generator(text)
             labels = data.labels[i]
             # if len(text)>self.data_config['max_len']:
             #     continue
@@ -113,7 +126,7 @@ class DataGenerator:
             # print('x:\n',x)
             # print('y_:\n',y_)
             # exit()
-            nn_data.append((x, y_))
+            nn_data.append((x, y_, casingIdList))
         return nn_data,labels_num,labels_dic
 
     def target_nn_eval_data_generator(self,data,labels_dic,labels_num):
@@ -122,6 +135,7 @@ class DataGenerator:
         nn_data = []
         for i in range(data_len):
             text = data.text[i]
+            casingIdList = self.casing_idList_generator(text)
             labels = data.labels[i]
             if len(text)>self.data_config['max_len']:
                 continue
@@ -149,7 +163,7 @@ class DataGenerator:
             # print('x:\n',x)
             # print('y_:\n',y_)
             # exit()
-            nn_data.append((x, y_))
+            nn_data.append((x, y_, casingIdList))
         return nn_data,labels_num,labels_dic
 
     def source_data_generator(self):
