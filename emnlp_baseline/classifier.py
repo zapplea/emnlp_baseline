@@ -618,6 +618,7 @@ class Classifier:
                     best_score = {}
                     early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage2']):
+                        print('stage2_epoch: %s'%str(i))
                         dataset= self.df.target_data_generator('train')
                         for X_data,Y_data, casingX_data in dataset:
                             if self.nn_config['casingEmb']:
@@ -663,6 +664,7 @@ class Classifier:
                     best_score = {}
                     early_stop_count = 0
                     for i in range(self.nn_config['epoch_stage3']):
+                        print('stage3_epoch: %s' % str(i))
                         dataset = self.df.target_data_generator('train')
                         for X_data,Y_data, casingX_data in dataset:
                             if self.nn_config['casingEmb']:
