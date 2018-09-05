@@ -181,9 +181,6 @@ class DataGenerator:
         target_train_data, labels_num, labels_dic = self.target_nn_train_data_generator(target_draw_data,labels_dic,labels_num)
         #print('target_train_data length:{}\n'.format(str(len(target_train_data))))
         target_test_data, labels_num, labels_dic = self.target_nn_eval_data_generator(target_eval_data,labels_dic,labels_num)
-        print('len train: ', len(target_train_data[0]))
-        print('len test: ', len(target_test_data[0]))
-        exit()
 
         return target_train_data,target_test_data,labels_num, labels_dic
 
