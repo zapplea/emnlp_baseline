@@ -39,8 +39,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     epoch_stage1=100
-    epoch_stage2=200
-    epoch_stage3=200
+    epoch_stage2=100
+    epoch_stage3=100
 
     if args.casing in ["True","true"]:
         casing_config={'casingEmb':True,'casingVecLen':200,'casingVocabLen':8,}
