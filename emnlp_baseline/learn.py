@@ -180,7 +180,6 @@ if __name__ == "__main__":
             model = model + 'model%s.ckpt.meta' % (str(args.num),)
         print(model)
         print(report)
-        exit()
         nn_config['model'] = model
         nn_config['report'] = report
         nn_config.update(casing_config)
