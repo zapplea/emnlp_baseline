@@ -574,9 +574,9 @@ class Classifier:
                                 print('shape casing: ',casingX_data.shape)
                                 print('shape Y_: ', Y_data.shape)
                                 print('shape X: ', X_data.shape)
-                                sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                # sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                                #sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                #sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
