@@ -557,8 +557,6 @@ class Classifier:
                 if self.nn_config['stage1'] == 'True':
                     print('start training stage1')
                     sess.run(init, feed_dict={table: table_data})
-                    print('finish init')
-                    exit()
                     report.write('=================crf_source=================\n')
                     best_score={}
                     early_stop_count=0
@@ -566,7 +564,10 @@ class Classifier:
                         dataset = self.df.source_data_generator('train')
                         for X_data,Y_data, casingX_data in dataset:
                             if self.nn_config['casingEmb']:
+                                print('traing')
+                                print('shape: ',casingX_data.shape)
                                 sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                                print('finish traing')
                             else:
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
 
