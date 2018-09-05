@@ -566,7 +566,8 @@ class Classifier:
                             if self.nn_config['casingEmb']:
                                 print('traing')
                                 print('shape: ',casingX_data.shape)
-                                sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                                sess.run(casingX,feed_dict={casingX:casingX_data})
+                                # sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
