@@ -435,9 +435,11 @@ class Classifier:
                 if self.nn_config['casingEmb']:
                     casingX = self.casing_lookup_table()
                     X = tf.concat([X, casingX],axis=1)
+                    graph.add_to_collection('concat_X',X)
                 with tf.variable_scope('bilstm') as vs:
                     # X.shape = (batch size, max time step, 2*lstm cell size)
                     X = self.bilstm(X,seq_len,graph)
+                    graph.add_to_collection('bilstm_X', X)
 
                 # crf source
                 log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
@@ -548,6 +550,10 @@ class Classifier:
                 for v in tf.global_variables():
                     if v.name.startswith('stage3_W_t'):
                         stage3_W_t=v
+
+                concat_X = graph.get_collection('concat_X')[0]
+                bilstm_X = graph.get_collection('bilstm_X')[0]
+
                 init = tf.global_variables_initializer()
 
             report = open(self.nn_config['report'], 'a+')
@@ -565,12 +571,14 @@ class Classifier:
                         for X_data,Y_data, casingX_data in dataset:
                             if self.nn_config['casingEmb']:
                                 print('traing')
-                                print('shape: ',casingX_data.shape)
-                                # sess.run(casingX,feed_dict={casingX:casingX_data})
-                                sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                                print('shape casing: ',casingX_data.shape)
+                                print('shape Y_: ', Y_data.shape)
+                                print('shape X: ', X_data.shape)
+                                sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                # sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
-                                print('trainig')
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
 
                         dataset = self.df.source_data_generator('test')
