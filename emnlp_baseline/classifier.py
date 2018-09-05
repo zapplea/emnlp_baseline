@@ -169,6 +169,8 @@ class Classifier:
         score = tf.reshape(tf.matmul(X,W_s),shape=(-1,self.nn_config['words_num'],self.nn_config['source_NETypes_num']))
         graph.add_to_collection('score_check',score)
         # log_likelihood.shape=(batch_size,)
+        graph.add_to_collection('Y_check: ',Y_)
+        graph.add_to_collection('seq_len_check: ',seq_len)
         log_likelihood, transition_params= tf.contrib.crf.crf_log_likelihood(score,Y_,seq_len,W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score,transition_params,seq_len)
         graph.add_to_collection('pred_crf_source',viterbi_seq)
@@ -435,7 +437,8 @@ class Classifier:
                 # casing embedding
                 if self.nn_config['casingEmb']:
                     casingX = self.casing_lookup_table()
-                    X = tf.concat([X, casingX],axis=1)
+                    graph.add_to_collection('casingX_check',casingX)
+                    X = tf.concat([X, casingX],axis=2)
                     graph.add_to_collection('concat_X',X)
                 with tf.variable_scope('bilstm') as vs:
                     # X.shape = (batch size, max time step, 2*lstm cell size)
@@ -556,6 +559,7 @@ class Classifier:
                     if v.name.startswith('stage3_W_t'):
                         stage3_W_t=v
 
+                casingX_check = graph.get_collection('casingX_check')[0]
                 score_check = graph.get_collection('score_check')[0]
                 concat_X = graph.get_collection('concat_X')[0]
                 bilstm_X = graph.get_collection('bilstm_X')[0]
@@ -587,8 +591,13 @@ class Classifier:
                                 sess.run(score_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
                                 print('bilstm_X: ')
                                 sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                print('casingX_check: ')
+                                concat_X_data = sess.run(casingX_check,
+                                                         feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                print('concat_X_data.shape: ', concat_X_data.shape)
                                 print('concat_X: ')
-                                sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                concat_X_data = sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                print('concat_X.shape',concat_X_data.shape)
                                 print('log_likelihood_check: ')
                                 sess.run(log_likelihood_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
                                 print('viterbi_seq_check: ')
