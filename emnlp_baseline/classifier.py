@@ -137,7 +137,7 @@ class Classifier:
         the placeholder to input the casing_sentences
         :return: 
         """
-        casingX = tf.placeholder(name='caisngInput',shape=(None,self.nn_config['batch_size']),dtype='int32')
+        casingX = tf.placeholder(name='caisngInput',shape=(None,self.nn_config['words_num']),dtype='int32')
         tf.add_to_collection('casingInput',casingX)
         return casingX
 
