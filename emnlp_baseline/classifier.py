@@ -559,14 +559,6 @@ class Classifier:
                     if v.name.startswith('stage3_W_t'):
                         stage3_W_t=v
 
-                casingX_check = graph.get_collection('casingX_check')[0]
-                score_check = graph.get_collection('score_check')[0]
-                concat_X = graph.get_collection('concat_X')[0]
-                bilstm_X = graph.get_collection('bilstm_X')[0]
-                log_likelihood_check = graph.get_collection('log_likelihood_check')[0]
-                viterbi_seq_check = graph.get_collection('viterbi_seq_check')[0]
-                loss_check = graph.get_collection('loss_check')[0]
-
                 init = tf.global_variables_initializer()
 
             report = open(self.nn_config['report'], 'a+')
@@ -583,28 +575,7 @@ class Classifier:
                         dataset = self.df.source_data_generator('train')
                         for X_data,Y_data, casingX_data in dataset:
                             if self.nn_config['casingEmb']:
-                                print('traing')
-                                print('shape casing: ',casingX_data.shape)
-                                print('shape Y_: ', Y_data.shape)
-                                print('shape X: ', X_data.shape)
-                                print('score_check: ')
-                                sess.run(score_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                print('bilstm_X: ')
-                                sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                print('casingX_check: ')
-                                concat_X_data = sess.run(casingX_check,
-                                                         feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                print('concat_X_data.shape: ', concat_X_data.shape)
-                                print('concat_X: ')
-                                concat_X_data = sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                print('concat_X.shape',concat_X_data.shape)
-                                print('log_likelihood_check: ')
-                                sess.run(log_likelihood_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                print('viterbi_seq_check: ')
-                                sess.run(viterbi_seq_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                print('loss check: ')
-                                sess.run(loss_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                # sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                                sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})

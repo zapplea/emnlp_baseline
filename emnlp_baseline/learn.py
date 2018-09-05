@@ -43,9 +43,9 @@ if __name__ == "__main__":
     epoch_stage3=200
 
     if args.casing in ["True","true"]:
-        casing_config={'casingEmb':True,'casingVecLen':200,'casingVocabLen':8,'bilstm_feature_dim':400}
+        casing_config={'casingEmb':True,'casingVecLen':200,'casingVocabLen':8,}
     else:
-        casing_config = {'casingEmb':False,'casingVecLen':200,'casingVocabLen':8,'bilstm_feature_dim':200}
+        casing_config = {'casingEmb':False,'casingVecLen':200,'casingVocabLen':8,}
 
     # Train the relation model and target crf model
     if args.stage1=='False1' or args.stage1=='False2' or args.stage1=='False0' or args.stage1=='False4' or args.stage1=='False5' or args.stage1=='False6':
