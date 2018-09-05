@@ -32,10 +32,10 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num',type=int)
-    parser.add_argument('--stage1',type=str)
-    parser.add_argument('--dn',type=str)
-    parser.add_argument('--casing',type=str)
+    parser.add_argument('--num',type=int,default=0)
+    parser.add_argument('--stage1',type=str,default=False)
+    parser.add_argument('--dn',type=str, default="bbn_bbn_kn")
+    parser.add_argument('--casing',type=str, default="True")
     args = parser.parse_args()
 
     epoch_stage1=100
