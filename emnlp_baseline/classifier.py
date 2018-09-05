@@ -591,6 +591,7 @@ class Classifier:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
                                     saver.save(sess, self.nn_config['model'])
                                     best_score=copy.deepcopy(eval_result)
+                                    early_stop_count = 0
                                 else:
                                     early_stop_count+=1
                         if early_stop_count>=self.nn_config['early_stop']:
@@ -632,6 +633,7 @@ class Classifier:
                                 best_score=copy.deepcopy(eval_result)
                             else:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
+                                    early_stop_count=0
                                     best_score=copy.deepcopy(eval_result)
                                 else:
                                     early_stop_count+=1
@@ -676,6 +678,7 @@ class Classifier:
                                 best_score=copy.deepcopy(eval_result)
                             else:
                                 if best_score['micro_f1']<eval_result['micro_f1']:
+                                    early_stop_count = 0
                                     best_score=copy.deepcopy(eval_result)
                                 else:
                                     early_stop_count+=1

@@ -61,7 +61,7 @@ if __name__ == "__main__":
                      'stage1':args.stage1,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
-                     'early_stop':100,
+                     'early_stop':20,
                      }
 
         lr = [0.003,       0.0003,  0.00003,]
@@ -121,7 +121,7 @@ if __name__ == "__main__":
                      'dropout':0.5,
                      'bilstm_num_layers':1,
                      'stage1':args.stage1,
-                     'early_stop': 5,
+                     'early_stop': 20,
                     }
         # flesible
         lr = [0.003,]
