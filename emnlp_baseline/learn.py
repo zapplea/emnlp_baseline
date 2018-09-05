@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument('--casing',type=str, default="True")
     args = parser.parse_args()
 
-    epoch_stage1=10
+    epoch_stage1=100
     epoch_stage2=200
     epoch_stage3=200
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                      'stage1':args.stage1,
                      'dropout':0.5,
                      'bilstm_num_layers':1,
-                     'early_stop':20,
+                     'early_stop':100,
                      }
 
         lr = [0.003,       0.0003,  0.00003,]
