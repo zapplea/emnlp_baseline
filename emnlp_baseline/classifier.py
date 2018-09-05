@@ -570,6 +570,7 @@ class Classifier:
                                 sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
+                                print('trainig')
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
 
                         dataset = self.df.source_data_generator('test')
