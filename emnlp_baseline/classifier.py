@@ -443,8 +443,10 @@ class Classifier:
 
                 # crf source
                 log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
+                graph.add_to_collection('log_likelihood_check',log_likelihood)
+                graph.add_to_collection('viterbi_seq_check',viterbi_seq)
                 loss = self.loss_crf_source(log_likelihood,graph)
-                graph.add_to_collection('loss_Check',loss)
+                graph.add_to_collection('loss_check',loss)
                 test_loss = self.test_loss_crf_source(log_likelihood,graph)
                 train_op = self.optimize(loss,graph)
                 graph.add_to_collection('train_op_crf_source', train_op)
@@ -555,7 +557,9 @@ class Classifier:
 
                 concat_X = graph.get_collection('concat_X')[0]
                 bilstm_X = graph.get_collection('bilstm_X')[0]
-                loss_check = graph.get_collection('loss_Check')[0]
+                log_likelihood_check = graph.get_collection('log_likelihood_check')[0]
+                viterbi_seq_check = graph.get_collection('viterbi_seq_check')[0]
+                loss_check = graph.get_collection('loss_check')[0]
 
                 init = tf.global_variables_initializer()
 
@@ -578,7 +582,12 @@ class Classifier:
                                 print('shape Y_: ', Y_data.shape)
                                 print('shape X: ', X_data.shape)
                                 #sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                print('loss check: ')
                                 sess.run(loss_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                print('log_likelihood_check: ')
+                                sess.run(log_likelihood_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                print('viterbi_seq_check: ')
+                                sess.run(viterbi_seq_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
                                 # sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
