@@ -170,20 +170,20 @@ class DataGenerator:
         data = self.conll_data_reader(self.data_config['source_Conll_filePath'])
         labels_dic = {'O':0}
         source_data, source_labels_num, labels_dic = self.source_nn_data_generator(data,labels_dic)
-        print('len: ',len(source_data[0]))
-        exit()
         random.shuffle(source_data)
         return source_data,source_labels_num,labels_dic
 
     def target_data_gnerator(self):
         target_draw_data = self.conll_data_reader(self.data_config['target_train_Conll_filePath'])
         target_eval_data = self.conll_data_reader(self.data_config['target_test_Conll_filePath'])
-
         labels_dic = {'O':0}
         labels_num=1
         target_train_data, labels_num, labels_dic = self.target_nn_train_data_generator(target_draw_data,labels_dic,labels_num)
         #print('target_train_data length:{}\n'.format(str(len(target_train_data))))
         target_test_data, labels_num, labels_dic = self.target_nn_eval_data_generator(target_eval_data,labels_dic,labels_num)
+        print('len train: ', len(target_train_data[0]))
+        print('len test: ', len(target_test_data[0]))
+        exit()
 
         return target_train_data,target_test_data,labels_num, labels_dic
 
