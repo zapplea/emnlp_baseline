@@ -132,18 +132,18 @@ class Classifier:
         embedding = tf.get_variable(name='casingEmb', initializer=self.parameter_initializer(), dtype='float32')
         return embedding
 
-    def input(self):
+    def Casinginput(self,):
         """
         the placeholder to input the casing_sentences
         :return: 
         """
         casingX = tf.placeholder(name='casingInput',shape=(None,self.nn_config['words_num']),dtype='int32')
-        tf.add_to_collection('casingInput',casingX)
+        # graph.add_to_collection('casingInput',casingX)
         return casingX
 
     def casing_lookup_table(self,):
         table = self.casing_embedding()
-        casingX = self.input()
+        casingX = self.Casinginput()
         return tf.nn.embedding_lookup(table,casingX)
 
     # ###################
@@ -444,6 +444,7 @@ class Classifier:
                 # crf source
                 log_likelihood,viterbi_seq=self.crf_source(X,Y_,seq_len,graph)
                 loss = self.loss_crf_source(log_likelihood,graph)
+                graph.add_to_collection('loss_Check',loss)
                 test_loss = self.test_loss_crf_source(log_likelihood,graph)
                 train_op = self.optimize(loss,graph)
                 graph.add_to_collection('train_op_crf_source', train_op)
@@ -454,6 +455,7 @@ class Classifier:
                 soft_log_mask = tf.reshape(self.softmax_log_mask(X_id, graph), shape=(-1,))
                 Y_one_hot = self.Y_2one_hot(Y_, graph)
                 score = self.multiclass_score(X, graph)
+
                 pred = self.pred_multiclass(tf.reshape(score,
                                                        shape=(-1, self.nn_config['words_num'],
                                                               self.nn_config['target_NETypes_num'])),
@@ -553,6 +555,7 @@ class Classifier:
 
                 concat_X = graph.get_collection('concat_X')[0]
                 bilstm_X = graph.get_collection('bilstm_X')[0]
+                loss_check = graph.get_collection('loss_Check')[0]
 
                 init = tf.global_variables_initializer()
 
@@ -575,8 +578,8 @@ class Classifier:
                                 print('shape Y_: ', Y_data.shape)
                                 print('shape X: ', X_data.shape)
                                 #sess.run(concat_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                #sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
-                                sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
+                                sess.run(loss_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
+                                # sess.run(train_op_crf_source, feed_dict={X: X_data, Y_: Y_data,casingX:casingX_data})
                                 print('finish traing')
                             else:
                                 sess.run(train_op_crf_source,feed_dict={X:X_data,Y_:Y_data})
