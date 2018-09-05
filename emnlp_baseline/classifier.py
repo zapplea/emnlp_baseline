@@ -557,6 +557,8 @@ class Classifier:
                 if self.nn_config['stage1'] == 'True':
                     print('start training stage1')
                     sess.run(init, feed_dict={table: table_data})
+                    print('finish init')
+                    exit()
                     report.write('=================crf_source=================\n')
                     best_score={}
                     early_stop_count=0
