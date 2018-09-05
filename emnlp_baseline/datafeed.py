@@ -67,7 +67,7 @@ class DataFeed:
         if mode == 'train':
             dataset = Dataset(self.source_data[:60], batch_size=self.data_config['batch_size'])
         else:
-            dataset = Dataset(self.source_data[-1000:])
+            dataset = Dataset(self.source_data[-20:])
         return dataset
 
     def target_data_generator(self,mode):
