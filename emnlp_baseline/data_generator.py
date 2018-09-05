@@ -170,6 +170,8 @@ class DataGenerator:
         data = self.conll_data_reader(self.data_config['source_Conll_filePath'])
         labels_dic = {'O':0}
         source_data, source_labels_num, labels_dic = self.source_nn_data_generator(data,labels_dic)
+        print(len(source_data[0]))
+        exit()
         random.shuffle(source_data)
         return source_data,source_labels_num,labels_dic
 
