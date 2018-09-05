@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument('--casing',type=str, default="True")
     args = parser.parse_args()
 
-    epoch_stage1=100
+    epoch_stage1=10
     epoch_stage2=200
     epoch_stage3=200
 
