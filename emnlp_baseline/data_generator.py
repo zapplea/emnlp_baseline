@@ -272,10 +272,11 @@ class DataGenerator:
         for instance in data:
             labels = instance[1]
             text = instance[0]
+            casing_id = instance[2]
             labels_id=[]
             for label in labels:
                 labels_id.append(labels_dic[label])
-            id_data.append((text,labels_id))
+            id_data.append((text,labels_id,casing_id))
         return id_data
 
     def main(self):
