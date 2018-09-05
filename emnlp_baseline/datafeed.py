@@ -40,6 +40,8 @@ class DataFeed:
         f = open(self.data_config['pkl_filePath'],'rb')
         data_dic = pickle.load(f)
         self.source_data = data_dic['source_data']
+        print('len: ',len(self.source_data[0]))
+        exit()
         # random.shuffle(self.source_data)
         self.source_NETypes_num = data_dic['source_NETypes_num']
         self.source_id2label_dic=data_dic['source_id2label_dic']
