@@ -167,6 +167,7 @@ class Classifier:
         X = tf.reshape(X,shape=(-1,2*self.nn_config['lstm_cell_size']))
         # score.shape = (batch size, words num, 2*lstm cell size)
         score = tf.reshape(tf.matmul(X,W_s),shape=(-1,self.nn_config['words_num'],self.nn_config['source_NETypes_num']))
+        graph.add_to_collection('score_check',score)
         # log_likelihood.shape=(batch_size,)
         log_likelihood, transition_params= tf.contrib.crf.crf_log_likelihood(score,Y_,seq_len,W_trans)
         viterbi_seq, _ = tf.contrib.crf.crf_decode(score,transition_params,seq_len)
@@ -555,6 +556,7 @@ class Classifier:
                     if v.name.startswith('stage3_W_t'):
                         stage3_W_t=v
 
+                score_check = graph.get_collection('score_check')[0]
                 concat_X = graph.get_collection('concat_X')[0]
                 bilstm_X = graph.get_collection('bilstm_X')[0]
                 log_likelihood_check = graph.get_collection('log_likelihood_check')[0]
@@ -581,6 +583,8 @@ class Classifier:
                                 print('shape casing: ',casingX_data.shape)
                                 print('shape Y_: ', Y_data.shape)
                                 print('shape X: ', X_data.shape)
+                                print('score_check: ')
+                                sess.run(score_check, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
                                 print('bilstm_X: ')
                                 sess.run(bilstm_X, feed_dict={X: X_data, Y_: Y_data, casingX: casingX_data})
                                 print('concat_X: ')
